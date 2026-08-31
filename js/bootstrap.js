@@ -1,5 +1,26 @@
 "use strict";
 
+const BETA_2_CHANGELOG = Object.freeze([
+  "Roadmap und priorisierte Entwicklungsziele dokumentiert.",
+  "Performance-Messung mit FPS- und Zeitwerten sowie ein reproduzierbarer Stresstest ergänzt.",
+  "Räumlicher Index für sichtbare Ressourcen, Gebäude, Drops und Einheiten eingeführt.",
+  "Aktualisierung des räumlichen Indexes bei Bewegungen und beim Laden verbessert.",
+  "Kampfberechnungen auf räumliche Zielabfragen umgestellt.",
+  "Turm-Zielprioritäten und kostenfreie Blaupausen ergänzt.",
+  "Kartennadeln sowie bessere Lesbarkeit durch Zustandsfarben und Umrisse ergänzt.",
+  "Verlassene Außenposten und sichtbare Schadenszustände für Bauwerke ergänzt.",
+  "Blaupausen-Planung mit Strg-/Alt-Ziehen und verbesserter Eingabe umgesetzt.",
+  "Schadens- und Ressourcenfeedback direkt an der Spielwelt ergänzt.",
+  "Nacht-Overlay nach Feedback-Anzeigen korrigiert.",
+  "Doppelten Baumenü-Zugang entfernt; Bauen läuft über Quickslot 4.",
+  "Alle Türme von Anfang an verfügbar gemacht.",
+  "Unnötige Aktions- und Ressourcenschadensmeldungen entfernt.",
+  "Waldbewohner respawnen; Bäume und Endgame-Ressourcen wachsen nach.",
+  "Energiezellen-Beschreibung an den 10-Prozent-Feuerratebonus angepasst.",
+  "Gegnerrollen geschärft, Schwärme ergänzt und Turmökonomie automatisiert ausgewertet.",
+  "Fehlenden Umlaut im Upgrade-Menü korrigiert."
+]);
+
 PW.Bootstrap = {
   init() {
     const state = PW.state;
@@ -80,6 +101,12 @@ PW.Bootstrap = {
       <p>Die Gegner greifen nachts das Wrack an. Du selbst wirst ignoriert, aber jede Sekunde ausserhalb der Basis fehlt beim Reparieren.</p>
       ${fromReload && hasSave ? "<p>Das Spiel wurde nach dem Aktualisieren gesichert. Du kannst fortsetzen oder neu starten.</p>" : ""}
       <p>Steuerung: WASD/Pfeiltasten, Space fuer Aktion, E Inventar, R Wrack, P Pause.</p>
+      <section class="start-changelog" aria-labelledby="beta2ChangelogTitle">
+        <h3 id="beta2ChangelogTitle">Beta 2 – Änderungen seit Beta 1</h3>
+        <div class="start-changelog-scroll">
+          <ul>${BETA_2_CHANGELOG.map((entry) => `<li>${entry}</li>`).join("")}</ul>
+        </div>
+      </section>
     `, actions);
   }
 };
