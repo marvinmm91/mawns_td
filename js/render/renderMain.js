@@ -17,6 +17,7 @@ PW.Render = {
     ctx.imageSmoothingEnabled = false;
     ctx.fillStyle = "#0b0d0d";
     ctx.fillRect(0, 0, state.camera.w, state.camera.h);
+    PW.SpatialIndex.syncDynamic();
     PW.RenderWorld.draw(ctx);
     PW.RenderEntities.drawWorldEntities(ctx);
     PW.RenderEffects.draw(ctx);

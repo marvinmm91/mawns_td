@@ -104,7 +104,7 @@ Die folgenden Punkte wurden aus `ROADMAP.md` verbindlich fuer die naechste Entwi
 ### PERFORMANCE
 
 - [x] **Messung und Stresstest** (`S`): Laufzeitmessung fuer Update und Rendern, sichtbares Debug-Overlay und ein reproduzierbarer Browser-Stresstest. Betroffene Dateien: `js/gameLoop.js`, `js/render/*`, `js/config.js`, `tests/`. Akzeptanz: Messwerte sind nur bei aktiviertem Debug sichtbar; der Stresstest prueft eine grosse Gegner-/Turmmenge ohne Browserfehler.
-- [ ] **Raeumlicher Weltindex** (`M`): Ressourcen, Gebaeude, Drops und Akteure werden fuer sichtbare Bereiche und lokale Abfragen indexiert. Betroffene Dateien: `js/world/*`, `js/render/*`, `js/systems/*`. Abhaengigkeit: Messung und Stresstest. Akzeptanz: Das Verhalten bleibt identisch, Rendering und Abfragen laufen nicht mehr ueber alle Weltobjekte.
+- [x] **Raeumlicher Weltindex** (`M`): Ressourcen, Gebaeude, Drops und Akteure werden fuer sichtbare Bereiche und lokale Abfragen indexiert. Betroffene Dateien: `js/world/*`, `js/render/*`, `js/systems/*`. Abhaengigkeit: Messung und Stresstest. Akzeptanz: Das Verhalten bleibt identisch, Rendering und Abfragen laufen nicht mehr ueber alle Weltobjekte.
 - [ ] **Raeumliche Kampfqueries** (`M`): Turmzielwahl und Projektil-Zielsuche verwenden lokale Abfragen beziehungsweise ID-Lookups. Betroffene Dateien: `js/systems/combat.js`, `js/entities/projectiles.js`, `js/entities/enemies.js`. Abhaengigkeit: Raeumlicher Weltindex. Akzeptanz: Zielauswahl, AoE und Spezialeffekte bleiben korrekt; Lasttest misst keine Verschlechterung.
 
 ### GAMEPLAY

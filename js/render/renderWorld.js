@@ -23,9 +23,9 @@ PW.RenderWorld = {
     }
     this.drawWarnings(ctx);
     this.drawShip(ctx);
-    this.drawResources(ctx);
+    this.drawResources(ctx, bounds);
     this.drawTreasureChests(ctx);
-    this.drawBuildings(ctx);
+    this.drawBuildings(ctx, bounds);
   },
   tileColor(tile) {
     if (!tile) return "#000";
@@ -110,10 +110,10 @@ PW.RenderWorld = {
       ctx.fillRect(x + 12, y + w - 12, w - 24, 10);
     }
   },
-  drawResources(ctx) {
+  drawResources(ctx, bounds) {
     const state = PW.state;
     const ts = state.world.tileSize;
-    state.world.resources.forEach((node) => {
+    PW.SpatialIndex.visible("resources", bounds).forEach((node) => {
       if (!PW.Fog.isKnown(node.x, node.y)) return;
       const def = PW.RESOURCE_NODES[node.type];
       const sx = node.x * ts - state.camera.x + (node.offsetX || 0);
@@ -183,10 +183,10 @@ PW.RenderWorld = {
     };
     return named[color] || "rgba(0,0,0,.28)";
   },
-  drawBuildings(ctx) {
+  drawBuildings(ctx, bounds) {
     const state = PW.state;
     const ts = state.world.tileSize;
-    state.world.buildings.forEach((building) => {
+    PW.SpatialIndex.visible("buildings", bounds).forEach((building) => {
       if (!PW.Fog.isKnown(building.x, building.y)) return;
       const def = PW.BUILDINGS[building.type];
       const sx = building.x * ts - state.camera.x;

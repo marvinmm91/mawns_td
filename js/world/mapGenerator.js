@@ -15,6 +15,7 @@ PW.MapGenerator = {
     world.buildings = [];
     world.buildingMap.clear();
     world.waterways = { river: [], brooks: [] };
+    PW.SpatialIndex.reset();
     this.biomeCenters = this.makeBiomeCenters();
 
     for (let y = 0; y < world.height; y++) {
@@ -35,6 +36,8 @@ PW.MapGenerator = {
     this.scatterResources();
     if (PW.TreasureSystem) PW.TreasureSystem.generateInitial();
     if (PW.WildlifeSystem) PW.WildlifeSystem.generateInitial();
+    PW.SpatialIndex.rebuildStatic();
+    PW.SpatialIndex.syncDynamic();
     PW.Fog.init();
   },
 
@@ -59,6 +62,7 @@ PW.MapGenerator = {
     if (!node) return;
     world.resourceMap.delete(key);
     world.resources = world.resources.filter((item) => item !== node);
+    PW.SpatialIndex.remove("resources", node);
   },
 
   addResource(type, x, y) {
@@ -88,6 +92,7 @@ PW.MapGenerator = {
     };
     world.resources.push(node);
     world.resourceMap.set(PW.Utils.tileKey(x, y), node);
+    PW.SpatialIndex.add("resources", node);
     return true;
   },
 

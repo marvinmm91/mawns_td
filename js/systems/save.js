@@ -96,6 +96,9 @@ PW.Save = {
       PW.state.world.buildingMap = new Map();
       PW.state.world.buildings.forEach((building) => PW.state.world.buildingMap.set(PW.Utils.tileKey(building.x, building.y), building));
       if (PW.WildlifeSystem) PW.WildlifeSystem.ensurePopulation();
+      PW.SpatialIndex.reset();
+      PW.SpatialIndex.rebuildStatic();
+      PW.SpatialIndex.syncDynamic();
       PW.Pathfinding.markDirty();
       PW.Camera.resize();
       PW.UI.renderHud();

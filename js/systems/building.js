@@ -35,6 +35,7 @@ PW.BuildingSystem = {
     };
     state.world.buildings.push(building);
     state.world.buildingMap.set(PW.Utils.tileKey(x, y), building);
+    PW.SpatialIndex.add("buildings", building);
     PW.Pathfinding.markDirty();
     PW.Messages.add(`${def.name} gebaut.`, "ok");
     PW.UI.renderHud();
@@ -143,6 +144,7 @@ PW.BuildingSystem = {
     const state = PW.state;
     state.world.buildingMap.delete(PW.Utils.tileKey(building.x, building.y));
     state.world.buildings = state.world.buildings.filter((item) => item !== building);
+    PW.SpatialIndex.remove("buildings", building);
     PW.Pathfinding.markDirty();
     PW.Utils.addEffect("splash", PW.Utils.tileToWorld(building.x), PW.Utils.tileToWorld(building.y), "#e35d57", 0.5, 1.2);
   },

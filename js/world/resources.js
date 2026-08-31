@@ -26,6 +26,7 @@ PW.ResourceSystem = {
     const world = PW.state.world;
     world.resourceMap.delete(PW.Utils.tileKey(node.x, node.y));
     world.resources = world.resources.filter((item) => item !== node);
+    PW.SpatialIndex.remove("resources", node);
   },
   nearestKnownResource(type) {
     const state = PW.state;
@@ -70,4 +71,3 @@ PW.ResourceSystem = {
     return "Nordwest";
   }
 };
-

@@ -16,8 +16,11 @@ PW.RenderEntities = {
     this.drawWildlife(ctx);
     this.drawEnemies(ctx);
   },
+  visible(kind, pad = 1) {
+    return PW.SpatialIndex.visible(kind, PW.Camera.visibleTileBounds(pad));
+  },
   drawBirds(ctx) {
-    for (const bird of PW.state.world.birds || []) {
+    for (const bird of this.visible("birds")) {
       const tileX = PW.Utils.worldToTile(bird.x);
       const tileY = PW.Utils.worldToTile(bird.y);
       if (!PW.Fog.isKnown(tileX, tileY)) continue;
@@ -55,7 +58,7 @@ PW.RenderEntities = {
     ctx.restore();
   },
   drawWildlife(ctx) {
-    for (const critter of PW.state.world.wildlife || []) {
+    for (const critter of this.visible("wildlife")) {
       if (critter.remove || critter.hp <= 0) continue;
       const tileX = PW.Utils.worldToTile(critter.x);
       const tileY = PW.Utils.worldToTile(critter.y);
@@ -145,7 +148,7 @@ PW.RenderEntities = {
   },
   drawEnemies(ctx) {
     this.drawCamps(ctx);
-    for (const enemy of PW.state.enemies) {
+    for (const enemy of this.visible("enemies")) {
       const def = PW.ENEMIES[enemy.type];
       const x = enemy.x - PW.state.camera.x;
       const y = enemy.y - PW.state.camera.y;
@@ -278,7 +281,7 @@ PW.RenderEntities = {
     }
   },
   drawProjectiles(ctx) {
-    for (const projectile of PW.state.projectiles) {
+    for (const projectile of this.visible("projectiles")) {
       if (PW.PixelArt && PW.PixelArt.drawCentered(ctx, `projectile.${projectile.sourceType}`, projectile.x - PW.state.camera.x, projectile.y - PW.state.camera.y, 12, 12)) continue;
       this.drawProjectile(ctx, projectile);
     }
@@ -346,7 +349,7 @@ PW.RenderEntities = {
     ctx.restore();
   },
   drawDrops(ctx) {
-    for (const drop of PW.state.drops) {
+    for (const drop of this.visible("drops")) {
       const res = PW.RESOURCES[drop.resource];
       if (!res) continue;
       const x = drop.x - PW.state.camera.x;
