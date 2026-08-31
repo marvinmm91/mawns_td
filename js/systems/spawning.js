@@ -50,18 +50,39 @@ PW.Spawning = {
     const budgetTarget = Math.min(wave.budgetRemaining, Math.max(3, wave.budgetRemaining * 0.18 + state.phase.night * 0.55));
     let spent = 0;
     let guard = 0;
-    while (spent < budgetTarget && wave.budgetRemaining > 0.4 && guard < 20) {
+    while (spent < budgetTarget && wave.budgetRemaining > 0.4 && guard < 16) {
       guard++;
       const type = this.pickEnemyType(wave.waveDef, wave.budgetRemaining);
       if (!type) break;
       const def = PW.ENEMIES[type];
+      const remainingPulse = Math.max(def.budget, budgetTarget - spent);
+      const count = this.packSizeFor(type, Math.min(wave.budgetRemaining, remainingPulse));
       const dir = state.rng.pick(wave.plannedDirections);
-      const pos = this.spawnPosition(dir);
-      PW.EnemySystem.spawn(type, pos.x, pos.y);
-      spent += def.budget;
-      wave.budgetRemaining -= def.budget;
-      wave.spawnedThisNight += 1;
+      const anchor = this.spawnPosition(dir);
+      for (let index = 0; index < count; index += 1) {
+        const pos = index === 0 ? anchor : this.packPosition(anchor, def);
+        PW.EnemySystem.spawn(type, pos.x, pos.y);
+        spent += def.budget;
+        wave.budgetRemaining -= def.budget;
+        wave.spawnedThisNight += 1;
+      }
     }
+  },
+  packSizeFor(type, budget) {
+    const def = PW.ENEMIES[type];
+    const maxCount = Math.max(1, Math.floor(budget / def.budget));
+    if (!def.packSize) return 1;
+    return Math.min(maxCount, PW.state.rng.int(def.packSize[0], def.packSize[1]));
+  },
+  packPosition(anchor, def) {
+    const state = PW.state;
+    const spread = (def.packSpread || 0.5) * state.world.tileSize;
+    const x = PW.Utils.clamp(anchor.x + state.rng.float(-spread, spread), state.world.tileSize * 2, (state.world.width - 2) * state.world.tileSize);
+    const y = PW.Utils.clamp(anchor.y + state.rng.float(-spread, spread), state.world.tileSize * 2, (state.world.height - 2) * state.world.tileSize);
+    const tileX = PW.Utils.worldToTile(x);
+    const tileY = PW.Utils.worldToTile(y);
+    if (def.moveType === "ground" && PW.Tiles.isBlockedForGround(tileX, tileY)) return anchor;
+    return { x, y };
   },
   pickEnemyType(waveDef, maxBudget) {
     const state = PW.state;

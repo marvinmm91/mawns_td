@@ -23,6 +23,7 @@ PW.ProjectileSystem = {
       damage: def.damage,
       speed: def.projectileSpeed,
       splash: def.splash || 0,
+      splashFalloff: def.splashFalloff || 0,
       slow: def.slow || 0,
       slowTime: def.slowTime || 0,
       color: this.colorFor(tower.type),
@@ -73,13 +74,16 @@ PW.ProjectileSystem = {
       for (const enemy of PW.SpatialIndex.nearby("enemies", target.x, target.y, radius)) {
         if (enemy.hp <= 0 || enemy.remove) continue;
         if (PW.ENEMIES[enemy.type].moveType !== PW.ENEMIES[target.type].moveType) continue;
-        PW.EnemySystem.damage(enemy, projectile.damage * (enemy === target ? 1 : 0.62), projectile.sourceType);
+        const falloff = projectile.splashFalloff || 0.62;
+        PW.EnemySystem.damage(enemy, projectile.damage * (enemy === target ? 1 : falloff), projectile.sourceType);
       }
       PW.Utils.addEffect("catapultSplash", target.x, target.y, projectile.color, 0.58, projectile.splash);
       return;
     }
     if (projectile.slow) {
-      target.slowFactor = Math.min(target.slowFactor, 1 - projectile.slow);
+      const def = PW.ENEMIES[target.type];
+      const slow = projectile.slow * (1 - PW.Utils.clamp(def.slowResistance || 0, 0, 0.9));
+      target.slowFactor = Math.min(target.slowFactor, 1 - slow);
       target.slowTimer = Math.max(target.slowTimer, projectile.slowTime);
       PW.Utils.addEffect("teslaPulse", target.x, target.y, projectile.color, 0.42, 1.2);
     } else if (projectile.sourceType === "flak") {

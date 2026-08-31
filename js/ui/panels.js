@@ -393,6 +393,7 @@ Object.assign(PW.UI, {
     card.appendChild(this.infoLine("Position", `${building.x}/${building.y}`));
     card.appendChild(this.infoLine("Stufe", String(building.level)));
     if (def.category === "tower") {
+      card.appendChild(this.infoLine("Einsatz", def.description));
       card.appendChild(this.infoLine("Schaden", `${Math.round(def.damage * (1 + (building.level - 1) * 0.35))}`));
       card.appendChild(this.infoLine("Reichweite", `${def.range} Felder`));
       card.appendChild(this.infoLine("Ziele", def.targets.includes("air") && def.targets.includes("ground") ? "Boden + Luft" : def.targets.includes("air") ? "Luft" : "Boden"));

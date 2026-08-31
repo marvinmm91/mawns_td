@@ -59,14 +59,14 @@ PW.BUILDINGS = Object.freeze({
     category: "tower",
     unlockNight: 0,
     maxHp: 90,
-    cost: { wood: 18, stone: 6 },
+    cost: { wood: 18, stone: 5 },
     refund: { wood: 5, stone: 2 },
-    range: 5.8,
-    damage: 24,
-    rate: 0.9,
+    range: 6,
+    damage: 26,
+    rate: 0.82,
     projectileSpeed: 420,
     targets: ["ground"],
-    description: "Frueher Einzelschaden gegen Bodenziele."
+    description: "Guensstiger Praezisionsschaden gegen normale Ziele und Brecher."
   },
   catapult: {
     id: "catapult",
@@ -74,15 +74,17 @@ PW.BUILDINGS = Object.freeze({
     icon: "K",
     category: "tower",
     maxHp: 100,
-    cost: { stone: 20, wood: 10 },
+    cost: { stone: 20, wood: 12 },
     refund: { stone: 5, wood: 3 },
     range: 6.2,
-    damage: 35,
-    splash: 1.25,
-    rate: 0.42,
+    damage: 34,
+    splash: 1.35,
+    splashFalloff: 0.65,
+    expectedTargets: 3,
+    rate: 0.46,
     projectileSpeed: 300,
     targets: ["ground"],
-    description: "Langsamer Flaechenschaden gegen Gruppen."
+    description: "Flaechenschaden gegen dichte Schwaerme; gegen Einzelziele ineffizient."
   },
   flak: {
     id: "flak",
@@ -90,14 +92,14 @@ PW.BUILDINGS = Object.freeze({
     icon: "F",
     category: "tower",
     maxHp: 95,
-    cost: { iron: 12, scrap: 14 },
+    cost: { iron: 12, scrap: 12 },
     refund: { iron: 3, scrap: 4 },
     range: 6.8,
-    damage: 15,
-    rate: 2.4,
+    damage: 16,
+    rate: 2.25,
     projectileSpeed: 560,
     targets: ["air"],
-    description: "Schnelle Luftabwehr."
+    description: "Kosteneffiziente Abwehr schneller Luftziele."
   },
   tesla: {
     id: "tesla",
@@ -105,15 +107,16 @@ PW.BUILDINGS = Object.freeze({
     icon: "T",
     category: "tower",
     maxHp: 105,
-    cost: { crystal: 8, scrap: 18 },
+    cost: { crystal: 7, scrap: 16 },
     refund: { crystal: 2, scrap: 5 },
-    range: 4.8,
-    damage: 7,
-    rate: 1.6,
-    slow: 0.45,
+    range: 5.2,
+    damage: 9,
+    rate: 1.5,
+    slow: 0.55,
     slowTime: 1.4,
+    projectileSpeed: 640,
     targets: ["ground"],
-    description: "Verlangsamt Bodengruppen und verursacht leichten Schaden."
+    description: "Bremst schnelle Bodenziele stark und verschafft anderen Tuerme Zeit."
   },
   laser: {
     id: "laser",
@@ -121,13 +124,13 @@ PW.BUILDINGS = Object.freeze({
     icon: "L",
     category: "tower",
     maxHp: 120,
-    cost: { gold: 16, parts: 6, iron: 10 },
+    cost: { gold: 12, parts: 5, iron: 8 },
     refund: { gold: 4, parts: 1, iron: 3 },
-    range: 7.4,
-    damage: 55,
-    rate: 0.9,
+    range: 7.6,
+    damage: 64,
+    rate: 0.82,
     projectileSpeed: 720,
     targets: ["ground", "air"],
-    description: "Teurer Praezisionsschaden gegen alle Ziele."
+    description: "Teurer Fernkonter gegen Panzer, Bomber und starke Einzelziele."
   }
 });

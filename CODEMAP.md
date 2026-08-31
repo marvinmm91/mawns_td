@@ -30,8 +30,8 @@ Die UI-Dateien sind inzwischen konsolidiert: Bau-, Inventar-, Wrack-, Kontext- u
 ## Datenmodule
 
 - `js/data/resources.js`: Ressourcentypen, Farben, Abbauzeiten, Tool-Anforderungen.
-- `js/data/buildings.js`: Mauern, Tuerme, Kosten, HP, Reichweite, Schaden, Zieltypen.
-- `js/data/enemies.js`: Gegnertypen, HP, Tempo, Schaden, Zielverhalten, Drops.
+- `js/data/buildings.js`: Mauern, Tuerme, Kosten, HP, Reichweite, Schaden, Zieltypen und gruppenspezifische AoE-Erwartung.
+- `js/data/enemies.js`: Gegnertypen, Rollen, Konterhinweise, HP, Tempo, Schadens-/Slow-Profile, Zielverhalten und Drops.
 - `js/data/wildlife.js`: Dekorative Voegel und passive Waldbewohner mit HP, Verhalten und Belohnungen.
 - `js/data/waves.js`: Wellenstufen, Freischaltungen, Mischungen und Spawngewichte.
 - `js/data/shipModules.js`: Reparaturmodule, Kosten, Freischaltungen, Siegfortschritt.
@@ -47,14 +47,14 @@ Die UI-Dateien sind inzwischen konsolidiert: Bau-, Inventar-, Wrack-, Kontext- u
 ## Akteure und Systeme
 
 - `js/entities/player.js`: Spielerposition, Bewegung, Kollision, Blickrichtung.
-- `js/entities/enemies.js`: Gegnerlisten, Bewegung, Zielwahl, Schaden am Wrack.
-- `js/entities/projectiles.js`: Turmprojektile, Treffer, Lebensdauer.
+- `js/entities/enemies.js`: Gegnerlisten, Bewegung, Zielwahl, rollenspezifische Schadensmodifikatoren und Schaden am Wrack.
+- `js/entities/projectiles.js`: Turmprojektile, Treffer, Lebensdauer und gegnerspezifische Slow-Resistenz.
 - `js/systems/dayNight.js`: Tag, Daemmerung, Nacht, Morgengrauen, Timer, Phasenwechsel.
 - `js/systems/damageVisuals.js`: Zentraler Treffereffekt und kurzzeitige Schadensblitze fuer Wrack und Bauwerke.
 - `js/systems/building.js`: Bauplatzpruefung, Platzieren, Blaupausen, Reparieren, Abreissen, Kosten.
 - `js/systems/pathfinding.js`: Grid-Pfade fuer Bodengegner und Blockade-Erkennung.
 - `js/systems/combat.js`: Turmzielwahl mit Prioritaeten, Schaden, AoE, Slow, Luft-/Bodenfilter.
-- `js/systems/spawning.js`: Nachtspawns, Spawnpunkte, Sicherheitsradius, Warnrichtungen.
+- `js/systems/spawning.js`: Nachtspawns, Schwarmformationen, Spawnpunkte, Sicherheitsradius und Warnrichtungen.
 - `js/systems/drops.js`: Gegnerdrops, Einsammeln, Drop-Verfall optional.
 - `js/systems/treasure.js`: Schatztruhen, stationaere Monsterhorden, Schluesseldrops und Truhenbelohnungen.
 - `js/systems/outposts.js`: Einmalige Versorgungslager, Forschungsterminals und Sicherheitsbaken mit lokalen Wachgruppen.

@@ -155,13 +155,13 @@ Wenn Bodengegner keinen Weg zum Wrack finden, greifen sie angrenzende Blockaden 
 
 ### Tuerme
 
-| Turm | Zieltyp | Rolle | Schwachpunkt |
+| Turm | Zieltyp | Rolle | Wirtschaftlicher Zweck |
 |---|---|---|---|
-| Balliste | Boden | billiger Einzelschaden | schwach gegen Schwarm und Luft |
-| Katapult | Boden | langsamer Flaechenschaden | keine Luftziele |
-| Flak | Luft | schnelle Luftabwehr | keine Bodenziele |
-| Tesla-Feld | Boden | Slow und leichter Schaden | geringe Toetungsleistung |
-| Laser-Turm | Boden und Luft | teurer Praezisionsschaden | hohe Kosten |
+| Balliste | Boden | guenstiger Einzelschaden | effizient gegen Krabbler und Brecher, verliert gegen Panzerung und Gruppen |
+| Katapult | Boden | langsamer Flaechenschaden | bezahlt sich bei dichten Schwaermen aus, bleibt gegen Einzelziele teuer |
+| Flak | Luft | schnelle Luftabwehr | beste Kostenleistung gegen Drohnen und Stoersender, kann keine Bodenziele treffen |
+| Tesla-Feld | Boden | starkes Verlangsamen | bremst schnelle Bodenziele fuer andere Tuerme, aber loest keine schwere Panzerung allein |
+| Laser-Turm | Boden und Luft | teurer Fernkonter | loest Panzer, Nesthueter und Bomber auf Distanz, braucht seltene Materialien |
 
 Alle Tuerme sind von Beginn an sichtbar und auswaehlbar. Ihre Ressourcen- und Baukosten bleiben die entscheidende Zugangshuerde; Nachtfortschritt oder das Entdecken einer Ressource sperren keinen Turm mehr. Tuerme besitzen Reichweite, Feuerrate, HP, Zieltypen und bis zu drei Ausbaustufen. Sichtlinien sind nicht erforderlich. Upgrades verbessern vor allem Schaden, Reichweite, Feuerrate oder Haltbarkeit.
 
@@ -169,17 +169,17 @@ Alle Tuerme sind von Beginn an sichtbar und auswaehlbar. Ihre Ressourcen- und Ba
 
 ### Boden
 
-- Krabbler: schneller Standardgegner mit wenig HP.
-- Schwarm: viele kleine Ziele, besonders geeignet fuer Katapult-AoE.
-- Panzereinheit: langsam, viele HP und hoher Druck auf Verteidigung.
-- Brecher: verursacht besonders hohen Schaden an Blockaden.
-- Nesthueter: starke stationaere Horde-Einheit mit wertvoller Beute.
+- Krabbler: Standarddruck; Ballisten halten einzelne Ziele am billigsten auf.
+- Schwarm: erscheint als groesseres, schwaches Paket; Katapult-AoE und Tesla-Slow sind die passenden Antworten.
+- Panzereinheit: langsam, viele HP und resistent gegen Ballisten; Laser sind der klare Fernkonter.
+- Brecher: schnell genug, um Mauern zu bedrohen, und verursacht besonders hohen Blockadenschaden; Ballisten mit Brecher-Prioritaet sind effizient.
+- Nesthueter: schweres stationaeres Ziel mit wertvoller Beute; Laser und eine vorbereitete Mauerlinie sind entscheidend.
 
 ### Luft
 
-- Drohne: schnell und zerbrechlich.
-- Bomber: langsam, aber hoher Wrackschaden.
-- Stoersender: reduziert die Feuerrate umliegender Tuerme.
+- Drohne: sehr schnell und zerbrechlich; Flak entfernt sie deutlich wirtschaftlicher als ein Laser.
+- Bomber: langsam, robust und mit hohem Wrackschaden; Laser loesen ihn auf grosse Distanz.
+- Stoersender: schnell, aber fragil; reduziert die Feuerrate umliegender Tuerme und wird von Flak priorisiert.
 
 Alle normalen Nachtgegner priorisieren das Wrack. Stationaere Horden bewachen ihre Lager, greifen dort Bauwerke an und koennen einen Schluesseltraeger enthalten.
 
@@ -278,6 +278,8 @@ Grenzen:
 - finale Startsequenz bleibt an Mindestbedingungen gebunden
 
 Zielbild fuer eine gute Nacht: ungefaehr 8 bis 22 Prozent Wrackschaden, sichtbare Belastung der Verteidigung und genug Beute fuer eine relevante Folgeentscheidung.
+
+Turmwerte werden mit `node tests/tower-role-economy.js` reproduzierbar ausgewertet. Der Bericht gewichtet seltene Ressourcen hoeher als Holz und Stein und stellt Grund- sowie Upgrade-Effizienz, Reichweite, Zieltypen, Spezialeffekte und die vorgesehenen Gegnerkonter gegenueber. Die Tabelle ist ein Balancing-Guardrail, kein Ersatz fuer Spieltests auf echten Karten.
 
 ## 15. EMPFOHLENE STARTWERTE
 

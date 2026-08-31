@@ -227,9 +227,11 @@ PW.EnemySystem = {
     return false;
   },
   damage(enemy, amount, sourceType) {
-    enemy.hp -= amount;
+    const multiplier = this.damageMultiplier(enemy, sourceType);
+    const dealt = amount * multiplier;
+    enemy.hp -= dealt;
     PW.Utils.addEffect("hit", enemy.x, enemy.y, "#f7e6a1", 0.22, 0.8);
-    PW.Utils.addDamageFeedback(enemy, amount);
+    PW.Utils.addDamageFeedback(enemy, dealt);
     if (enemy.hp <= 0) {
       if (PW.state.nightStats) {
         PW.state.nightStats.kills += 1;
@@ -239,6 +241,12 @@ PW.EnemySystem = {
       if (enemy.campId && PW.TreasureSystem) PW.TreasureSystem.noteEnemyKilled(enemy);
       if (enemy.outpostId && PW.OutpostSystem) PW.OutpostSystem.noteEnemyKilled(enemy);
     }
+    return dealt;
+  },
+  damageMultiplier(enemy, sourceType) {
+    const def = PW.ENEMIES[enemy.type];
+    if (!def || !sourceType) return 1;
+    return PW.Utils.clamp((def.damageTaken && def.damageTaken[sourceType]) || 1, 0.1, 3);
   },
   addAttackEffect(enemy, def, x, y, size) {
     const effect = this.attackEffectFor(enemy.type, def);

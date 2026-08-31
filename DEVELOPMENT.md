@@ -131,7 +131,7 @@ Die folgenden Punkte wurden aus `ROADMAP.md` verbindlich fuer die naechste Entwi
 
 - [ ] **Seed-basierter Balance- und Lasttest** (`M`): Viele feste Karten-Seeds bis zur spaeten Nacht simulieren und Kennzahlen zu Ressourcen, Verlusten, Wellen und Last erfassen. Betroffene Dateien: `tests/`, gegebenenfalls `js/config.js`. Akzeptanz: Der Lauf ist reproduzierbar und zeigt Ausreisser direkt an.
 - [ ] **Skalierende Horden- und Truhenbelohnungen** (`M`): Beute richtet sich nachvollziehbar nach Entfernung, Nacht und Hordenstaerke. Betroffene Dateien: `js/systems/treasure.js`, `js/data/*`, `GAME_DESIGN.md`. Abhaengigkeit: Balance- und Lasttest. Akzeptanz: Fruehe Truhen brechen die Oekonomie nicht, spaete Ziele bleiben attraktiv.
-- [ ] **Vergleichbare Turmoekonomie** (`S`): Eine automatisierte Tabelle prueft Schaden pro Kosten, Reichweite, Zieltypen und Upgrade-Wert aller Tuerme. Betroffene Dateien: `tests/`, `js/data/buildings.js`, `js/systems/building.js`. Akzeptanz: Jede Turmrolle und jedes Upgrade hat einen belegbaren wirtschaftlichen Zweck.
+- [x] **Gegnerrollen und vergleichbare Turmoekonomie** (`M`, Issues #41/#42): Rollen besitzen nachvollziehbare Schadens- und Slow-Profile; Schwaerme erscheinen als dichte Pakete. Eine automatisierte Tabelle prueft Kostenwert, Schaden, Reichweite, Zieltypen, Spezialeffekte und Upgrade-Wert aller Tuerme gegen die relevanten Gegnerrollen. Betroffene Dateien: `js/data/enemies.js`, `js/data/buildings.js`, `js/entities/*`, `js/systems/spawning.js`, `tests/`. Akzeptanz: Katapult und Tesla besitzen je einen klaren Gegenwert gegen Schwaerme beziehungsweise schnelle Bodenziele; keine Turmart deckt alle Rollen wirtschaftlich ab.
 
 Neue Punkte werden erst hier aufgenommen, wenn sie aus `ROADMAP.md` ausgewaehlt und konkretisiert wurden. Jeder aufgenommene Punkt soll mindestens enthalten:
 
@@ -154,6 +154,7 @@ Neue Punkte werden erst hier aufgenommen, wenn sie aus `ROADMAP.md` ausgewaehlt 
 ```text
 node tests/smoke.js
 node tests/endurance.js
+node tests/tower-role-economy.js
 ```
 
 Die weiteren Browsertests unter `tests/` koennen einzeln mit `node tests/<datei>.js` ausgefuehrt werden.
