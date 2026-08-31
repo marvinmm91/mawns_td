@@ -15,7 +15,7 @@ PW.SHIP_MODULES = Object.freeze({
     unlockNight: 3,
     requiresKnown: ["iron"],
     cost: { iron: 34, crystal: 8, scrap: 35 },
-    effect: "Alle Tuerme feuern 5 Prozent schneller.",
+    effect: "Alle Tuerme feuern 10 Prozent schneller.",
     description: "Versorgt Waffen und Startsysteme."
   },
   comms: {
