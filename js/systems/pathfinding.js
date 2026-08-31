@@ -10,15 +10,23 @@ PW.Pathfinding = {
   compute() {
     const state = PW.state;
     const world = state.world;
-    this.field = new Array(world.width * world.height).fill(Infinity);
+    this.field = this.computeGroundField();
+    this.computeDirectField();
+    this.dirty = false;
+  },
+  computeGroundField(extraBlocked = null) {
+    const state = PW.state;
+    const world = state.world;
+    const blocked = extraBlocked || new Set();
+    const isBlocked = (x, y) => blocked.has(PW.Utils.tileKey(x, y)) || PW.Tiles.isBlockedForGround(x, y);
+    const field = new Array(world.width * world.height).fill(Infinity);
     const queue = [];
     const ship = state.ship;
     for (let y = ship.y - 1; y <= ship.y + ship.size; y++) {
       for (let x = ship.x - 1; x <= ship.x + ship.size; x++) {
-        if (!PW.Tiles.inBounds(x, y) || PW.Tiles.isShipTile(x, y)) continue;
-        if (PW.Tiles.isBlockedForGround(x, y)) continue;
+        if (!PW.Tiles.inBounds(x, y) || PW.Tiles.isShipTile(x, y) || isBlocked(x, y)) continue;
         const idx = PW.Tiles.idx(x, y);
-        this.field[idx] = 0;
+        field[idx] = 0;
         queue.push({ x, y });
       }
     }
@@ -26,19 +34,47 @@ PW.Pathfinding = {
     const dirs = [[1, 0], [-1, 0], [0, 1], [0, -1]];
     while (head < queue.length) {
       const current = queue[head++];
-      const base = this.field[PW.Tiles.idx(current.x, current.y)];
+      const base = field[PW.Tiles.idx(current.x, current.y)];
       for (const [dx, dy] of dirs) {
         const nx = current.x + dx;
         const ny = current.y + dy;
-        if (!PW.Tiles.inBounds(nx, ny) || PW.Tiles.isBlockedForGround(nx, ny)) continue;
+        if (!PW.Tiles.inBounds(nx, ny) || isBlocked(nx, ny)) continue;
         const idx = PW.Tiles.idx(nx, ny);
-        if (this.field[idx] <= base + 1) continue;
-        this.field[idx] = base + 1;
+        if (field[idx] <= base + 1) continue;
+        field[idx] = base + 1;
         queue.push({ x: nx, y: ny });
       }
     }
-    this.computeDirectField();
-    this.dirty = false;
+    return field;
+  },
+  canPreserveClassicRoutes(type, x, y) {
+    const def = PW.BUILDINGS[type];
+    if (!def || !def.blocksGround || PW.GameModes.profile().structureTargeting !== "blockade") return true;
+    if (this.dirty) this.compute();
+    const blocked = new Set([PW.Utils.tileKey(x, y)]);
+    (PW.state.world.blueprints || []).forEach((blueprint) => {
+      const blueprintDef = PW.BUILDINGS[blueprint.type];
+      if (blueprintDef && blueprintDef.blocksGround) blocked.add(PW.Utils.tileKey(blueprint.x, blueprint.y));
+    });
+    const proposedField = this.computeGroundField(blocked);
+    return this.classicRouteSources().every(({ x: sourceX, y: sourceY }) => {
+      const index = PW.Tiles.idx(sourceX, sourceY);
+      return !Number.isFinite(this.field[index]) || Number.isFinite(proposedField[index]);
+    });
+  },
+  classicRouteSources() {
+    const sources = new Map();
+    const add = (x, y) => {
+      if (!PW.Tiles.inBounds(x, y)) return;
+      sources.set(PW.Utils.tileKey(x, y), { x, y });
+    };
+    PW.Spawning.groundEntryTiles().forEach(({ x, y }) => add(x, y));
+    PW.state.enemies.forEach((enemy) => {
+      const def = PW.ENEMIES[enemy.type];
+      if (!def || def.moveType !== "ground" || enemy.campId || enemy.outpostId || enemy.retreating) return;
+      add(PW.Utils.worldToTile(enemy.x), PW.Utils.worldToTile(enemy.y));
+    });
+    return [...sources.values()];
   },
   computeDirectField() {
     const state = PW.state;

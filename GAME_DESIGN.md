@@ -249,11 +249,13 @@ Feedback erfolgt ueber Morgenberichte, Nachrichten, Schadensanzeigen, Reichweite
 
 Vor einer neuen Partie wird zusaetzlich zur Schwierigkeit ein Verteidigungsmodus gewaehlt. Classic ist der Kompatibilitaetsstandard fuer bestehende Spielstaende. Die Modusauswahl wird gespeichert und im Status angezeigt. Die konkreten Angriffs- und Wellenregeln werden getrennt von den Schwierigkeitsprofilen definiert, damit der Modus Zielverhalten und die Schwierigkeit den Director-Druck steuert.
 
-Im Classic Mode greifen regulaere Bodengegner keine Verteidigung an, solange ein Weg zum Wrack existiert. Erst eine vollstaendige Blockade laesst sie auf ein erreichbares Durchbruchziel zusteuern. Dieser Classic-Strukturschaden ist erhoeht, gilt nur fuer Mauer-, Palisaden- und Turmziele und niemals fuer das Wrack. Luftgegner sowie stationaere Horden- und Aussenpostenwachen behalten ihre lokalen Regeln.
+Im Classic Mode verhindert die Baupruefung schon beim Platzieren, dass eine blockierende Struktur den letzten Bodenweg zum Wrack schliesst. Sie prueft die moeglichen Spawnraender, bereits laufende regulaere Bodengegner und vorgemerkte Blaupausen gemeinsam. Labyrinthe, Engstellen und Umwege bleiben moeglich; vollstaendige Einsperrungen nicht. Im seltenen Notfall eines alten Spielstands oder einer unvorhergesehenen Blockade greifen regulaere Bodengegner ausschliesslich das passende Durchbruchziel mit zehnfachem Strukturschaden an, bis wieder ein Weg offen ist. Luftgegner sowie stationaere Horden- und Aussenpostenwachen behalten ihre lokalen Regeln.
 
 Im Aggressive Mode greifen regulaere Bodengegner eine Mauer, Palisade oder einen Turm an, wenn sie auf ihrem berechneten direkten Weg zum Wrack liegen. Seitliche oder von der Route nicht beruehrte Verteidigungen bleiben unberuehrt. Vollstaendige Blockaden bleiben aufbrechbar; der normale Strukturschaden wird nicht auf das Wrack uebertragen.
 
-Classic erhaelt 124 Prozent des vom Director berechneten Wellenbudgets und 165 Prozent Strukturschaden beim Blockadeaufbruch. Aggressive erhaelt 92 Prozent Wellenbudget und normalen Strukturschaden, weil die aktive Verteidigung entlang der Direktroute bereits dauerhaft belastet wird. Der Status und Morgenbericht zeigen den Modusfaktor; die Bedrohungsprognose zeigt stets das daraus resultierende effektive Budget.
+Classic erhaelt 124 Prozent des vom Director berechneten Wellenbudgets und bietet beim Neubau nur die Palisade an; Stein- und Stahlmauern bleiben fuer alte Spielstaende erhalten, sind dort aber nicht erneut baubar. Aggressive erhaelt 92 Prozent Wellenbudget und alle drei Mauertypen, weil die aktive Verteidigung entlang der Direktroute bereits dauerhaft belastet wird. Der Status und Morgenbericht zeigen den Modusfaktor; die Bedrohungsprognose zeigt stets das daraus resultierende effektive Budget.
+
+Das Ende einer Nacht stoppt nur neue Spawnpulse. Bereits gespawnte Gegner bleiben in beiden Modi aktiv und greifen bis zu ihrem Tod weiter an.
 
 Jede Nacht besitzt ein Threat-Budget:
 

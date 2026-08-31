@@ -51,14 +51,12 @@ PW.DayNight = {
   beginDawn() {
     const state = PW.state;
     state.wave.active = false;
-    PW.EnemySystem.retreatAll();
     this.setPhase("dawn");
     PW.Autobalance.evaluateNight();
     PW.UI.showMorningReport();
     PW.Save.save(false);
   },
   beginDay() {
-    PW.state.enemies = PW.state.enemies.filter((enemy) => !enemy.retreating);
     this.setPhase("day");
     PW.Progression.refreshUnlocks();
     PW.Messages.add("Tagphase: reparieren, bauen, erkunden.");

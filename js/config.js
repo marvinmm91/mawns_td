@@ -156,10 +156,12 @@ PW.CONFIG = Object.freeze({
         id: "classic",
         name: "Classic",
         shortName: "Classic",
-        description: "Freie Wege werden respektiert; Blockaden brechen unter mehr Wellen und staerkerem Strukturschaden.",
+        description: "Freie Wege werden beim Bauen gesichert; nur echte Notfallblockaden werden schnell aufgebrochen.",
         structureTargeting: "blockade",
         waveMultiplier: 1.24,
-        structureDamageMultiplier: 1.65
+        structureDamageMultiplier: 1,
+        breakthroughDamageMultiplier: 10,
+        disabledBuildings: ["stoneWall", "steelWall"]
       },
       {
         id: "aggressive",

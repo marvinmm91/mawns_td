@@ -71,7 +71,7 @@ const { pathToFileURL } = require("url");
     }
     const blocked = {
       hp: blockedWall.hp,
-      expectedDamage: def.wallDamage * PW.GameModes.profile("classic").structureDamageMultiplier,
+      expectedDamage: def.wallDamage * PW.GameModes.profile("classic").breakthroughDamageMultiplier,
       shipHp: PW.state.ship.hp
     };
 
@@ -88,7 +88,7 @@ const { pathToFileURL } = require("url");
   if (result.alternate.hp !== 70 || !result.alternate.moved || !result.alternate.movedAround) {
     throw new Error(`Classic ignoriert Alternativweg nicht: ${JSON.stringify(result.alternate)}`);
   }
-  if (Math.abs(result.blocked.hp - (70 - result.blocked.expectedDamage)) > 0.001 || result.blocked.shipHp !== 500) {
+  if (Math.abs(result.blocked.hp - Math.max(0, 70 - result.blocked.expectedDamage)) > 0.001 || result.blocked.shipHp !== 500) {
     throw new Error(`Classic-Blockadeschaden fehlerhaft: ${JSON.stringify(result.blocked)}`);
   }
   if (result.airWallHp !== 70) throw new Error(`Luftgegner greifen im Classic Mode eine Mauer an: ${result.airWallHp}`);

@@ -115,6 +115,7 @@ PW.Save = {
         if (def && def.category === "tower") building.targetPriority = PW.Combat.targetPriority(building, def);
         PW.state.world.buildingMap.set(PW.Utils.tileKey(building.x, building.y), building);
       });
+      PW.state.enemies.forEach((enemy) => { enemy.retreating = false; });
       PW.state.world.blueprintMap = new Map();
       PW.state.world.blueprints = PW.state.world.blueprints.filter((blueprint) => {
         const def = PW.BUILDINGS[blueprint.type];

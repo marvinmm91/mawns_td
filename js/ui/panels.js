@@ -134,7 +134,7 @@ Object.assign(PW.UI, {
   renderBuild(body) {
     body.innerHTML = "";
     this.renderBlueprintControls(body);
-    Object.values(PW.BUILDINGS).forEach((def) => {
+    Object.values(PW.BUILDINGS).filter((def) => PW.GameModes.allowsBuilding(def.id)).forEach((def) => {
       const unlocked = PW.state.unlockedBuildings.has(def.id);
       const affordable = PW.Utils.canAfford(def.cost);
       const card = document.createElement("div");
@@ -719,15 +719,33 @@ Object.assign(PW.UI, {
       </article>
     `;
   },
+  helpWallCard(def) {
+    return `
+      <article class="help-unit-card">
+        <div class="help-unit-heading">
+          <canvas class="help-unit-image" data-help-building="${def.id}" width="48" height="48" aria-hidden="true"></canvas>
+          <div><h4>${def.name}</h4><div class="help-unit-role">${def.description}</div></div>
+        </div>
+        <dl class="help-unit-stats">
+          <div><dt>Baukosten</dt><dd>${this.helpResourceCost(def.cost)}</dd></div>
+          <div><dt>Lebenspunkte</dt><dd>${this.helpNumber(def.maxHp)}</dd></div>
+          <div><dt>Wirkung</dt><dd>Blockiert Bodeneinheiten</dd></div>
+        </dl>
+      </article>
+    `;
+  },
   helpUnitCatalog() {
     const enemies = Object.values(PW.ENEMIES).map((def) => this.helpEnemyCard(def)).join("");
     const towers = Object.values(PW.BUILDINGS).filter((def) => def.category === "tower").map((def) => this.helpTowerCard(def)).join("");
+    const walls = Object.values(PW.BUILDINGS).filter((def) => def.category === "wall" && PW.GameModes.allowsBuilding(def.id)).map((def) => this.helpWallCard(def)).join("");
     return `
       <div class="help-catalog" aria-label="Gegner- und Turmübersicht">
         <h3>Gegner</h3>
         <div class="help-unit-grid">${enemies}</div>
         <h3>Türme</h3>
         <div class="help-unit-grid">${towers}</div>
+        <h3>Mauern</h3>
+        <div class="help-unit-grid">${walls}</div>
       </div>
     `;
   },

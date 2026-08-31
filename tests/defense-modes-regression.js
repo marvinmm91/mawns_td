@@ -7,8 +7,10 @@ const tests = [
   "game-mode-foundation.js",
   "mode-route-targets.js",
   "classic-mode.js",
+  "classic-route-guard.js",
   "aggressive-mode.js",
-  "game-mode-balance.js"
+  "game-mode-balance.js",
+  "enemy-persistence.js"
 ];
 
 for (const test of tests) {

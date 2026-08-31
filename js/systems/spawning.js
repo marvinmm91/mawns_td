@@ -34,6 +34,23 @@ PW.Spawning = {
     }
     return result;
   },
+  groundEntryTiles() {
+    const { width, height } = PW.state.world;
+    const margin = 3;
+    const padding = 8;
+    const entries = new Map();
+    const add = (x, y) => entries.set(PW.Utils.tileKey(x, y), { x, y });
+    for (let x = padding; x <= width - padding - 1; x++) {
+      add(x, margin);
+      add(x, height - margin - 1);
+    }
+    for (let y = padding; y <= height - padding - 1; y++) {
+      add(margin, y);
+      add(width - margin - 1, y);
+    }
+    [[margin, margin], [width - margin - 1, margin], [margin, height - margin - 1], [width - margin - 1, height - margin - 1]].forEach(([x, y]) => add(x, y));
+    return [...entries.values()];
+  },
   update(dt) {
     const state = PW.state;
     if (!state.wave.active || state.phase.current !== "night") return;

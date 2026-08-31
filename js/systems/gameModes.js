@@ -7,5 +7,8 @@ PW.GameModes = {
   },
   normalize(id) {
     return this.profile(id).id;
+  },
+  allowsBuilding(type, modeId = PW.state && PW.state.gameMode) {
+    return !this.profile(modeId).disabledBuildings?.includes(type);
   }
 };

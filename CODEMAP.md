@@ -47,13 +47,13 @@ Die UI-Dateien sind inzwischen konsolidiert: Bau-, Inventar-, Wrack-, Kontext- u
 ## Akteure und Systeme
 
 - `js/entities/player.js`: Spielerposition, Bewegung, Kollision, Blickrichtung.
-- `js/entities/enemies.js`: Gegnerlisten, Bewegung, Classic-Blockadeangriffe, Zielwahl, rollenspezifische Schadensmodifikatoren und Schaden am Wrack.
+- `js/entities/enemies.js`: Gegnerlisten, Bewegung, Classic-Notfall-Durchbruchangriffe, Zielwahl, rollenspezifische Schadensmodifikatoren und Schaden am Wrack. Bereits gespawnte Gegner bleiben nach der Nacht aktiv.
 - `js/entities/projectiles.js`: Turmprojektile, Treffer, Lebensdauer und gegnerspezifische Slow-Resistenz.
 - `js/systems/dayNight.js`: Tag, Daemmerung, Nacht, Morgengrauen, Timer, Phasenwechsel.
 - `js/systems/gameModes.js`: Aufloesung und Validierung der zentralen Spielmodusprofile.
 - `js/systems/damageVisuals.js`: Zentraler Treffereffekt und kurzzeitige Schadensblitze fuer Wrack und Bauwerke.
-- `js/systems/building.js`: Bauplatzpruefung, Platzieren, Blaupausen, Reparieren, Abreissen, Kosten.
-- `js/systems/pathfinding.js`: Normales Grid-Pfadfeld sowie strukturdurchlaessiges Direktfeld fuer Bodengegner, Blockaden und Direktziele; beide werden nur nach relevanten Weltveraenderungen berechnet.
+- `js/systems/building.js`: Bauplatzpruefung, Classic-Wegsperre, Platzieren, Blaupausen, Reparieren, Abreissen, Kosten.
+- `js/systems/pathfinding.js`: Normales Grid-Pfadfeld sowie strukturdurchlaessiges Direktfeld fuer Bodengegner, Blockaden und Direktziele. Die Classic-Baupruefung erzeugt bei Bedarf ein lokales Gegenfeld mit neuen und vorgemerkten Blockaden; beide Laufzeitfelder werden nur nach relevanten Weltveraenderungen berechnet.
 - `js/systems/combat.js`: Turmzielwahl mit Prioritaeten, Schaden, AoE, Slow, Luft-/Bodenfilter.
 - `js/systems/spawning.js`: Nachtspawns, modusgewichtete Wellenbudgets, Schwarmformationen, Spawnpunkte, Sicherheitsradius und Warnrichtungen.
 - `js/systems/drops.js`: Gegnerdrops, Einsammeln, Drop-Verfall optional.

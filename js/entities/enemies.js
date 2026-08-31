@@ -64,7 +64,7 @@ PW.EnemySystem = {
       if (mode.structureTargeting === "blockade") {
         route = PW.Pathfinding.routeInfoFor(enemy);
         if (!route.hasPath) {
-          if (this.attackBuilding(enemy, def, route.blockadeTarget, PW.state.world.tileSize * 0.9, mode.structureDamageMultiplier)) return;
+          if (this.attackBuilding(enemy, def, route.blockadeTarget, PW.state.world.tileSize * 0.9, mode.breakthroughDamageMultiplier || mode.structureDamageMultiplier)) return;
           if (route.breakthroughStep) {
             this.moveToward(enemy, route.breakthroughStep.x, route.breakthroughStep.y, dt);
             return;
@@ -269,9 +269,4 @@ PW.EnemySystem = {
     if (type === "disruptor") return { type: "enemyDisrupt", color: "#d9a8ef", life: 0.45 };
     return { type: def.moveType === "air" ? "enemyDroneZap" : "enemyClaw", color: def.color, life: 0.34 };
   },
-  retreatAll() {
-    PW.state.enemies.forEach((enemy) => {
-      if (!enemy.outpostId) enemy.retreating = true;
-    });
-  }
 };
