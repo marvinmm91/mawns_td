@@ -206,7 +206,7 @@ Object.assign(PW.UI, {
     if (!towers.length) return;
     const wrap = document.createElement("div");
     wrap.className = "build-card";
-    wrap.innerHTML = "<h3>Upgrades</h3><div class=\"meta\">Bauwerke koennen bis Stufe 3 verbessert werden.</div>";
+    wrap.innerHTML = "<h3>Upgrades</h3><div class=\"meta\">Bauwerke können bis Stufe 3 verbessert werden.</div>";
     towers.slice(0, 16).forEach((building) => {
       const def = PW.BUILDINGS[building.type];
       const button = document.createElement("button");
