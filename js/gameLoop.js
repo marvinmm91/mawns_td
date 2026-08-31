@@ -87,6 +87,7 @@ PW.GameLoop = {
     PW.Fog.update();
     PW.Pathfinding.update();
     PW.TreasureSystem.update(dt);
+    PW.MapPins.update();
     PW.WildlifeSystem.update(dt);
     PW.Spawning.update(dt);
     PW.EnemySystem.update(dt);

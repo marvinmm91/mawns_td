@@ -319,6 +319,7 @@ Object.assign(PW.UI, {
     }
     if (resource) {
       this.renderResourceContext(body, resource);
+      this.renderMapPinControl(body, tile.x, tile.y);
       title.textContent = PW.RESOURCE_NODES[resource.type].name;
       return;
     }
@@ -329,11 +330,13 @@ Object.assign(PW.UI, {
     }
     if (chest) {
       this.renderChestContext(body, chest);
+      this.renderMapPinControl(body, tile.x, tile.y);
       title.textContent = "Schatztruhe";
       return;
     }
     if (camp) {
       this.renderCampContext(body, camp);
+      this.renderMapPinControl(body, tile.x, tile.y);
       title.textContent = "Monsterhorde";
       return;
     }
@@ -361,6 +364,23 @@ Object.assign(PW.UI, {
       });
       card.appendChild(action);
     }
+    body.appendChild(card);
+    this.renderMapPinControl(body, tile.x, tile.y);
+  },
+  renderMapPinControl(body, x, y) {
+    const target = PW.MapPins.targetAt(x, y);
+    if (!target) return;
+    const pin = PW.MapPins.get(x, y);
+    const card = document.createElement("div");
+    card.className = "build-card";
+    card.appendChild(this.infoLine("Kartennadel", pin ? "gesetzt" : target.label));
+    const button = document.createElement("button");
+    button.textContent = pin ? "Nadel entfernen" : "Nadel setzen";
+    button.addEventListener("click", () => {
+      PW.MapPins.toggleAt(x, y);
+      this.inspectTile(x, y);
+    });
+    card.appendChild(button);
     body.appendChild(card);
   },
   tileLabel(tile) {

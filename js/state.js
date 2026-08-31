@@ -61,7 +61,9 @@ PW.createInitialState = function createInitialState() {
       buildings: [],
       buildingMap: new Map(),
       blueprints: [],
-      blueprintMap: new Map()
+      blueprintMap: new Map(),
+      mapPins: [],
+      mapPinMap: new Map()
     },
     camera: {
       x: 0,

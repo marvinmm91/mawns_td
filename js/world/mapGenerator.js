@@ -16,6 +16,8 @@ PW.MapGenerator = {
     world.buildingMap.clear();
     world.blueprints = [];
     world.blueprintMap.clear();
+    world.mapPins = [];
+    world.mapPinMap.clear();
     world.waterways = { river: [], brooks: [] };
     PW.SpatialIndex.reset();
     this.biomeCenters = this.makeBiomeCenters();

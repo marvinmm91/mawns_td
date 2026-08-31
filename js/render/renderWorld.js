@@ -27,6 +27,7 @@ PW.RenderWorld = {
     this.drawTreasureChests(ctx);
     this.drawBlueprints(ctx, bounds);
     this.drawBuildings(ctx, bounds);
+    this.drawMapPins(ctx, bounds);
   },
   tileColor(tile) {
     if (!tile) return "#000";
@@ -119,6 +120,7 @@ PW.RenderWorld = {
       const def = PW.RESOURCE_NODES[node.type];
       const sx = node.x * ts - state.camera.x + (node.offsetX || 0);
       const sy = node.y * ts - state.camera.y + (node.offsetY || 0);
+      this.drawGroundShadow(ctx, sx + ts / 2, sy + ts - 5, 22, 4);
       if (PW.PixelArt && PW.PixelArt.draw(ctx, `resource.${node.type}`, sx, sy, ts, ts)) {
         // Custom pixel resource drawn.
       } else if (node.type === "tree") {
@@ -192,10 +194,13 @@ PW.RenderWorld = {
       const def = PW.BUILDINGS[building.type];
       const sx = building.x * ts - state.camera.x;
       const sy = building.y * ts - state.camera.y;
+      this.drawGroundShadow(ctx, sx + ts / 2, sy + ts - 4, 25, 4);
       ctx.save();
       ctx.translate(sx, sy);
       PW.Icons.drawBuilding(ctx, building.type, ts, 1);
       ctx.restore();
+      const accent = def.category === "tower" ? this.towerColor(building.type) : building.type === "bridge" ? "#83e3da" : "#d8d1ad";
+      this.drawStateCorners(ctx, sx + ts / 2, sy + ts / 2, accent, 13);
       if (building.level > 1) {
         ctx.fillStyle = "#f0b84d";
         for (let i = 0; i < building.level; i++) ctx.fillRect(sx + 4 + i * 6, sy + 4, 4, 4);
@@ -235,9 +240,64 @@ PW.RenderWorld = {
       if (chest.opened || !PW.Fog.isKnown(chest.x, chest.y)) return;
       const sx = chest.x * ts - state.camera.x;
       const sy = chest.y * ts - state.camera.y;
-      if (PW.PixelArt && PW.PixelArt.draw(ctx, "world.chest", sx, sy, ts, ts)) return;
-      PW.Icons.drawChest(ctx, sx, sy, ts, chest.variant || 0);
+      this.drawGroundShadow(ctx, sx + ts / 2, sy + ts - 5, 22, 4);
+      const custom = PW.PixelArt && PW.PixelArt.draw(ctx, "world.chest", sx, sy, ts, ts);
+      if (!custom) PW.Icons.drawChest(ctx, sx, sy, ts, chest.variant || 0);
+      this.drawStateCorners(ctx, sx + ts / 2, sy + ts / 2, "#f3d36b", 13);
     });
+  },
+  drawMapPins(ctx, bounds) {
+    const state = PW.state;
+    const ts = state.world.tileSize;
+    for (const pin of state.world.mapPins || []) {
+      if (pin.x < bounds.minX || pin.x > bounds.maxX || pin.y < bounds.minY || pin.y > bounds.maxY || !PW.Fog.isKnown(pin.x, pin.y)) continue;
+      const definition = PW.MapPins.definitions[pin.kind];
+      if (!definition) continue;
+      const x = pin.x * ts - state.camera.x + ts / 2;
+      const y = pin.y * ts - state.camera.y + ts / 2;
+      ctx.save();
+      ctx.fillStyle = "rgba(0,0,0,.62)";
+      ctx.fillRect(x - 2, y - 15, 4, 21);
+      ctx.fillStyle = definition.color;
+      ctx.fillRect(x - 1, y - 14, 2, 19);
+      ctx.fillRect(x + 1, y - 14, 9, 7);
+      ctx.fillStyle = "rgba(255,255,255,.42)";
+      ctx.fillRect(x + 2, y - 13, 6, 1);
+      ctx.fillStyle = "rgba(0,0,0,.55)";
+      ctx.fillRect(x - 4, y + 5, 8, 3);
+      ctx.restore();
+    }
+  },
+  drawGroundShadow(ctx, x, y, width, height) {
+    ctx.fillStyle = "rgba(0,0,0,.34)";
+    ctx.fillRect(Math.round(x - width / 2), Math.round(y), width, height);
+  },
+  drawStateCorners(ctx, x, y, color, radius) {
+    const left = Math.round(x - radius);
+    const top = Math.round(y - radius);
+    const right = Math.round(x + radius);
+    const bottom = Math.round(y + radius);
+    const length = 5;
+    ctx.save();
+    ctx.fillStyle = "rgba(0,0,0,.68)";
+    ctx.fillRect(left - 1, top - 1, length + 2, 2);
+    ctx.fillRect(left - 1, top - 1, 2, length + 2);
+    ctx.fillRect(right - length - 1, top - 1, length + 2, 2);
+    ctx.fillRect(right - 1, top - 1, 2, length + 2);
+    ctx.fillRect(left - 1, bottom - 1, length + 2, 2);
+    ctx.fillRect(left - 1, bottom - length - 1, 2, length + 2);
+    ctx.fillRect(right - length - 1, bottom - 1, length + 2, 2);
+    ctx.fillRect(right - 1, bottom - length - 1, 2, length + 2);
+    ctx.fillStyle = color;
+    ctx.fillRect(left, top, length, 1);
+    ctx.fillRect(left, top, 1, length);
+    ctx.fillRect(right - length, top, length, 1);
+    ctx.fillRect(right, top, 1, length);
+    ctx.fillRect(left, bottom, length, 1);
+    ctx.fillRect(left, bottom - length, 1, length);
+    ctx.fillRect(right - length, bottom, length, 1);
+    ctx.fillRect(right, bottom - length, 1, length);
+    ctx.restore();
   },
   towerColor(type) {
     const colors = {

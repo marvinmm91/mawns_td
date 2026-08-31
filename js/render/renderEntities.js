@@ -152,9 +152,11 @@ PW.RenderEntities = {
       const def = PW.ENEMIES[enemy.type];
       const x = enemy.x - PW.state.camera.x;
       const y = enemy.y - PW.state.camera.y;
-      if (PW.PixelArt && PW.PixelArt.drawCentered(ctx, `enemy.${enemy.type}`, x, y, 24, 24, { alpha: enemy.retreating ? 0.65 : 1 })) {
-        // Custom pixel enemy drawn.
-      } else this.drawEnemyShape(ctx, enemy, def, x, y);
+      this.drawGroundShadow(ctx, x, y + 9, 23, 4);
+      const custom = PW.PixelArt && PW.PixelArt.drawCentered(ctx, `enemy.${enemy.type}`, x, y, 24, 24, { alpha: enemy.retreating ? 0.65 : 1 });
+      if (!custom) this.drawEnemyShape(ctx, enemy, def, x, y);
+      const stateColor = enemy.campId ? "#f0b84d" : def.moveType === "air" ? "#a9d8ff" : "#e97868";
+      this.drawStateCorners(ctx, x, y, stateColor, 13);
       ctx.fillStyle = "rgba(0,0,0,.55)";
       ctx.fillRect(x - 12, y - 17, 24, 4);
       ctx.fillStyle = "#e35d57";
@@ -164,6 +166,8 @@ PW.RenderEntities = {
         ctx.strokeRect(x - 13, y - 13, 26, 26);
       }
       if (enemy.campKeyCarrier) {
+        ctx.fillStyle = "rgba(0,0,0,.6)";
+        ctx.fillRect(x - 4, y - 25, 8, 8);
         ctx.fillStyle = "#f3d36b";
         ctx.fillRect(x - 3, y - 24, 6, 6);
       }
@@ -172,8 +176,6 @@ PW.RenderEntities = {
   drawEnemyShape(ctx, enemy, def, x, y) {
     const color = enemy.retreating ? "#8c8c8c" : def.color;
     ctx.save();
-    ctx.fillStyle = "rgba(0,0,0,.24)";
-    ctx.fillRect(x - 12, y + 8, 24, 4);
     ctx.fillStyle = color;
     if (enemy.type === "swarm") {
       ctx.fillRect(x - 10, y - 4, 7, 7);
@@ -278,6 +280,7 @@ PW.RenderEntities = {
       ctx.fillRect(x - 14, y - 6, 3, 8);
       ctx.fillRect(x + 11, y - 6, 3, 8);
       ctx.restore();
+      this.drawStateCorners(ctx, x, y, "#e35d57", 16);
     }
   },
   drawProjectiles(ctx) {
@@ -354,12 +357,51 @@ PW.RenderEntities = {
       if (!res) continue;
       const x = drop.x - PW.state.camera.x;
       const y = drop.y - PW.state.camera.y;
-      if (PW.PixelArt && PW.PixelArt.drawCentered(ctx, `drop.${drop.resource}`, x, y, 16, 16)) continue;
-      ctx.fillStyle = res.color;
-      ctx.fillRect(x - 5, y - 5, 10, 10);
-      ctx.fillStyle = "#151515";
-      ctx.font = "8px sans-serif";
-      ctx.fillText(res.icon, x - 3, y + 3);
+      this.drawGroundShadow(ctx, x, y + 6, 12, 3);
+      ctx.fillStyle = "rgba(0,0,0,.72)";
+      ctx.fillRect(x - 7, y - 7, 14, 14);
+      const custom = PW.PixelArt && PW.PixelArt.drawCentered(ctx, `drop.${drop.resource}`, x, y, 16, 16);
+      if (!custom) {
+        ctx.fillStyle = res.color;
+        ctx.fillRect(x - 5, y - 5, 10, 10);
+        ctx.fillStyle = "#151515";
+        ctx.font = "8px sans-serif";
+        ctx.fillText(res.icon, x - 3, y + 3);
+      }
+      ctx.fillStyle = "rgba(255,255,255,.55)";
+      ctx.fillRect(x - 5, y - 5, 4, 1);
+      this.drawStateCorners(ctx, x, y, res.color, 7);
     }
+  },
+  drawGroundShadow(ctx, x, y, width, height) {
+    ctx.fillStyle = "rgba(0,0,0,.4)";
+    ctx.fillRect(Math.round(x - width / 2), Math.round(y), width, height);
+  },
+  drawStateCorners(ctx, x, y, color, radius) {
+    const left = Math.round(x - radius);
+    const top = Math.round(y - radius);
+    const right = Math.round(x + radius);
+    const bottom = Math.round(y + radius);
+    const length = 4;
+    ctx.save();
+    ctx.fillStyle = "rgba(0,0,0,.68)";
+    ctx.fillRect(left - 1, top - 1, length + 2, 2);
+    ctx.fillRect(left - 1, top - 1, 2, length + 2);
+    ctx.fillRect(right - length - 1, top - 1, length + 2, 2);
+    ctx.fillRect(right - 1, top - 1, 2, length + 2);
+    ctx.fillRect(left - 1, bottom - 1, length + 2, 2);
+    ctx.fillRect(left - 1, bottom - length - 1, 2, length + 2);
+    ctx.fillRect(right - length - 1, bottom - 1, length + 2, 2);
+    ctx.fillRect(right - 1, bottom - length - 1, 2, length + 2);
+    ctx.fillStyle = color;
+    ctx.fillRect(left, top, length, 1);
+    ctx.fillRect(left, top, 1, length);
+    ctx.fillRect(right - length, top, length, 1);
+    ctx.fillRect(right, top, 1, length);
+    ctx.fillRect(left, bottom, length, 1);
+    ctx.fillRect(left, bottom - length, 1, length);
+    ctx.fillRect(right - length, bottom, length, 1);
+    ctx.fillRect(right, bottom - length, 1, length);
+    ctx.restore();
   }
 };
