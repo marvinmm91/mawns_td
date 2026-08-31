@@ -77,8 +77,8 @@ PW.Utils = {
     return effect;
   },
   addDamageFeedback(enemy, amount) {
-    const damage = Math.max(1, Math.round(amount));
-    this.addFloatingText(`-${damage}`, enemy.x, enemy.y, "#ffd17a", {
+    const damage = Math.max(0.1, amount);
+    this.addFloatingText(`-${Math.round(damage)}`, enemy.x, enemy.y, "#ffd17a", {
       key: `damage:${enemy.id}`,
       value: damage,
       format: (value) => `-${Math.round(value)}`,

@@ -5,6 +5,9 @@ PW.RenderFog = {
     const state = PW.state;
     const ts = state.world.tileSize;
     const bounds = PW.Camera.visibleTileBounds(0);
+    ctx.save();
+    ctx.globalAlpha = 1;
+    ctx.globalCompositeOperation = "source-over";
     for (let y = bounds.minY; y <= bounds.maxY; y++) {
       for (let x = bounds.minX; x <= bounds.maxX; x++) {
         const fog = state.world.fog[PW.Tiles.idx(x, y)];
@@ -25,6 +28,8 @@ PW.RenderFog = {
       ctx.fillStyle = "rgba(92, 122, 120, .16)";
       ctx.fillRect(0, 0, state.camera.w, state.camera.h);
     }
+    ctx.restore();
+    ctx.globalAlpha = 1;
+    ctx.globalCompositeOperation = "source-over";
   }
 };
-

@@ -26,6 +26,7 @@ PW.RenderEffects = {
         ctx.fillStyle = effect.color;
         ctx.fillText(effect.text, x + effect.offsetX, y + effect.offsetY - rise);
         ctx.restore();
+        ctx.globalAlpha = 1;
         continue;
       }
       if (PW.PixelArt && PW.PixelArt.drawCentered(ctx, `effect.${effect.type}`, x, y, 16 * effect.size, 16 * effect.size)) {

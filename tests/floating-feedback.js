@@ -36,13 +36,19 @@ const { pathToFileURL } = require("url");
     PW.DropSystem.update(0.016);
     const drop = state.effects.find((effect) => effect.type === "floatingText" && effect.text === "+3 Schrott");
     PW.RenderEffects.draw(state.ctx);
+    const alphaAfterEffects = state.ctx.globalAlpha;
+    state.phase.current = "night";
+    PW.RenderFog.draw(state.ctx);
+    const alphaAfterFog = state.ctx.globalAlpha;
     return {
       damageText: damage && damage.text,
       damageValue: damage && damage.value,
       resourceText: resource && resource.text,
       resourceColor: resource && resource.color,
       dropText: drop && drop.text,
-      gainToasts: state.messages.filter((message) => /Holz \+|Schrott \+/.test(message.text)).length
+      gainToasts: state.messages.filter((message) => /Holz \+|Schrott \+/.test(message.text)).length,
+      alphaAfterEffects,
+      alphaAfterFog
     };
   });
 
@@ -51,7 +57,7 @@ const { pathToFileURL } = require("url");
   if (result.damageText !== "-6" || Math.abs(result.damageValue - 5.8) > 0.001) {
     throw new Error(`Schadensanzeige nicht gebuendelt: ${JSON.stringify(result)}`);
   }
-  if (result.resourceText === undefined || !result.resourceColor || result.dropText !== "+3 Schrott" || result.gainToasts !== 0) {
+  if (result.resourceText === undefined || !result.resourceColor || result.dropText !== "+3 Schrott" || result.gainToasts !== 0 || result.alphaAfterEffects !== 1 || result.alphaAfterFog !== 1) {
     throw new Error(`Ressourcenanzeige nicht korrekt: ${JSON.stringify(result)}`);
   }
   console.log("OK floating feedback");
