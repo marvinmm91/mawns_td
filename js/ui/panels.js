@@ -744,12 +744,56 @@ Object.assign(PW.UI, {
     this.showDialog("Hilfe", `
       <p><span class="kbd">WASD</span> oder Pfeiltasten bewegen. <span class="kbd">Space</span> interagiert mit der Kachel vor dir.</p>
       <p><span class="kbd">1</span> Axt, <span class="kbd">2</span> Spitzhacke, <span class="kbd">3</span> Reparatur, <span class="kbd">4</span> Bauen, <span class="kbd">5</span> Abriss.</p>
-      <p><span class="kbd">E</span> Inventar, <span class="kbd">B</span> Baumenue, <span class="kbd">O</span> Optik, <span class="kbd">R</span> Wrack, <span class="kbd">P</span> Pause. <span class="kbd">F3</span> Leistungsanzeige.</p>
-      <p>Tagsueber erkundest und baust du. Nachts greifen Gegner das Wrack an. Du kannst nachts weiter rausgehen, riskierst dann aber Reparaturzeit.</p>
+      <p><span class="kbd">E</span> Inventar, <span class="kbd">B</span> Baumenü, <span class="kbd">O</span> Optik, <span class="kbd">R</span> Wrack, <span class="kbd">P</span> Pause. <span class="kbd">F3</span> Leistungsanzeige.</p>
+      <p>Tagsüber erkundest und baust du. Nachts greifen Gegner das Wrack an. Du kannst nachts weiter rausgehen, riskierst dann aber Reparaturzeit.</p>
       <p class="meta">Die folgenden Werte zeigen, wofür Gegner und Türme gedacht sind. Grund-DPS berücksichtigt keine Flächenziele oder Spezialeffekte.</p>
       ${this.helpUnitCatalog()}
-    `, [{ label: "Schliessen", action: () => this.hideDialog() }]);
+    `, [{ label: "Schließen", action: () => this.hideDialog() }]);
     this.renderHelpImages();
+  },
+  showCheatDialog() {
+    const dom = PW.state.dom;
+    if (!dom.gameDialog || !dom.gameDialog.classList.contains("hidden")) return;
+    this.showDialog("Cheat-Code", `
+      <form id="cheatForm" class="cheat-form">
+        <label for="cheatCode">Code</label>
+        <input id="cheatCode" name="cheatCode" type="text" autocomplete="off" spellcheck="false" placeholder="Cheat-Code eingeben">
+      </form>
+    `, [
+      { label: "Abbrechen", action: () => this.hideDialog() },
+      { label: "Aktivieren", action: () => this.submitCheatCode() }
+    ]);
+    dom.gameDialog.classList.add("cheat-dialog");
+    const form = dom.dialogBody.querySelector("#cheatForm");
+    const input = dom.dialogBody.querySelector("#cheatCode");
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      this.submitCheatCode();
+    });
+    input.focus();
+  },
+  submitCheatCode() {
+    const input = PW.state.dom.dialogBody.querySelector("#cheatCode");
+    const code = input ? input.value.trim().toLowerCase() : "";
+    if (code !== "lumberjack" && code !== "theflash") {
+      PW.Messages.add("Ungültiger Cheat-Code.", "danger");
+      this.hideDialog();
+      return;
+    }
+    if (code === "lumberjack") {
+      Object.values(PW.RESOURCES).forEach((resource) => {
+        PW.state.inventory[resource.id] = (PW.state.inventory[resource.id] || 0) + 500;
+        PW.state.knownResources.add(resource.id);
+      });
+      PW.Progression.refreshUnlocks();
+      PW.UI.renderHud();
+      PW.UI.refreshInventoryDependentPanel();
+      PW.Messages.add("Cheat aktiviert: 500 von jeder Ressource erhalten.", "ok");
+    } else {
+      PW.state.player.speed = PW.CONFIG.playerSpeed * 3;
+      PW.Messages.add("Cheat aktiviert: Deine Bewegungsgeschwindigkeit ist verdreifacht.", "ok");
+    }
+    this.hideDialog();
   },
   confirmReset() {
     this.showDialog("Neustart", "<p>Der aktuelle Speicherstand wird geloescht und die Partie startet neu.</p>", [
@@ -766,6 +810,7 @@ Object.assign(PW.UI, {
   },
   showDialog(title, html, actions) {
     const dom = PW.state.dom;
+    dom.gameDialog.classList.remove("cheat-dialog");
     dom.dialogTitle.textContent = title;
     dom.dialogBody.innerHTML = html;
     dom.dialogActions.innerHTML = "";
@@ -779,5 +824,6 @@ Object.assign(PW.UI, {
   },
   hideDialog() {
     PW.state.dom.gameDialog.classList.add("hidden");
+    PW.state.dom.gameDialog.classList.remove("cheat-dialog");
   }
 });

@@ -23,7 +23,7 @@ PW.BUILDINGS = Object.freeze({
     cost: { stone: 4, wood: 2 },
     refund: { stone: 1 },
     blocksGround: true,
-    description: "Stabile Mauer fuer Engpaesse."
+    description: "Stabile Mauer für Engpässe."
   },
   steelWall: {
     id: "steelWall",
@@ -40,7 +40,7 @@ PW.BUILDINGS = Object.freeze({
   },
   bridge: {
     id: "bridge",
-    name: "Bruecke",
+    name: "Brücke",
     icon: "B",
     category: "utility",
     unlockNight: 0,
@@ -50,7 +50,7 @@ PW.BUILDINGS = Object.freeze({
     blocksGround: false,
     placeOnWater: true,
     upgradeable: false,
-    description: "Macht Wasserstellen fuer Spieler und Bodengegner passierbar."
+    description: "Macht Wasserstellen für Spieler und Bodengegner passierbar."
   },
   ballista: {
     id: "ballista",
@@ -66,7 +66,7 @@ PW.BUILDINGS = Object.freeze({
     rate: 0.82,
     projectileSpeed: 420,
     targets: ["ground"],
-    description: "Guensstiger Praezisionsschaden gegen normale Ziele und Brecher."
+    description: "Günstiger Präzisionsschaden gegen normale Ziele und Brecher."
   },
   catapult: {
     id: "catapult",
@@ -84,7 +84,7 @@ PW.BUILDINGS = Object.freeze({
     rate: 0.46,
     projectileSpeed: 300,
     targets: ["ground"],
-    description: "Flaechenschaden gegen dichte Schwaerme; gegen Einzelziele ineffizient."
+    description: "Flächenschaden gegen dichte Schwärme; gegen Einzelziele ineffizient."
   },
   flak: {
     id: "flak",
@@ -116,7 +116,7 @@ PW.BUILDINGS = Object.freeze({
     slowTime: 1.4,
     projectileSpeed: 640,
     targets: ["ground"],
-    description: "Bremst schnelle Bodenziele stark und verschafft anderen Tuerme Zeit."
+    description: "Bremst schnelle Bodenziele stark und verschafft anderen Türmen Zeit."
   },
   laser: {
     id: "laser",

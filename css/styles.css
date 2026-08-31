@@ -226,6 +226,28 @@ button:disabled {
   margin-top: 16px;
 }
 
+.cheat-dialog .modal-card {
+  width: min(360px, calc(100vw - 32px));
+}
+
+.cheat-form label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.cheat-form input {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 9px 10px;
+  color: var(--text);
+  background: #171a19;
+  border: 1px solid #706b55;
+  border-radius: 4px;
+  font: inherit;
+}
+
 .start-changelog {
   margin-top: 16px;
   padding: 10px 12px;
@@ -378,6 +400,15 @@ button:disabled {
 .difficulty-option.active {
   border-color: var(--accent);
   background: #3a3325;
+}
+
+.difficulty-picker-readonly .difficulty-option {
+  cursor: default;
+  opacity: .7;
+}
+
+.difficulty-picker-readonly .difficulty-option.active {
+  opacity: 1;
 }
 
 @media (max-width: 760px) {

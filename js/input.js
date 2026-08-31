@@ -137,6 +137,10 @@ PW.Input = {
   },
   handleHotkey(key) {
     const state = PW.state;
+    if (key === "enter") {
+      PW.UI.showCheatDialog();
+      return;
+    }
     if (key === "p") {
       state.paused = !state.paused;
       PW.UI.updatePause();

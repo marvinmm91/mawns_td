@@ -52,11 +52,12 @@ PW.Spawning = {
     let guard = 0;
     while (spent < budgetTarget && wave.budgetRemaining > 0.4 && guard < 16) {
       guard++;
-      const type = this.pickEnemyType(wave.waveDef, wave.budgetRemaining);
+      const remainingBudget = Math.min(wave.budgetRemaining, budgetTarget - spent);
+      const type = this.pickEnemyType(wave.waveDef, remainingBudget);
       if (!type) break;
       const def = PW.ENEMIES[type];
-      const remainingPulse = Math.max(def.budget, budgetTarget - spent);
-      const count = this.packSizeFor(type, Math.min(wave.budgetRemaining, remainingPulse));
+      const count = this.packSizeFor(type, remainingBudget);
+      if (count < 1) break;
       const dir = state.rng.pick(wave.plannedDirections);
       const anchor = this.spawnPosition(dir);
       for (let index = 0; index < count; index += 1) {
@@ -86,7 +87,11 @@ PW.Spawning = {
   },
   pickEnemyType(waveDef, maxBudget) {
     const state = PW.state;
-    let types = waveDef.enemies.filter((id) => PW.ENEMIES[id].budget <= maxBudget + 0.5);
+    let types = waveDef.enemies.filter((id) => {
+      const def = PW.ENEMIES[id];
+      const minimumGroupBudget = def.budget * (def.packSize ? def.packSize[0] : 1);
+      return minimumGroupBudget <= maxBudget;
+    });
     if (waveDef.droneCap && state.wave.spawnedThisNight >= 10) types = types.filter((id) => id !== "drone");
     if (!types.length) return null;
     const entries = types.map((id) => {

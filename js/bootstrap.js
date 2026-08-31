@@ -78,6 +78,7 @@ PW.Bootstrap = {
   showStartDialog(fromReload = false) {
     PW.state.paused = true;
     const hasSave = PW.Save.hasSave();
+    const dialogDifficulty = hasSave ? PW.Save.savedDifficulty() : PW.state.difficulty;
     const actions = [];
     if (hasSave) {
       actions.push({ label: "Fortsetzen", action: () => {
@@ -89,7 +90,10 @@ PW.Bootstrap = {
       } });
     }
     actions.push({ label: hasSave ? "Neustart" : "Neue Partie", action: () => {
-      if (hasSave) PW.Save.clear();
+      if (hasSave) {
+        PW.Save.reset();
+        return;
+      }
       PW.UI.hideDialog();
       PW.state.paused = false;
       PW.UI.updatePause();
@@ -100,10 +104,11 @@ PW.Bootstrap = {
       <p>Beschuetze das Wrack in der Kartenmitte, sammle Ressourcen, baue Verteidigung und repariere alle Schiffsmodule.</p>
       <p>Die Gegner greifen nachts das Wrack an. Du selbst wirst ignoriert, aber jede Sekunde ausserhalb der Basis fehlt beim Reparieren.</p>
       ${fromReload && hasSave ? "<p>Das Spiel wurde nach dem Aktualisieren gesichert. Du kannst fortsetzen oder neu starten.</p>" : ""}
-      <section class="difficulty-picker" aria-labelledby="difficultyTitle">
-        <h3 id="difficultyTitle">Schwierigkeitsgrad</h3>
+      <section class="difficulty-picker${hasSave ? " difficulty-picker-readonly" : ""}" aria-labelledby="difficultyTitle">
+        <h3 id="difficultyTitle">Schwierigkeitsgrad${hasSave ? " (gespeichert)" : ""}</h3>
+        ${hasSave ? "<p class=\"meta\">Beim Fortsetzen ist diese Auswahl reine Information und nicht änderbar.</p>" : ""}
         <div class="difficulty-options" role="radiogroup">
-          ${PW.CONFIG.difficulty.profiles.map((profile) => `<button type="button" class="difficulty-option" data-difficulty="${profile.id}" role="radio" aria-checked="${profile.id === PW.state.difficulty}"><strong>${profile.name}</strong><span>${profile.description}</span></button>`).join("")}
+          ${PW.CONFIG.difficulty.profiles.map((profile) => `<button type="button" class="difficulty-option" data-difficulty="${profile.id}" role="radio" aria-checked="${profile.id === dialogDifficulty}"${hasSave ? " disabled" : ""}><strong>${profile.name}</strong><span>${profile.description}</span></button>`).join("")}
         </div>
       </section>
       <p>Steuerung: WASD/Pfeiltasten, Space fuer Aktion, E Inventar, R Wrack, P Pause.</p>
@@ -124,7 +129,7 @@ PW.Bootstrap = {
           option.setAttribute("aria-checked", String(selected));
         });
       });
-      if (button.dataset.difficulty === PW.state.difficulty) button.classList.add("active");
+      if (button.dataset.difficulty === dialogDifficulty) button.classList.add("active");
     });
   }
 };

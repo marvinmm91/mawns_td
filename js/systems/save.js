@@ -141,6 +141,17 @@ PW.Save = {
   hasSave() {
     return Boolean(localStorage.getItem(PW.CONFIG.saveKey));
   },
+  savedDifficulty() {
+    const fallback = PW.CONFIG.difficulty.default;
+    const raw = localStorage.getItem(PW.CONFIG.saveKey);
+    if (!raw) return fallback;
+    try {
+      const data = JSON.parse(raw);
+      return PW.CONFIG.difficulty.profiles.some((profile) => profile.id === data.difficulty) ? data.difficulty : fallback;
+    } catch (error) {
+      return fallback;
+    }
+  },
   clear() {
     localStorage.removeItem(PW.CONFIG.saveKey);
   },
