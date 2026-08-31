@@ -36,8 +36,7 @@ PW.DropSystem = {
       drop.life -= dt;
       const dist = PW.Utils.distance(drop.x, drop.y, state.player.x, state.player.y);
       if (dist < PW.CONFIG.dropPickupRadius) {
-        PW.Utils.addInventory(drop.resource, drop.amount);
-        PW.Messages.add(`${PW.RESOURCES[drop.resource].name} +${drop.amount}`, "ok");
+        PW.Utils.addInventory(drop.resource, drop.amount, drop);
         drop.remove = true;
       } else if (dist < PW.CONFIG.dropMagnetRadius) {
         const speed = PW.CONFIG.dropMagnetSpeed * dt;

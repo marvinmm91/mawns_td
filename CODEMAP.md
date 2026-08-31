@@ -25,7 +25,7 @@ Die UI-Dateien sind inzwischen konsolidiert: Bau-, Inventar-, Wrack-, Kontext- u
 - `js/input.js`: Tastaturstatus, Hotkeys, DPI-skalierte Mausposition, Mausbau, temporaere Blaupausen-/Loeschmodi, Kachel-Inspektion und Panel-Toggles.
 - `js/camera.js`: Kamera folgt Spieler, Welt-zu-Screen-Umrechnung, sichtbarer Bereich.
 - `js/random.js`: Seedbarer Zufall fuer Map und Wellen.
-- `js/utils.js`: Kosten, Inventar, Formatierung, Distanzrechnung, Effekte und kleine Helfer.
+- `js/utils.js`: Kosten, Inventar, Formatierung, Distanzrechnung, Effekte, gebuendelte Floating-Texte und kleine Helfer.
 
 ## Datenmodule
 
@@ -78,7 +78,7 @@ Die UI-Dateien sind inzwischen konsolidiert: Bau-, Inventar-, Wrack-, Kontext- u
 - `js/render/renderWorld.js`: Tiles, Ressourcen, Aussenposten, Blaupausen, Bauwerke, Wrack und dauerhafte Schadensspuren.
 - `js/render/renderEntities.js`: Spieler, Gegner, Wildlife, Projektile, Drops.
 - `js/render/renderFog.js`: Fog of War und Nachtabdunklung.
-- `js/render/renderEffects.js`: Treffer, Partikel, Warnmarker, Schadensfeedback.
+- `js/render/renderEffects.js`: Treffer, Partikel, Warnmarker, Schadensfeedback und ortsgebundene Ressourcen-/Schadenszahlen.
 
 ## Laufzeitfluss
 

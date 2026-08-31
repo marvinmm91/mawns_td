@@ -12,6 +12,22 @@ PW.RenderEffects = {
       const x = effect.x - PW.state.camera.x;
       const y = effect.y - PW.state.camera.y;
       ctx.globalAlpha = Math.max(0, t);
+      if (effect.type === "floatingText") {
+        const progress = 1 - t;
+        const rise = effect.rise * (1 - (1 - progress) * (1 - progress));
+        ctx.save();
+        ctx.globalAlpha = Math.min(1, t * 3.4) * Math.min(1, (1 - progress) * 8);
+        ctx.font = "bold 13px monospace";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = "rgba(8,12,11,.88)";
+        ctx.strokeText(effect.text, x + effect.offsetX, y + effect.offsetY - rise);
+        ctx.fillStyle = effect.color;
+        ctx.fillText(effect.text, x + effect.offsetX, y + effect.offsetY - rise);
+        ctx.restore();
+        continue;
+      }
       if (PW.PixelArt && PW.PixelArt.drawCentered(ctx, `effect.${effect.type}`, x, y, 16 * effect.size, 16 * effect.size)) {
         ctx.globalAlpha = 1;
         continue;

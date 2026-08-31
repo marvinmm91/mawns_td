@@ -44,3 +44,4 @@ Das Wrack muss repariert und bis zum Start verteidigt werden. Verliert es alle S
 
 - `node tests/smoke.js`
 - `node tests/endurance.js`
+- `node tests/floating-feedback.js`

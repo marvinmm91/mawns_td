@@ -159,7 +159,8 @@ PW.OutpostSystem = {
     if (outpost.type === "research") {
       outpost.unlockedBuilding = this.unlockResearch();
     }
-    Object.entries(def.rewards).forEach(([id, amount]) => PW.Utils.addInventory(id, amount));
+    const source = { x: PW.Utils.tileToWorld(outpost.x), y: PW.Utils.tileToWorld(outpost.y) };
+    Object.entries(def.rewards).forEach(([id, amount]) => PW.Utils.addInventory(id, amount, source));
     PW.Utils.addEffect("outpostClaim", PW.Utils.tileToWorld(outpost.x), PW.Utils.tileToWorld(outpost.y), def.color, 0.8, 1.5);
     const extra = outpost.unlockedBuilding ? ` Bauplan ${PW.BUILDINGS[outpost.unlockedBuilding].name} freigeschaltet.` : "";
     PW.Messages.add(`${def.name} geborgen.${extra}`, "ok");

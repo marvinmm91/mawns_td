@@ -229,6 +229,7 @@ PW.EnemySystem = {
   damage(enemy, amount, sourceType) {
     enemy.hp -= amount;
     PW.Utils.addEffect("hit", enemy.x, enemy.y, "#f7e6a1", 0.22, 0.8);
+    PW.Utils.addDamageFeedback(enemy, amount);
     if (enemy.hp <= 0) {
       if (PW.state.nightStats) {
         PW.state.nightStats.kills += 1;

@@ -60,7 +60,8 @@ PW.TreasureSystem = {
       return true;
     }
     PW.state.inventory.key = keys - 1;
-    Object.entries(chest.rewards).forEach(([id, amount]) => PW.Utils.addInventory(id, amount));
+    const source = { x: PW.Utils.tileToWorld(chest.x), y: PW.Utils.tileToWorld(chest.y) };
+    Object.entries(chest.rewards).forEach(([id, amount]) => PW.Utils.addInventory(id, amount, source));
     chest.opened = true;
     PW.Utils.addEffect("treasureOpen", PW.Utils.tileToWorld(chest.x), PW.Utils.tileToWorld(chest.y), "#f3d36b", 0.75, 1.4);
     PW.Messages.add(`Schatztruhe geoeffnet: ${PW.Utils.costText(chest.rewards)}.`, "ok");

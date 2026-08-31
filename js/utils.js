@@ -33,15 +33,76 @@ PW.Utils = {
     Object.entries(cost).forEach(([id, amount]) => { PW.state.inventory[id] -= amount; });
     return true;
   },
-  addInventory(id, amount) {
+  addInventory(id, amount, source = null) {
     const state = PW.state;
     state.inventory[id] = (state.inventory[id] || 0) + amount;
     state.knownResources.add(id);
     PW.Progression.refreshUnlocks();
     PW.UI.refreshInventoryDependentPanel();
+    if (source && amount > 0) this.addResourceFeedback(id, amount, source.x, source.y);
   },
   addEffect(type, x, y, color, life = 0.45, size = 1, extra = null) {
     PW.state.effects.push({ type, x, y, color, life, maxLife: life, size, ...(extra || {}) });
+  },
+  addFloatingText(text, x, y, color, options = {}) {
+    const state = PW.state;
+    const life = options.life || 0.82;
+    const key = options.key || null;
+    const value = options.value || 0;
+    const active = key && state.effects.find((effect) => effect.type === "floatingText" && effect.key === key && effect.life > effect.maxLife * 0.44);
+    if (active) {
+      active.value += value;
+      active.text = options.format ? options.format(active.value) : text;
+      active.life = Math.min(active.maxLife, active.life + 0.16);
+      return active;
+    }
+    const hash = key ? this.textHash(key) >>> 0 : 0;
+    const lane = hash % 3;
+    const row = Math.floor(hash / 3) % 3;
+    const effect = {
+      type: "floatingText",
+      x,
+      y,
+      color,
+      text,
+      value,
+      key,
+      life,
+      maxLife: life,
+      rise: options.rise || 23,
+      offsetX: (lane - 1) * 9,
+      offsetY: (options.offsetY || 0) - row * 11
+    };
+    state.effects.push(effect);
+    return effect;
+  },
+  addDamageFeedback(enemy, amount) {
+    const damage = Math.max(1, Math.round(amount));
+    this.addFloatingText(`-${damage}`, enemy.x, enemy.y, "#ffd17a", {
+      key: `damage:${enemy.id}`,
+      value: damage,
+      format: (value) => `-${Math.round(value)}`,
+      life: 0.72,
+      rise: 25,
+      offsetY: -20
+    });
+  },
+  addResourceFeedback(id, amount, x, y) {
+    const resource = PW.RESOURCES[id];
+    if (!resource) return;
+    this.addFloatingText(`+${amount} ${resource.name}`, x, y, resource.color, {
+      key: `resource:${id}:${Math.round(x / 32)},${Math.round(y / 32)}`,
+      value: amount,
+      format: (value) => `+${Math.round(value)} ${resource.name}`,
+      life: 1.02,
+      rise: 30,
+      offsetY: -19
+    });
+  },
+  textHash(text) {
+    let hash = 0;
+    for (let index = 0; index < text.length; index++) hash = (hash * 31 + text.charCodeAt(index)) | 0;
+    return hash;
   },
   worldToTile(px) {
     return Math.floor(px / PW.CONFIG.tileSize);

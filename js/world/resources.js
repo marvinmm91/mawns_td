@@ -14,8 +14,7 @@ PW.ResourceSystem = {
     node.hp -= 1;
     PW.Utils.addEffect("hit", PW.Utils.tileToWorld(x), PW.Utils.tileToWorld(y), def.color, 0.28, 1.1);
     if (node.hp <= 0) {
-      PW.Utils.addInventory(def.resource, node.amount);
-      PW.Messages.add(`${PW.RESOURCES[def.resource].name} +${node.amount}`, "ok");
+      PW.Utils.addInventory(def.resource, node.amount, { x: PW.Utils.tileToWorld(x), y: PW.Utils.tileToWorld(y) });
       this.remove(node);
     } else {
       PW.Messages.add(`${def.name} beschaedigt (${node.hp}/${node.maxHp}).`);

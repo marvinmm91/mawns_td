@@ -138,6 +138,8 @@ Es gibt kein Gewichtslimit. Ressourcen werden automatisch ins globale Inventar a
 
 Alle Bauwerke stehen auf einzelnen Gitterkacheln. Bau ist nicht auf Wrack, Ressourcen, Truhen, Monsterlager oder blockiertem Terrain moeglich. Blaupausen werden mit gedrueckter Strg-Taste gesetzt, erlauben Bauwerke und Bauwerkslinien ohne Materialkosten vorzumerken, blockieren keine Bewegung und koennen spaeter einzeln oder gesammelt errichtet werden. Alt entfernt sie wieder direkt auf der Karte.
 
+Direktes Feedback: Getroffene Gegner zeigen gebuendelte Schadenszahlen an ihrer Position. Beim Einsammeln erscheinen Ressourcenmengen an ihrer Quelle, statt die allgemeine Hinweisanzeige mit Standardgewinnen zu fuellen.
+
 ### Mauern und Bruecke
 
 | Bauwerk | Rolle | Kostenidee |
