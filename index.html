@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Planet-Wrack</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <main id="app" class="app">
+    <section class="game-shell" aria-label="Planet-Wrack Spielfeld">
+      <header class="topbar">
+        <div class="ship-status">
+          <div class="bar-label">
+            <span>Wrack</span>
+            <strong id="shipHpText">500/500</strong>
+          </div>
+          <div class="hp-track"><div id="shipHpFill" class="hp-fill"></div></div>
+        </div>
+        <div class="phase-card">
+          <span id="phaseName">Tag</span>
+          <strong id="phaseTimer">02:00</strong>
+        </div>
+        <div class="wave-card">
+          <span>Nacht</span>
+          <strong id="nightText">0</strong>
+        </div>
+        <div class="module-card">
+          <span>Module</span>
+          <strong id="moduleText">0/5</strong>
+        </div>
+      </header>
+
+      <div class="canvas-wrap">
+        <canvas id="gameCanvas" width="1280" height="720"></canvas>
+        <div id="pauseOverlay" class="pause-overlay hidden">
+          <div>
+            <h1>Pause</h1>
+            <p>Druecke P zum Weiterspielen.</p>
+          </div>
+        </div>
+        <div id="toastStack" class="toast-stack" aria-live="polite"></div>
+      </div>
+
+      <footer class="bottombar">
+        <div id="toolBar" class="tool-bar"></div>
+        <div id="resourceBar" class="resource-bar"></div>
+        <div class="quick-actions">
+          <button id="inventoryButton" type="button">E Inventar</button>
+          <button id="buildButton" type="button">B Bauen</button>
+          <button id="shipButton" type="button">R Wrack</button>
+          <button id="designButton" type="button">Design</button>
+          <button id="helpButton" type="button">H Hilfe</button>
+        </div>
+      </footer>
+    </section>
+
+    <aside id="sidePanel" class="side-panel" aria-live="polite">
+      <div class="panel-head">
+        <h2 id="panelTitle">Panel</h2>
+        <button id="panelCloseButton" type="button" aria-label="Status anzeigen">i</button>
+      </div>
+      <div id="panelBody" class="panel-body"></div>
+    </aside>
+
+    <section id="morningReport" class="modal hidden" role="dialog" aria-modal="true">
+      <div class="modal-card">
+        <h2>Morgengrauen</h2>
+        <div id="reportBody"></div>
+        <button id="reportCloseButton" type="button">Weiter</button>
+      </div>
+    </section>
+
+    <section id="gameDialog" class="modal hidden" role="dialog" aria-modal="true">
+      <div class="modal-card large">
+        <h2 id="dialogTitle">Planet-Wrack</h2>
+        <div id="dialogBody"></div>
+        <div id="dialogActions" class="dialog-actions"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/config.js"></script>
+  <script src="js/data/resources.js"></script>
+  <script src="js/data/buildings.js"></script>
+  <script src="js/data/enemies.js"></script>
+  <script src="js/data/wildlife.js"></script>
+  <script src="js/data/shipModules.js"></script>
+  <script src="js/data/waves.js"></script>
+  <script src="js/random.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/input.js"></script>
+  <script src="js/camera.js"></script>
+  <script src="js/world/tiles.js"></script>
+  <script src="js/world/mapGenerator.js"></script>
+  <script src="js/world/fog.js"></script>
+  <script src="js/world/resources.js"></script>
+  <script src="js/entities/player.js"></script>
+  <script src="js/entities/projectiles.js"></script>
+  <script src="js/entities/enemies.js"></script>
+  <script src="js/systems/pathfinding.js"></script>
+  <script src="js/systems/dayNight.js"></script>
+  <script src="js/systems/drops.js"></script>
+  <script src="js/systems/treasure.js"></script>
+  <script src="js/systems/wildlife.js"></script>
+  <script src="js/systems/building.js"></script>
+  <script src="js/systems/combat.js"></script>
+  <script src="js/systems/spawning.js"></script>
+  <script src="js/systems/progression.js"></script>
+  <script src="js/systems/autobalance.js"></script>
+  <script src="mods/pixel-overrides.js"></script>
+  <script src="js/systems/pixelArt.js"></script>
+  <script src="js/systems/save.js"></script>
+  <script src="js/ui/icons.js"></script>
+  <script src="js/ui/messages.js"></script>
+  <script src="js/ui/hud.js"></script>
+  <script src="js/ui/panels.js"></script>
+  <script src="js/ui/designPanel.js"></script>
+  <script src="js/render/renderWorld.js"></script>
+  <script src="js/render/renderEntities.js"></script>
+  <script src="js/render/renderFog.js"></script>
+  <script src="js/render/renderEffects.js"></script>
+  <script src="js/render/renderMain.js"></script>
+  <script src="js/gameLoop.js"></script>
+  <script src="js/bootstrap.js"></script>
+</body>
+</html>
