@@ -100,6 +100,12 @@ PW.Bootstrap = {
       <p>Beschuetze das Wrack in der Kartenmitte, sammle Ressourcen, baue Verteidigung und repariere alle Schiffsmodule.</p>
       <p>Die Gegner greifen nachts das Wrack an. Du selbst wirst ignoriert, aber jede Sekunde ausserhalb der Basis fehlt beim Reparieren.</p>
       ${fromReload && hasSave ? "<p>Das Spiel wurde nach dem Aktualisieren gesichert. Du kannst fortsetzen oder neu starten.</p>" : ""}
+      <section class="difficulty-picker" aria-labelledby="difficultyTitle">
+        <h3 id="difficultyTitle">Schwierigkeitsgrad</h3>
+        <div class="difficulty-options" role="radiogroup">
+          ${PW.CONFIG.difficulty.profiles.map((profile) => `<button type="button" class="difficulty-option" data-difficulty="${profile.id}" role="radio" aria-checked="${profile.id === PW.state.difficulty}"><strong>${profile.name}</strong><span>${profile.description}</span></button>`).join("")}
+        </div>
+      </section>
       <p>Steuerung: WASD/Pfeiltasten, Space fuer Aktion, E Inventar, R Wrack, P Pause.</p>
       <section class="start-changelog" aria-labelledby="beta2ChangelogTitle">
         <h3 id="beta2ChangelogTitle">Beta 2 – Änderungen seit Beta 1</h3>
@@ -108,6 +114,18 @@ PW.Bootstrap = {
         </div>
       </section>
     `, actions);
+    document.querySelectorAll(".difficulty-option").forEach((button) => {
+      button.addEventListener("click", () => {
+        const profile = PW.Autobalance.difficultyProfile(button.dataset.difficulty);
+        PW.state.difficulty = profile.id;
+        document.querySelectorAll(".difficulty-option").forEach((option) => {
+          const selected = option.dataset.difficulty === profile.id;
+          option.classList.toggle("active", selected);
+          option.setAttribute("aria-checked", String(selected));
+        });
+      });
+      if (button.dataset.difficulty === PW.state.difficulty) button.classList.add("active");
+    });
   }
 };
 

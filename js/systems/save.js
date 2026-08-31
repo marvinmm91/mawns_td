@@ -28,6 +28,7 @@ PW.Save = {
       ship: state.ship,
       phase: state.phase,
       inventory: state.inventory,
+      difficulty: state.difficulty,
       knownResources: Array.from(state.knownResources),
       unlockedBuildings: Array.from(state.unlockedBuildings),
       selectedBuild: state.selectedBuild,
@@ -68,6 +69,9 @@ PW.Save = {
       PW.state.reportOpen = false;
       PW.state.rng = PW.Random.create((data.seed || Date.now()) ^ Date.now());
       PW.state.input = { keys: new Set(), pressed: new Set() };
+      if (!PW.CONFIG.difficulty.profiles.some((profile) => profile.id === PW.state.difficulty)) {
+        PW.state.difficulty = PW.CONFIG.difficulty.default;
+      }
       PW.state.world.tileSize = PW.state.world.tileSize || PW.CONFIG.tileSize;
       PW.state.world.birds = PW.state.world.birds || [];
       PW.state.world.wildlife = PW.state.world.wildlife || [];

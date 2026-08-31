@@ -249,7 +249,7 @@ Jede Nacht besitzt ein Threat-Budget:
 
 ```text
 Basisbudget + Nachtwachstum + leichte spaete Skalierung
-multipliziert mit einem begrenzten Balance-Drift
+multipliziert mit Schwierigkeitsprofil und begrenztem Balance-Drift
 ```
 
 Bewertet werden aktuell vor allem:
@@ -277,7 +277,11 @@ Grenzen:
 - Balance-Drift zwischen -30 und +30 Prozent
 - finale Startsequenz bleibt an Mindestbedingungen gebunden
 
-Zielbild fuer eine gute Nacht: ungefaehr 8 bis 22 Prozent Wrackschaden, sichtbare Belastung der Verteidigung und genug Beute fuer eine relevante Folgeentscheidung.
+Vor einer neuen Partie wird eine von fuenf Stufen gewaehlt. Stufe 3 (Standard) nutzt unveraendert die oben genannten Werte. Die Stufen 1 bis 2 senken den Grunddruck und verstarken Entlastung sowie Catch-up-Drops; die Stufen 4 bis 5 erhoehen den Grunddruck und begrenzen diese Hilfe. Gegnerwerte, Turmwerte, Kosten und Gegnerrollen bleiben dabei gleich.
+
+Der Status und der Morgenbericht zeigen die gewaehlte Stufe sowie eine Bedrohungsprognose fuer die naechste Nacht. Diese Prognose basiert auf Schwierigkeitsprofil und aktuellem Balance-Drift und zeigt das konkrete Wellenbudget, damit die Anpassung nachvollziehbar bleibt.
+
+Zielbild fuer eine gute Nacht auf Standard: ungefaehr 8 bis 22 Prozent Wrackschaden, sichtbare Belastung der Verteidigung und genug Beute fuer eine relevante Folgeentscheidung.
 
 Turmwerte werden mit `node tests/tower-role-economy.js` reproduzierbar ausgewertet. Der Bericht gewichtet seltene Ressourcen hoeher als Holz und Stein und stellt Grund- sowie Upgrade-Effizienz, Reichweite, Zieltypen, Spezialeffekte und die vorgesehenen Gegnerkonter gegenueber. Die Tabelle ist ein Balancing-Guardrail, kein Ersatz fuer Spieltests auf echten Karten.
 

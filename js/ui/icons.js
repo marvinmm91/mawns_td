@@ -19,6 +19,28 @@ PW.Icons = {
     this.drawBuilding(canvas.getContext("2d"), id, size);
     return canvas;
   },
+  enemyCanvas(id, size = 48) {
+    const canvas = document.createElement("canvas");
+    canvas.className = "enemy-preview";
+    canvas.width = size;
+    canvas.height = size;
+    canvas.setAttribute("aria-hidden", "true");
+    const ctx = canvas.getContext("2d");
+    const def = PW.ENEMIES[id];
+    if (!def) return canvas;
+    if (!(PW.PixelArt && PW.PixelArt.drawCentered(ctx, `enemy.${id}`, size / 2, size / 2, size, size))) {
+      ctx.save();
+      ctx.scale(size / 48, size / 48);
+      if (PW.RenderEntities && PW.RenderEntities.drawEnemyShape) {
+        PW.RenderEntities.drawEnemyShape(ctx, { type: id, retreating: false }, def, 24, 24);
+      } else {
+        ctx.fillStyle = def.color;
+        ctx.fillRect(12, 12, 24, 24);
+      }
+      ctx.restore();
+    }
+    return canvas;
+  },
   toolCanvas(id, size = 28) {
     const canvas = document.createElement("canvas");
     canvas.className = "tool-icon";

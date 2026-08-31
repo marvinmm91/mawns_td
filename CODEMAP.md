@@ -18,8 +18,8 @@ Die UI-Dateien sind inzwischen konsolidiert: Bau-, Inventar-, Wrack-, Kontext- u
 
 - `index.html`: Canvas, HUD-Grundstruktur, Panel-Container und Script-Reihenfolge.
 - `css/styles.css`: Grundlayout, Canvas-Rahmen, HUD, Panels, Buttons, Hotbar, Tag-/Nacht-Stimmung.
-- `js/config.js`: Globale Balancing-Werte, Tilegroessen, Phasenlaengen, Startwerte, Debug-Schalter.
-- `js/state.js`: Zentraler Spielzustand, Laufzeitlisten, Inputstatus, Kamera, Timer, Inventar, Wrackdaten.
+- `js/config.js`: Globale Balancing-Werte, fuenf Schwierigkeitsprofile, Tilegroessen, Phasenlaengen, Startwerte, Debug-Schalter.
+- `js/state.js`: Zentraler Spielzustand, Laufzeitlisten, Inputstatus, Kamera, Timer, Inventar, Schwierigkeitsprofil und Wrackdaten.
 - `js/bootstrap.js`: Initialisierung, Event Listener, Start des Game Loops.
 - `js/gameLoop.js`: Feste Update-Reihenfolge, Delta-Time-Begrenzung, Pause/Resume, zentraler Renderaufruf und schaltbare Laufzeitmessung.
 - `js/input.js`: Tastaturstatus, Hotkeys, DPI-skalierte Mausposition, Mausbau, temporaere Blaupausen-/Loeschmodi, Kachel-Inspektion und Panel-Toggles.
@@ -60,7 +60,7 @@ Die UI-Dateien sind inzwischen konsolidiert: Bau-, Inventar-, Wrack-, Kontext- u
 - `js/systems/outposts.js`: Einmalige Versorgungslager, Forschungsterminals und Sicherheitsbaken mit lokalen Wachgruppen.
 - `js/systems/wildlife.js`: Kleine Voegel ohne Hitbox, passive Waldbewohner mit Wander-/Fluchtverhalten, Trefferlogik, Beutedrops und gespeichertem Kartenmaximum mit Respawn.
 - `js/systems/progression.js`: Turmverfuegbarkeit, Wrackmodule, Siegbedingung und finale Startsequenz.
-- `js/systems/autobalance.js`: Auswertung vergangener Nacht und Anpassung der naechsten Welle.
+- `js/systems/autobalance.js`: Auswertung vergangener Nacht, profilabhaengige Anpassung der naechsten Welle und sichtbare Bedrohungsprognose.
 - `js/systems/pixelArt.js`: Pixel-Design-Overrides, Asset-Katalog, LocalStorage, Import/Export und Start-Mods.
 - `mods/pixel-overrides.js`: Optional geladene Pixel-Mod-Datei fuer Designs, die beim Spielstart aktiv sein sollen; aktuell leerer Mod-Container.
 

@@ -144,6 +144,7 @@ PW.Input = {
     }
     if (key === "e") PW.UI.togglePanel("inventory");
     if (key === "r") PW.UI.togglePanel("ship");
+    if (key === "o") PW.UI.togglePanel("design");
     if (key === "h") PW.UI.showHelp();
     if (key === "f3") PW.Performance.toggle();
     if (key === "f6") PW.Save.save(true);

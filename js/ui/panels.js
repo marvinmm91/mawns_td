@@ -38,6 +38,7 @@ Object.assign(PW.UI, {
     const title = state.dom.panelTitle;
     const body = state.dom.panelBody;
     if (!state.panel || !body) return;
+    state.dom.panelCloseButton.classList.toggle("hidden", state.panel === "status");
     if (state.panel === "status") {
       title.textContent = "Status";
       this.renderStatus(body);
@@ -51,7 +52,7 @@ Object.assign(PW.UI, {
       title.textContent = "Wrack";
       this.renderShip(body);
     } else if (state.panel === "design") {
-      title.textContent = "Design";
+      title.textContent = "Optik";
       this.renderDesign(body);
     } else if (state.panel === "context") {
       this.renderContext(body);
@@ -59,6 +60,8 @@ Object.assign(PW.UI, {
   },
   renderStatus(body) {
     const state = PW.state;
+    const forecastNight = state.wave.active ? state.phase.night : state.phase.night + 1;
+    const forecast = PW.Autobalance.forecastForNight(forecastNight);
     body.innerHTML = "";
     const phaseNames = { day: "Tag", dusk: "Daemmerung", night: state.ship.launchActive ? "Startsequenz" : "Nacht", dawn: "Morgen" };
     const stats = document.createElement("div");
@@ -70,8 +73,10 @@ Object.assign(PW.UI, {
       <div class="stat-box"><span>Bauwerke</span><strong>${state.world.buildings.length}</strong></div>
       <div class="stat-box"><span>Truhen</span><strong>${(state.world.treasureChests || []).filter((chest) => !chest.opened).length}</strong></div>
       <div class="stat-box"><span>Horden</span><strong>${(state.world.monsterCamps || []).filter((camp) => !camp.cleared).length}</strong></div>
-      <div class="stat-box"><span>Wellenbudget</span><strong>${Math.ceil(state.wave.budgetRemaining || 0)}</strong></div>
+      <div class="stat-box"><span>${state.wave.active ? "Restbudget" : "Naechste Welle"}</span><strong>${Math.ceil(state.wave.active ? state.wave.budgetRemaining : forecast.budget)}</strong></div>
       <div class="stat-box"><span>Balance</span><strong>${Math.round(state.balance.drift * 100)}%</strong></div>
+      <div class="stat-box"><span>Schwierigkeit</span><strong>${forecast.profile.shortName}</strong></div>
+      <div class="stat-box"><span>Bedrohung Nacht ${forecast.night}</span><strong>${forecast.label}</strong></div>
     `;
     body.appendChild(stats);
     const build = document.createElement("div");
@@ -620,7 +625,8 @@ Object.assign(PW.UI, {
       `Nacht ${report.night} ueberstanden.`,
       `Wrack: ${Math.ceil(report.hp)}/${report.maxHp} HP.`,
       `Kills: ${report.kills}. Zerstoerte Mauern: ${report.wallsDestroyed}.`,
-      `Balance-Drift: ${Math.round(report.drift * 100)} Prozent. Drop-Hilfe: ${Math.round(report.dropBonus * 100)} Prozent.`
+      `Schwierigkeit: ${report.difficulty || PW.Autobalance.difficultyProfile().shortName}. Balance-Drift: ${Math.round(report.drift * 100)} Prozent. Drop-Hilfe: ${Math.round(report.dropBonus * 100)} Prozent.`,
+      report.nextForecast ? `Naechste Nacht: ${report.nextForecast.description || report.nextForecast.label} Druck, Budget ${Math.ceil(report.nextForecast.budget)}.` : ""
     ].concat(report.diagnosis).forEach((line) => {
       const row = document.createElement("div");
       row.className = "report-row";
@@ -633,13 +639,117 @@ Object.assign(PW.UI, {
     PW.state.reportOpen = false;
     PW.state.dom.morningReport.classList.add("hidden");
   },
+  helpNumber(value) {
+    return Number.isInteger(value) ? String(value) : Number(value).toFixed(2).replace(/0+$/, "").replace(/\.$/, "");
+  },
+  helpResourceCost(cost) {
+    return Object.entries(cost).map(([id, amount]) => `${PW.RESOURCES[id] ? PW.RESOURCES[id].name : id} ${amount}`).join(", ");
+  },
+  helpDrops(def) {
+    return Object.entries(def.drops || {}).map(([id, values]) => {
+      const [chance, min, max] = values;
+      const amount = min === max ? String(min) : `${min}–${max}`;
+      return `${PW.RESOURCES[id] ? PW.RESOURCES[id].name : id} (${Math.round(chance * 100)} %, ${amount})`;
+    }).join(", ") || "Keine";
+  },
+  helpTargetNames(targets) {
+    return targets.map((target) => target === "air" ? "Luft" : "Boden").join(" + ");
+  },
+  helpCounterText(def) {
+    return Object.entries(def.damageTaken || {}).map(([tower, multiplier]) => {
+      const name = PW.BUILDINGS[tower] ? PW.BUILDINGS[tower].name : tower;
+      const difference = Math.round(Math.abs(multiplier - 1) * 100);
+      if (!difference) return `${name}: normal`;
+      return `${name}: ${difference} % ${multiplier < 1 ? "weniger" : "mehr"} Schaden`;
+    }).join(", ") || "Keine besondere Schadensanfälligkeit";
+  },
+  helpEnemyCard(def) {
+    const movement = def.moveType === "air" ? "Luft" : "Boden";
+    const buildingDamage = def.wallDamage === undefined ? "–" : this.helpNumber(def.wallDamage);
+    const specials = [];
+    if (def.packSize) specials.push(`Schwarmgröße ${def.packSize[0]}–${def.packSize[1]}`);
+    if (def.slowResistance) specials.push(`${Math.round(def.slowResistance * 100)} % Verlangsamungsresistenz`);
+    if (def.aura) specials.push(`Störfeld ${this.helpNumber(def.aura)} Felder; Türme feuern darin 45 % langsamer`);
+    return `
+      <article class="help-unit-card">
+        <div class="help-unit-heading">
+          <canvas class="help-unit-image" data-help-enemy="${def.id}" width="48" height="48" aria-hidden="true"></canvas>
+          <div><h4>${def.name}</h4><div class="help-unit-role">${def.role}</div></div>
+        </div>
+        <dl class="help-unit-stats">
+          <div><dt>Bewegung</dt><dd>${movement}</dd></div>
+          <div><dt>Lebenspunkte</dt><dd>${this.helpNumber(def.hp)}</dd></div>
+          <div><dt>Geschwindigkeit</dt><dd>${this.helpNumber(def.speed)}</dd></div>
+          <div><dt>Angriff</dt><dd>${this.helpNumber(def.damage)} alle ${this.helpNumber(def.attackCooldown)} s</dd></div>
+          <div><dt>Gebäudeschaden</dt><dd>${buildingDamage}</dd></div>
+          <div><dt>Wellenwert</dt><dd>${this.helpNumber(def.budget)}</dd></div>
+        </dl>
+        <p><strong>Besonderheiten:</strong> ${specials.join("; ") || "Keine"}</p>
+        <p><strong>Konter:</strong> ${def.counter}</p>
+        <p><strong>Schadensprofil:</strong> ${this.helpCounterText(def)}</p>
+        <p><strong>Drops:</strong> ${this.helpDrops(def)}</p>
+      </article>
+    `;
+  },
+  helpTowerCard(def) {
+    const specials = [];
+    if (def.splash) specials.push(`Flächenschaden ${this.helpNumber(def.splash)} Felder, bis zu ${def.expectedTargets || "mehrere"} Ziele`);
+    if (def.slow) specials.push(`${Math.round(def.slow * 100)} % Verlangsamung für ${this.helpNumber(def.slowTime)} s`);
+    return `
+      <article class="help-unit-card">
+        <div class="help-unit-heading">
+          <canvas class="help-unit-image" data-help-building="${def.id}" width="48" height="48" aria-hidden="true"></canvas>
+          <div><h4>${def.name}</h4><div class="help-unit-role">${def.description}</div></div>
+        </div>
+        <dl class="help-unit-stats">
+          <div><dt>Baukosten</dt><dd>${this.helpResourceCost(def.cost)}</dd></div>
+          <div><dt>Lebenspunkte</dt><dd>${this.helpNumber(def.maxHp)}</dd></div>
+          <div><dt>Reichweite</dt><dd>${this.helpNumber(def.range)} Felder</dd></div>
+          <div><dt>Schaden</dt><dd>${this.helpNumber(def.damage)} pro Treffer</dd></div>
+          <div><dt>Feuerrate</dt><dd>${this.helpNumber(def.rate)} / s</dd></div>
+          <div><dt>Grund-DPS</dt><dd>${this.helpNumber(def.damage * def.rate)}</dd></div>
+          <div><dt>Ziele</dt><dd>${this.helpTargetNames(def.targets)}</dd></div>
+        </dl>
+        <p><strong>Spezialeffekt:</strong> ${specials.join("; ") || "Keiner"}</p>
+        <p><strong>Verbesserungen:</strong> Pro Stufe steigen Schaden und HP um 35 %, die Feuerrate um 18 %.</p>
+      </article>
+    `;
+  },
+  helpUnitCatalog() {
+    const enemies = Object.values(PW.ENEMIES).map((def) => this.helpEnemyCard(def)).join("");
+    const towers = Object.values(PW.BUILDINGS).filter((def) => def.category === "tower").map((def) => this.helpTowerCard(def)).join("");
+    return `
+      <div class="help-catalog" aria-label="Gegner- und Turmübersicht">
+        <h3>Gegner</h3>
+        <div class="help-unit-grid">${enemies}</div>
+        <h3>Türme</h3>
+        <div class="help-unit-grid">${towers}</div>
+      </div>
+    `;
+  },
+  renderHelpImages() {
+    const body = PW.state.dom.dialogBody;
+    body.querySelectorAll("[data-help-enemy]").forEach((canvas) => {
+      const image = PW.Icons.enemyCanvas(canvas.dataset.helpEnemy, canvas.width);
+      image.classList.add("help-unit-image");
+      canvas.replaceWith(image);
+    });
+    body.querySelectorAll("[data-help-building]").forEach((canvas) => {
+      const image = PW.Icons.buildingCanvas(canvas.dataset.helpBuilding, canvas.width);
+      image.classList.add("help-unit-image");
+      canvas.replaceWith(image);
+    });
+  },
   showHelp() {
     this.showDialog("Hilfe", `
       <p><span class="kbd">WASD</span> oder Pfeiltasten bewegen. <span class="kbd">Space</span> interagiert mit der Kachel vor dir.</p>
       <p><span class="kbd">1</span> Axt, <span class="kbd">2</span> Spitzhacke, <span class="kbd">3</span> Reparatur, <span class="kbd">4</span> Bauen, <span class="kbd">5</span> Abriss.</p>
-      <p><span class="kbd">E</span> Inventar, <span class="kbd">B</span> Baumenue, <span class="kbd">R</span> Wrack, <span class="kbd">P</span> Pause. <span class="kbd">F3</span> Leistungsanzeige.</p>
+      <p><span class="kbd">E</span> Inventar, <span class="kbd">B</span> Baumenue, <span class="kbd">O</span> Optik, <span class="kbd">R</span> Wrack, <span class="kbd">P</span> Pause. <span class="kbd">F3</span> Leistungsanzeige.</p>
       <p>Tagsueber erkundest und baust du. Nachts greifen Gegner das Wrack an. Du kannst nachts weiter rausgehen, riskierst dann aber Reparaturzeit.</p>
+      <p class="meta">Die folgenden Werte zeigen, wofür Gegner und Türme gedacht sind. Grund-DPS berücksichtigt keine Flächenziele oder Spezialeffekte.</p>
+      ${this.helpUnitCatalog()}
     `, [{ label: "Schliessen", action: () => this.hideDialog() }]);
+    this.renderHelpImages();
   },
   confirmReset() {
     this.showDialog("Neustart", "<p>Der aktuelle Speicherstand wird geloescht und die Partie startet neu.</p>", [

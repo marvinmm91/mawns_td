@@ -104,6 +104,51 @@ PW.CONFIG = Object.freeze({
     maxNightBoost: 0.12,
     maxNightRelief: -0.18
   },
+  difficulty: {
+    default: "standard",
+    profiles: [
+      {
+        id: "relaxed",
+        name: "Stufe 1 - Entspannt",
+        shortName: "Entspannt",
+        description: "Mehr Raum zum Aufbauen und deutliche Hilfe nach einer harten Nacht.",
+        threatMultiplier: 0.76,
+        balance: { easyDamageRatio: 0.02, idealDamageMin: 0.04, idealDamageMax: 0.17, hardDamageRatio: 0.30, lowHpRatio: 0.42, maxPositiveDrift: 0.20, maxNegativeDrift: -0.38, maxNightBoost: 0.08, maxNightRelief: -0.24, maxDropBonus: 0.30 }
+      },
+      {
+        id: "calm",
+        name: "Stufe 2 - Ruhig",
+        shortName: "Ruhig",
+        description: "Etwas weniger Grunddruck mit verzeihendem Ausgleich.",
+        threatMultiplier: 0.88,
+        balance: { easyDamageRatio: 0.035, idealDamageMin: 0.06, idealDamageMax: 0.195, hardDamageRatio: 0.325, lowHpRatio: 0.38, maxPositiveDrift: 0.25, maxNegativeDrift: -0.34, maxNightBoost: 0.10, maxNightRelief: -0.21, maxDropBonus: 0.26 }
+      },
+      {
+        id: "standard",
+        name: "Stufe 3 - Standard",
+        shortName: "Standard",
+        description: "Die vorgesehene, ausgewogene Planet-Wrack-Erfahrung.",
+        threatMultiplier: 1,
+        balance: { maxDropBonus: 0.22 }
+      },
+      {
+        id: "hard",
+        name: "Stufe 4 - Anspruchsvoll",
+        shortName: "Anspruchsvoll",
+        description: "Mehr Druck und weniger automatische Entlastung nach Fehlern.",
+        threatMultiplier: 1.13,
+        balance: { easyDamageRatio: 0.065, idealDamageMin: 0.10, idealDamageMax: 0.245, hardDamageRatio: 0.375, lowHpRatio: 0.32, maxPositiveDrift: 0.34, maxNegativeDrift: -0.26, maxNightBoost: 0.14, maxNightRelief: -0.15, maxDropBonus: 0.18 }
+      },
+      {
+        id: "onslaught",
+        name: "Stufe 5 - Ansturm",
+        shortName: "Ansturm",
+        description: "Hoher Grunddruck fuer erfahrene Verteidigungsplaner.",
+        threatMultiplier: 1.27,
+        balance: { easyDamageRatio: 0.08, idealDamageMin: 0.12, idealDamageMax: 0.27, hardDamageRatio: 0.40, lowHpRatio: 0.29, maxPositiveDrift: 0.38, maxNegativeDrift: -0.22, maxNightBoost: 0.16, maxNightRelief: -0.12, maxDropBonus: 0.14 }
+      }
+    ]
+  },
   debug: {
     enabled: false,
     fastForward: false
