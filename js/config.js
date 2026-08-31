@@ -172,6 +172,9 @@ PW.CONFIG = Object.freeze({
       }
     ]
   },
+  pathfinding: {
+    directStructureCost: 1.65
+  },
   debug: {
     enabled: false,
     fastForward: false
