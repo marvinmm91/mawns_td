@@ -58,7 +58,8 @@ Noch nicht beschlossene Vorschlaege gehoeren ausschliesslich in `ROADMAP.md`. So
 ### PROGRESSION
 
 - [x] Wellenprogression von Nacht 1 bis zur finalen Nacht.
-- [x] Ressourcenbasierte und nachtbasierte Freischaltungen.
+- [x] Alle Tuerme sind von Beginn an sichtbar; Ressourcen- und Baukosten bleiben die Zugangshuerde.
+- [x] Ressourcenbasierte und nachtbasierte Freischaltungen fuer Module und uebrige Gebaeude.
 - [x] Wrackmodule mit Kosten, Effekten und Siegfortschritt.
 - [x] Startsequenz mit 120-Sekunden-Countdown.
 - [x] Sieg- und Niederlagendialog.

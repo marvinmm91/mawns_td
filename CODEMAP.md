@@ -59,7 +59,7 @@ Die UI-Dateien sind inzwischen konsolidiert: Bau-, Inventar-, Wrack-, Kontext- u
 - `js/systems/treasure.js`: Schatztruhen, stationaere Monsterhorden, Schluesseldrops und Truhenbelohnungen.
 - `js/systems/outposts.js`: Einmalige Versorgungslager, Forschungsterminals und Sicherheitsbaken mit lokalen Wachgruppen.
 - `js/systems/wildlife.js`: Kleine Voegel ohne Hitbox, passive Waldbewohner mit Wander-/Fluchtverhalten, Trefferlogik und Beutedrops.
-- `js/systems/progression.js`: Wrackmodule, Siegbedingung, finale Startsequenz.
+- `js/systems/progression.js`: Turmverfuegbarkeit, Wrackmodule, Siegbedingung und finale Startsequenz.
 - `js/systems/autobalance.js`: Auswertung vergangener Nacht und Anpassung der naechsten Welle.
 - `js/systems/pixelArt.js`: Pixel-Design-Overrides, Asset-Katalog, LocalStorage, Import/Export und Start-Mods.
 - `mods/pixel-overrides.js`: Optional geladene Pixel-Mod-Datei fuer Designs, die beim Spielstart aktiv sein sollen; aktuell leerer Mod-Container.

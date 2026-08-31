@@ -4,6 +4,10 @@ PW.Progression = {
   refreshUnlocks() {
     const state = PW.state;
     Object.values(PW.BUILDINGS).forEach((def) => {
+      if (def.category === "tower") {
+        state.unlockedBuildings.add(def.id);
+        return;
+      }
       const nightOk = state.phase.night >= (def.unlockNight || 0);
       const knownOk = !def.requiresKnown || def.requiresKnown.some((id) => state.knownResources.has(id));
       if (nightOk && knownOk) state.unlockedBuildings.add(def.id);

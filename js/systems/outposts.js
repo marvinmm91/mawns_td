@@ -11,7 +11,7 @@ PW.OutpostSystem = {
     research: {
       name: "Forschungsterminal",
       color: "#83e3da",
-      description: "Ein Terminal mit einem geborgenen Bauplan.",
+      description: "Ein Terminal mit zusätzlichem seltenem Material.",
       rewards: { iron: 8, crystal: 4, parts: 2 }
     },
     beacon: {
@@ -156,23 +156,12 @@ PW.OutpostSystem = {
     if (!outpost || outpost.status === "claimed") return false;
     const def = this.variants[outpost.type];
     outpost.status = "claimed";
-    if (outpost.type === "research") {
-      outpost.unlockedBuilding = this.unlockResearch();
-    }
     const source = { x: PW.Utils.tileToWorld(outpost.x), y: PW.Utils.tileToWorld(outpost.y) };
     Object.entries(def.rewards).forEach(([id, amount]) => PW.Utils.addInventory(id, amount, source));
     PW.Utils.addEffect("outpostClaim", PW.Utils.tileToWorld(outpost.x), PW.Utils.tileToWorld(outpost.y), def.color, 0.8, 1.5);
-    const extra = outpost.unlockedBuilding ? ` Bauplan ${PW.BUILDINGS[outpost.unlockedBuilding].name} freigeschaltet.` : "";
-    PW.Messages.add(`${def.name} geborgen.${extra}`, "ok");
+    PW.Messages.add(`${def.name} geborgen.`, "ok");
     PW.UI.renderHud();
     PW.UI.renderPanel();
     return true;
   },
-  unlockResearch() {
-    const candidates = ["flak", "catapult", "tesla", "laser"].filter((id) => !PW.state.unlockedBuildings.has(id));
-    const building = candidates[0];
-    if (!building) return null;
-    PW.state.unlockedBuildings.add(building);
-    return building;
-  }
 };

@@ -108,7 +108,7 @@ PW.createInitialState = function createInitialState() {
     },
     inventory,
     knownResources: new Set(["wood", "stone"]),
-    unlockedBuildings: new Set(["palisade", "ballista"]),
+    unlockedBuildings: new Set(["palisade", "ballista", "catapult", "flak", "tesla", "laser"]),
     selectedBuild: "palisade",
     enemies: [],
     projectiles: [],

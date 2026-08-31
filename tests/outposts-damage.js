@@ -36,8 +36,9 @@ const { pathToFileURL } = require("url");
       && state.dom.panelBody.textContent.includes("Untersuchen");
     const woodBefore = state.inventory.wood;
     const cacheClaimed = PW.OutpostSystem.interactAt(byType.cache.x, byType.cache.y) && byType.cache.status === "claimed";
+    const researchIronBefore = state.inventory.iron;
     const researchClaimed = PW.OutpostSystem.interactAt(byType.research.x, byType.research.y)
-      && byType.research.status === "claimed" && Boolean(byType.research.unlockedBuilding);
+      && byType.research.status === "claimed" && state.inventory.iron > researchIronBefore;
     const beaconActivated = PW.OutpostSystem.interactAt(byType.beacon.x, byType.beacon.y)
       && byType.beacon.status === "active";
     const guards = state.enemies.filter((enemy) => enemy.outpostId === byType.beacon.id);

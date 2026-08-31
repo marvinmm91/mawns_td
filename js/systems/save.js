@@ -93,7 +93,8 @@ PW.Save = {
         startedAt: PW.state.elapsed
       };
       PW.state.knownResources = new Set(data.knownResources || ["wood", "stone"]);
-      PW.state.unlockedBuildings = new Set(data.unlockedBuildings || ["palisade", "ballista"]);
+      PW.state.unlockedBuildings = new Set(data.unlockedBuildings || ["palisade", "ballista", "catapult", "flak", "tesla", "laser"]);
+      PW.Progression.refreshUnlocks();
       PW.state.world.resourceMap = new Map();
       PW.state.world.resources.forEach((node) => {
         PW.MapGenerator.normalizeResourceHp(node);

@@ -161,7 +161,7 @@ Wenn Bodengegner keinen Weg zum Wrack finden, greifen sie angrenzende Blockaden 
 | Tesla-Feld | Boden | Slow und leichter Schaden | geringe Toetungsleistung |
 | Laser-Turm | Boden und Luft | teurer Praezisionsschaden | hohe Kosten |
 
-Tuerme besitzen Reichweite, Feuerrate, HP, Zieltypen und bis zu drei Ausbaustufen. Sichtlinien sind nicht erforderlich. Upgrades verbessern vor allem Schaden, Reichweite, Feuerrate oder Haltbarkeit.
+Alle Tuerme sind von Beginn an sichtbar und auswaehlbar. Ihre Ressourcen- und Baukosten bleiben die entscheidende Zugangshuerde; Nachtfortschritt oder das Entdecken einer Ressource sperren keinen Turm mehr. Tuerme besitzen Reichweite, Feuerrate, HP, Zieltypen und bis zu drei Ausbaustufen. Sichtlinien sind nicht erforderlich. Upgrades verbessern vor allem Schaden, Reichweite, Feuerrate oder Haltbarkeit.
 
 ## 9. GEGNER
 
@@ -214,7 +214,7 @@ Module kosten normale und seltene Ressourcen. Sie sind frueh im Wrackmenue sicht
 
 - Schatztruhen erscheinen ausserhalb des Startbereichs und benoetigen Schluessel.
 - Monsterhorden bewachen Lager, greifen Bauwerke in ihrem Gebiet an und koennen Schluessel fallen lassen.
-- Drei verlassene Aussenposten liegen weit ausserhalb des Startbereichs: ein Versorgungslager liefert Material, ein Forschungsterminal schaltet einen Bauplan frei und eine Sicherheitsbake startet eine kleine ortsgebundene Wachgruppen-Aufgabe.
+- Drei verlassene Aussenposten liegen weit ausserhalb des Startbereichs: ein Versorgungslager liefert Material, ein Forschungsterminal liefert zusaetzliches seltenes Material und eine Sicherheitsbake startet eine kleine ortsgebundene Wachgruppen-Aufgabe.
 - Voegel sind dekorativ und besitzen keine Hitbox.
 - Waldhuepfer und Mooskaefer wandern, fliehen vor dem Spieler und geben kleine Belohnungen.
 - Das Pixel-Art-System erlaubt eigene Designs, Zuruecksetzen sowie JSON-/JavaScript-Import und -Export.
