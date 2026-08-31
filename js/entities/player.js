@@ -91,6 +91,5 @@ PW.Player = {
       PW.UI.togglePanel("ship", true);
       return;
     }
-    PW.Messages.add("Keine passende Aktion.");
   }
 };

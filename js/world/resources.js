@@ -16,8 +16,6 @@ PW.ResourceSystem = {
     if (node.hp <= 0) {
       PW.Utils.addInventory(def.resource, node.amount, { x: PW.Utils.tileToWorld(x), y: PW.Utils.tileToWorld(y) });
       this.remove(node);
-    } else {
-      PW.Messages.add(`${def.name} beschaedigt (${node.hp}/${node.maxHp}).`);
     }
     return true;
   },
