@@ -78,6 +78,7 @@ Object.assign(PW.UI, {
       <div class="stat-box"><span>Balance</span><strong>${Math.round(state.balance.drift * 100)}%</strong></div>
       <div class="stat-box"><span>Schwierigkeit</span><strong>${forecast.profile.shortName}</strong></div>
       <div class="stat-box"><span>Spielmodus</span><strong>${gameMode.shortName}</strong></div>
+      <div class="stat-box"><span>Moduswellen</span><strong>${Math.round(gameMode.waveMultiplier * 100)}%</strong></div>
       <div class="stat-box"><span>Bedrohung Nacht ${forecast.night}</span><strong>${forecast.label}</strong></div>
     `;
     body.appendChild(stats);
@@ -628,6 +629,7 @@ Object.assign(PW.UI, {
       `Wrack: ${Math.ceil(report.hp)}/${report.maxHp} HP.`,
       `Kills: ${report.kills}. Zerstoerte Mauern: ${report.wallsDestroyed}.`,
       `Schwierigkeit: ${report.difficulty || PW.Autobalance.difficultyProfile().shortName}. Balance-Drift: ${Math.round(report.drift * 100)} Prozent. Drop-Hilfe: ${Math.round(report.dropBonus * 100)} Prozent.`,
+      `Spielmodus: ${report.gameMode || PW.GameModes.profile().shortName}. Moduswellen: ${Math.round((report.modeWaveMultiplier || PW.GameModes.profile().waveMultiplier) * 100)} Prozent.`,
       report.nextForecast ? `Naechste Nacht: ${report.nextForecast.description || report.nextForecast.label} Druck, Budget ${Math.ceil(report.nextForecast.budget)}.` : ""
     ].concat(report.diagnosis).forEach((line) => {
       const row = document.createElement("div");

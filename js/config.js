@@ -156,18 +156,18 @@ PW.CONFIG = Object.freeze({
         id: "classic",
         name: "Classic",
         shortName: "Classic",
-        description: "Gegner respektieren freie Wege und brechen nur vollstaendige Blockaden auf.",
+        description: "Freie Wege werden respektiert; Blockaden brechen unter mehr Wellen und staerkerem Strukturschaden.",
         structureTargeting: "blockade",
-        waveMultiplier: 1,
+        waveMultiplier: 1.24,
         structureDamageMultiplier: 1.65
       },
       {
         id: "aggressive",
         name: "Aggressive",
         shortName: "Aggressiv",
-        description: "Gegner greifen Verteidigungen auf ihrem direkten Weg aktiv an.",
+        description: "Direkte Wegverteidigungen werden aktiv angegriffen; Wellen sind dafuer etwas kleiner.",
         structureTargeting: "direct-path",
-        waveMultiplier: 1,
+        waveMultiplier: 0.92,
         structureDamageMultiplier: 1
       }
     ]

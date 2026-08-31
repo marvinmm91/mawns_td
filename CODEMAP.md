@@ -55,13 +55,13 @@ Die UI-Dateien sind inzwischen konsolidiert: Bau-, Inventar-, Wrack-, Kontext- u
 - `js/systems/building.js`: Bauplatzpruefung, Platzieren, Blaupausen, Reparieren, Abreissen, Kosten.
 - `js/systems/pathfinding.js`: Normales Grid-Pfadfeld sowie strukturdurchlaessiges Direktfeld fuer Bodengegner, Blockaden und Direktziele; beide werden nur nach relevanten Weltveraenderungen berechnet.
 - `js/systems/combat.js`: Turmzielwahl mit Prioritaeten, Schaden, AoE, Slow, Luft-/Bodenfilter.
-- `js/systems/spawning.js`: Nachtspawns, Schwarmformationen, Spawnpunkte, Sicherheitsradius und Warnrichtungen.
+- `js/systems/spawning.js`: Nachtspawns, modusgewichtete Wellenbudgets, Schwarmformationen, Spawnpunkte, Sicherheitsradius und Warnrichtungen.
 - `js/systems/drops.js`: Gegnerdrops, Einsammeln, Drop-Verfall optional.
 - `js/systems/treasure.js`: Schatztruhen, stationaere Monsterhorden, Schluesseldrops und Truhenbelohnungen.
 - `js/systems/outposts.js`: Einmalige Versorgungslager, Forschungsterminals und Sicherheitsbaken mit lokalen Wachgruppen.
 - `js/systems/wildlife.js`: Kleine Voegel ohne Hitbox, passive Waldbewohner mit Wander-/Fluchtverhalten, Trefferlogik, Beutedrops und gespeichertem Kartenmaximum mit Respawn.
 - `js/systems/progression.js`: Turmverfuegbarkeit, Wrackmodule, Siegbedingung und finale Startsequenz.
-- `js/systems/autobalance.js`: Auswertung vergangener Nacht, profilabhaengige Anpassung der naechsten Welle und sichtbare Bedrohungsprognose.
+- `js/systems/autobalance.js`: Auswertung vergangener Nacht, profilabhaengige Anpassung, effektives Modusbudget und sichtbare Bedrohungsprognose.
 - `js/systems/pixelArt.js`: Pixel-Design-Overrides, Asset-Katalog, LocalStorage, Import/Export und Start-Mods.
 - `mods/pixel-overrides.js`: Optional geladene Pixel-Mod-Datei fuer Designs, die beim Spielstart aktiv sein sollen; aktuell leerer Mod-Container.
 

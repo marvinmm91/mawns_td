@@ -6,7 +6,7 @@ PW.Spawning = {
     const state = PW.state;
     const night = state.phase.night;
     const waveDef = this.waveForNight(night);
-    const budget = PW.Autobalance.threatBudgetForNight(night) * (finalMode ? 0.58 : 1);
+    const budget = PW.Autobalance.effectiveThreatBudgetForNight(night) * (finalMode ? 0.58 : 1);
     state.wave = {
       active: true,
       finalMode,
@@ -15,6 +15,7 @@ PW.Spawning = {
       pulseIndex: 0,
       plannedDirections: this.pickDirections(waveDef.directions + (finalMode ? 1 : 0)),
       spawnedThisNight: 0,
+      gameMode: PW.GameModes.profile().id,
       waveDef
     };
     state.phase.warningDirections = state.wave.plannedDirections;

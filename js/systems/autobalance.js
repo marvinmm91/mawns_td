@@ -24,16 +24,23 @@ PW.Autobalance = {
     PW.state.balance.lastThreatBudget = budget;
     return budget;
   },
+  effectiveThreatBudgetForNight(night) {
+    const budget = this.threatBudgetForNight(night) * PW.GameModes.profile().waveMultiplier;
+    PW.state.balance.lastThreatBudget = budget;
+    return budget;
+  },
   forecastForNight(night) {
-    const budget = this.calculateThreatBudget(night);
+    const directorBudget = this.calculateThreatBudget(night);
     const profile = this.difficultyProfile();
-    const relativePressure = budget / Math.max(1, this.baseThreatForNight(night) * profile.threatMultiplier);
+    const gameMode = PW.GameModes.profile();
+    const budget = directorBudget * gameMode.waveMultiplier;
+    const relativePressure = directorBudget / Math.max(1, this.baseThreatForNight(night) * profile.threatMultiplier);
     const forecast = relativePressure < 0.82 ? { label: "Niedrig", description: "Niedriger" } :
       relativePressure < 0.95 ? { label: "Gering", description: "Geringer" } :
       relativePressure < 1.05 ? { label: "Planmaessig", description: "Planmaessiger" } :
       relativePressure < 1.18 ? { label: "Erhoeht", description: "Erhoehter" } :
       { label: "Hoch", description: "Hoher" };
-    return { night, budget, relativePressure, ...forecast, profile };
+    return { night, budget, directorBudget, relativePressure, ...forecast, profile, gameMode };
   },
   evaluateNight() {
     const state = PW.state;
@@ -90,6 +97,8 @@ PW.Autobalance = {
       dropBonus: state.balance.dropBonus,
       diagnosis,
       difficulty: this.difficultyProfile().shortName,
+      gameMode: PW.GameModes.profile().shortName,
+      modeWaveMultiplier: PW.GameModes.profile().waveMultiplier,
       nextForecast: this.forecastForNight(state.phase.night + 1)
     };
   },

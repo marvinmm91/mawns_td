@@ -253,11 +253,13 @@ Im Classic Mode greifen regulaere Bodengegner keine Verteidigung an, solange ein
 
 Im Aggressive Mode greifen regulaere Bodengegner eine Mauer, Palisade oder einen Turm an, wenn sie auf ihrem berechneten direkten Weg zum Wrack liegen. Seitliche oder von der Route nicht beruehrte Verteidigungen bleiben unberuehrt. Vollstaendige Blockaden bleiben aufbrechbar; der normale Strukturschaden wird nicht auf das Wrack uebertragen.
 
+Classic erhaelt 124 Prozent des vom Director berechneten Wellenbudgets und 165 Prozent Strukturschaden beim Blockadeaufbruch. Aggressive erhaelt 92 Prozent Wellenbudget und normalen Strukturschaden, weil die aktive Verteidigung entlang der Direktroute bereits dauerhaft belastet wird. Der Status und Morgenbericht zeigen den Modusfaktor; die Bedrohungsprognose zeigt stets das daraus resultierende effektive Budget.
+
 Jede Nacht besitzt ein Threat-Budget:
 
 ```text
 Basisbudget + Nachtwachstum + leichte spaete Skalierung
-multipliziert mit Schwierigkeitsprofil und begrenztem Balance-Drift
+multipliziert mit Schwierigkeitsprofil, begrenztem Balance-Drift und Moduswellenfaktor
 ```
 
 Bewertet werden aktuell vor allem:
