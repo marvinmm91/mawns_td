@@ -33,7 +33,6 @@ Das Wrack muss repariert und bis zum Start verteidigt werden. Verliert es alle S
 - Rechtsklick: Baumodus verlassen.
 - 1-5: Werkzeug wechseln.
 - E: Inventar.
-- B: Baumenue.
 - R: Wrackmenue.
 - H: Hilfe.
 - P: Pause.

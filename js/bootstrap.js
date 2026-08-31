@@ -18,7 +18,6 @@ PW.Bootstrap = {
       toolBar: document.getElementById("toolBar"),
       resourceBar: document.getElementById("resourceBar"),
       inventoryButton: document.getElementById("inventoryButton"),
-      buildButton: document.getElementById("buildButton"),
       shipButton: document.getElementById("shipButton"),
       designButton: document.getElementById("designButton"),
       helpButton: document.getElementById("helpButton"),
@@ -80,7 +79,7 @@ PW.Bootstrap = {
       <p>Beschuetze das Wrack in der Kartenmitte, sammle Ressourcen, baue Verteidigung und repariere alle Schiffsmodule.</p>
       <p>Die Gegner greifen nachts das Wrack an. Du selbst wirst ignoriert, aber jede Sekunde ausserhalb der Basis fehlt beim Reparieren.</p>
       ${fromReload && hasSave ? "<p>Das Spiel wurde nach dem Aktualisieren gesichert. Du kannst fortsetzen oder neu starten.</p>" : ""}
-      <p>Steuerung: WASD/Pfeiltasten, Space fuer Aktion, E Inventar, B Bauen, R Wrack, P Pause.</p>
+      <p>Steuerung: WASD/Pfeiltasten, Space fuer Aktion, E Inventar, R Wrack, P Pause.</p>
     `, actions);
   }
 };

@@ -143,7 +143,6 @@ PW.Input = {
       return;
     }
     if (key === "e") PW.UI.togglePanel("inventory");
-    if (key === "b") PW.UI.togglePanel("build");
     if (key === "r") PW.UI.togglePanel("ship");
     if (key === "h") PW.UI.showHelp();
     if (key === "f3") PW.Performance.toggle();

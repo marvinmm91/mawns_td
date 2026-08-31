@@ -4,7 +4,6 @@ Object.assign(PW.UI, {
   initPanels() {
     const dom = PW.state.dom;
     dom.inventoryButton.addEventListener("click", () => this.togglePanel("inventory"));
-    dom.buildButton.addEventListener("click", () => this.togglePanel("build"));
     dom.shipButton.addEventListener("click", () => this.togglePanel("ship"));
     dom.designButton.addEventListener("click", () => this.togglePanel("design"));
     dom.helpButton.addEventListener("click", () => this.showHelp());
