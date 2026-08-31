@@ -509,7 +509,7 @@ Object.assign(PW.UI, {
     this.showDialog("Hilfe", `
       <p><span class="kbd">WASD</span> oder Pfeiltasten bewegen. <span class="kbd">Space</span> interagiert mit der Kachel vor dir.</p>
       <p><span class="kbd">1</span> Axt, <span class="kbd">2</span> Spitzhacke, <span class="kbd">3</span> Reparatur, <span class="kbd">4</span> Bauen, <span class="kbd">5</span> Abriss.</p>
-      <p><span class="kbd">E</span> Inventar, <span class="kbd">B</span> Baumenue, <span class="kbd">R</span> Wrack, <span class="kbd">P</span> Pause.</p>
+      <p><span class="kbd">E</span> Inventar, <span class="kbd">B</span> Baumenue, <span class="kbd">R</span> Wrack, <span class="kbd">P</span> Pause. <span class="kbd">F3</span> Leistungsanzeige.</p>
       <p>Tagsueber erkundest und baust du. Nachts greifen Gegner das Wrack an. Du kannst nachts weiter rausgehen, riskierst dann aber Reparaturzeit.</p>
     `, [{ label: "Schliessen", action: () => this.hideDialog() }]);
   },

@@ -23,6 +23,7 @@ PW.Render = {
     PW.RenderFog.draw(ctx);
     PW.RenderEntities.drawPlayer(ctx);
     this.drawOverlay(ctx);
+    this.drawPerformanceOverlay(ctx);
   },
   drawOverlay(ctx) {
     const state = PW.state;
@@ -66,6 +67,28 @@ PW.Render = {
       ctx.strokeStyle = "#f2eddc";
       ctx.strokeRect(state.camera.w / 2 - 180, 18, 360, 18);
     }
+  },
+  drawPerformanceOverlay(ctx) {
+    const state = PW.state;
+    if (!state.debug || !state.debug.enabled || !state.debug.profile) return;
+    const profile = state.debug.profile;
+    const rows = [
+      `FPS ${profile.fps.toFixed(1)}  Frame ${profile.frameMs.toFixed(1)} ms`,
+      `Update ${profile.updateMs.toFixed(2)} ms`,
+      `Render ${profile.renderMs.toFixed(2)} ms`,
+      `Arbeit ${profile.workMs.toFixed(2)} ms`,
+      `Gegner ${state.enemies.length}  Tuerme ${state.world.buildings.length}`
+    ];
+    ctx.save();
+    ctx.fillStyle = "rgba(10, 14, 13, .84)";
+    ctx.fillRect(10, 10, 218, 92);
+    ctx.strokeStyle = "rgba(131, 227, 218, .65)";
+    ctx.strokeRect(10.5, 10.5, 217, 91);
+    ctx.fillStyle = "#d7fffb";
+    ctx.font = "12px monospace";
+    ctx.textBaseline = "top";
+    rows.forEach((row, index) => ctx.fillText(row, 18, 18 + index * 16));
+    ctx.restore();
   },
   buildTargetTile() {
     const state = PW.state;

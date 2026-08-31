@@ -21,6 +21,17 @@ PW.createInitialState = function createInitialState() {
     lastTime: 0,
     elapsed: 0,
     autosaveTimer: 0,
+    debug: {
+      enabled: cfg.debug.enabled === true,
+      profile: {
+        fps: 0,
+        frameMs: 0,
+        updateMs: 0,
+        renderMs: 0,
+        workMs: 0,
+        frames: 0
+      }
+    },
     input: {
       keys: new Set(),
       pressed: new Set()

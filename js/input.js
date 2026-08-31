@@ -87,6 +87,7 @@ PW.Input = {
     if (key === "b") PW.UI.togglePanel("build");
     if (key === "r") PW.UI.togglePanel("ship");
     if (key === "h") PW.UI.showHelp();
+    if (key === "f3") PW.Performance.toggle();
     if (key === "f6") PW.Save.save(true);
     if (key === "f9") PW.Save.load(true);
     const tool = PW.CONFIG.tools.find((item) => item.key === key);
