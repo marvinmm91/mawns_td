@@ -5,7 +5,11 @@ PW.Input = {
     window.addEventListener("keydown", (event) => {
       const state = PW.state;
       const key = event.key.toLowerCase();
+      if (state.dom.gameDialog && state.dom.gameDialog.classList.contains("cheat-dialog")) return;
       if (["arrowup", "arrowdown", "arrowleft", "arrowright", " ", "w", "a", "s", "d"].includes(key)) {
+        event.preventDefault();
+      }
+      if (key === "enter" && state.dom.gameDialog && state.dom.gameDialog.classList.contains("hidden")) {
         event.preventDefault();
       }
       if (!state.input.keys.has(key)) state.input.pressed.add(key);

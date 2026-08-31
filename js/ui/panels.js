@@ -754,6 +754,8 @@ Object.assign(PW.UI, {
   showCheatDialog() {
     const dom = PW.state.dom;
     if (!dom.gameDialog || !dom.gameDialog.classList.contains("hidden")) return;
+    PW.state.input.keys.clear();
+    PW.state.input.pressed.clear();
     this.showDialog("Cheat-Code", `
       <form id="cheatForm" class="cheat-form">
         <label for="cheatCode">Code</label>
