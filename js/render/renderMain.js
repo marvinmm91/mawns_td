@@ -31,13 +31,17 @@ PW.Render = {
     if (state.player.selectedTool === "build") {
       const ts = state.world.tileSize;
       const def = PW.BUILDINGS[state.selectedBuild];
-      const blueprintMode = state.buildMode === "blueprint";
-      const ok = def && state.unlockedBuildings.has(state.selectedBuild) && (blueprintMode
+      const action = PW.Input.buildAction();
+      const blueprintMode = action === "blueprint";
+      const eraseBlueprintMode = action === "eraseBlueprint";
+      const ok = eraseBlueprintMode
+        ? Boolean(PW.Tiles.getBlueprint(target.x, target.y))
+        : def && state.unlockedBuildings.has(state.selectedBuild) && (blueprintMode
         ? PW.BuildingSystem.canPlaceBlueprint(state.selectedBuild, target.x, target.y)
         : PW.BuildingSystem.canPlaceBuilding(state.selectedBuild, target.x, target.y) && PW.Utils.canAfford(def.cost));
       const sx = target.x * ts - state.camera.x;
       const sy = target.y * ts - state.camera.y;
-      if (def) {
+      if (def && !eraseBlueprintMode) {
         ctx.save();
         ctx.translate(sx, sy);
         PW.Icons.drawBuilding(ctx, state.selectedBuild, ts, ok ? (blueprintMode ? 0.38 : 0.62) : 0.24);
@@ -52,9 +56,17 @@ PW.Render = {
           ctx.stroke();
         }
       }
-      ctx.strokeStyle = ok ? (blueprintMode ? "rgba(131,227,218,.95)" : "rgba(110,195,110,.95)") : "rgba(227,93,87,.9)";
+      ctx.strokeStyle = eraseBlueprintMode ? (ok ? "rgba(227,93,87,.96)" : "rgba(227,93,87,.42)") : ok ? (blueprintMode ? "rgba(131,227,218,.95)" : "rgba(110,195,110,.95)") : "rgba(227,93,87,.9)";
       ctx.lineWidth = 3;
       ctx.strokeRect(sx + 2, sy + 2, ts - 4, ts - 4);
+      if (eraseBlueprintMode) {
+        ctx.beginPath();
+        ctx.moveTo(sx + 7, sy + 7);
+        ctx.lineTo(sx + ts - 7, sy + ts - 7);
+        ctx.moveTo(sx + ts - 7, sy + 7);
+        ctx.lineTo(sx + 7, sy + ts - 7);
+        ctx.stroke();
+      }
     } else if (state.mouse.inside) {
       const ts = state.world.tileSize;
       ctx.strokeStyle = "rgba(242,237,220,.22)";

@@ -18,6 +18,7 @@ PW.Input = {
     window.addEventListener("blur", () => {
       PW.state.input.keys.clear();
       PW.state.input.pressed.clear();
+      this.stopBlueprintPainting();
       PW.state.paused = true;
       PW.UI.updatePause();
     });
@@ -35,17 +36,14 @@ PW.Input = {
     });
     canvas.addEventListener("mouseleave", () => {
       PW.state.mouse.inside = false;
-      PW.state.input.blueprintPainting = false;
-      PW.state.input.blueprintPaintTile = null;
+      this.stopBlueprintPainting();
     });
     canvas.addEventListener("pointerup", () => {
       if (PW.state.input.blueprintPainting) PW.UI.renderPanel();
-      PW.state.input.blueprintPainting = false;
-      PW.state.input.blueprintPaintTile = null;
+      this.stopBlueprintPainting();
     });
     canvas.addEventListener("pointercancel", () => {
-      PW.state.input.blueprintPainting = false;
-      PW.state.input.blueprintPaintTile = null;
+      this.stopBlueprintPainting();
     });
     canvas.addEventListener("contextmenu", (event) => {
       event.preventDefault();
@@ -60,10 +58,12 @@ PW.Input = {
       if (event.button === 2) return;
       if (PW.state.paused || PW.state.reportOpen || PW.state.gameOver || PW.state.victory) return;
       if (PW.state.player.selectedTool === "build") {
-        if (PW.state.buildMode === "blueprint") {
+        const action = this.buildAction();
+        if (action === "blueprint" || action === "eraseBlueprint") {
           PW.state.input.blueprintPainting = true;
+          PW.state.input.blueprintPaintAction = action;
           PW.state.input.blueprintPaintTile = { x: PW.state.mouse.tileX, y: PW.state.mouse.tileY };
-          PW.BuildingSystem.placeBlueprintSelected(PW.state.mouse.tileX, PW.state.mouse.tileY);
+          this.applyBlueprintAction(action, PW.state.mouse.tileX, PW.state.mouse.tileY);
         } else {
           PW.BuildingSystem.placeSelected(PW.state.mouse.tileX, PW.state.mouse.tileY);
         }
@@ -75,7 +75,9 @@ PW.Input = {
   },
   placeBlueprintWhileDragging() {
     const state = PW.state;
-    if (!state.input.blueprintPainting || state.player.selectedTool !== "build" || state.buildMode !== "blueprint") return;
+    if (!state.input.blueprintPainting || state.player.selectedTool !== "build") return;
+    const action = state.input.blueprintPaintAction;
+    if (!action) return;
     const from = state.input.blueprintPaintTile || { x: state.mouse.tileX, y: state.mouse.tileY };
     const dx = state.mouse.tileX - from.x;
     const dy = state.mouse.tileY - from.y;
@@ -83,20 +85,43 @@ PW.Input = {
     for (let step = 1; step <= steps; step++) {
       const x = Math.round(from.x + dx * step / steps);
       const y = Math.round(from.y + dy * step / steps);
-      PW.BuildingSystem.placeBlueprintSelected(x, y, true);
+      this.applyBlueprintAction(action, x, y, true);
     }
     state.input.blueprintPaintTile = { x: state.mouse.tileX, y: state.mouse.tileY };
   },
   updateMouse(event) {
     const state = PW.state;
     const rect = state.canvas.getBoundingClientRect();
-    state.mouse.x = event.clientX - rect.left;
-    state.mouse.y = event.clientY - rect.top;
+    if (Math.abs(state.camera.w - rect.width) > 0.5 || Math.abs(state.camera.h - rect.height) > 0.5) {
+      PW.Camera.resize();
+    }
+    // The canvas can be resized by the surrounding panel without a window resize event.
+    const scaleX = state.camera.w / Math.max(1, rect.width);
+    const scaleY = state.camera.h / Math.max(1, rect.height);
+    const localX = event.clientX - rect.left;
+    const localY = event.clientY - rect.top;
+    state.mouse.x = localX * scaleX;
+    state.mouse.y = localY * scaleY;
     state.mouse.worldX = state.mouse.x + state.camera.x;
     state.mouse.worldY = state.mouse.y + state.camera.y;
     state.mouse.tileX = PW.Utils.worldToTile(state.mouse.worldX);
     state.mouse.tileY = PW.Utils.worldToTile(state.mouse.worldY);
-    state.mouse.inside = state.mouse.x >= 0 && state.mouse.y >= 0 && state.mouse.x <= rect.width && state.mouse.y <= rect.height;
+    state.mouse.inside = localX >= 0 && localY >= 0 && localX <= rect.width && localY <= rect.height;
+  },
+  buildAction() {
+    if (this.isDown("alt")) return "eraseBlueprint";
+    if (this.isDown("control")) return "blueprint";
+    return "build";
+  },
+  applyBlueprintAction(action, x, y, quiet = false) {
+    if (action === "eraseBlueprint") return PW.BuildingSystem.removeBlueprintAt(x, y, !quiet);
+    return PW.BuildingSystem.placeBlueprintSelected(x, y, quiet);
+  },
+  stopBlueprintPainting() {
+    const input = PW.state.input;
+    input.blueprintPainting = false;
+    input.blueprintPaintTile = null;
+    input.blueprintPaintAction = null;
   },
   isDown(...keys) {
     return keys.some((key) => PW.state.input.keys.has(key));

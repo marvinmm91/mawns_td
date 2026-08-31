@@ -22,7 +22,7 @@ Die UI-Dateien sind inzwischen konsolidiert: Bau-, Inventar-, Wrack-, Kontext- u
 - `js/state.js`: Zentraler Spielzustand, Laufzeitlisten, Inputstatus, Kamera, Timer, Inventar, Wrackdaten.
 - `js/bootstrap.js`: Initialisierung, Event Listener, Start des Game Loops.
 - `js/gameLoop.js`: Feste Update-Reihenfolge, Delta-Time-Begrenzung, Pause/Resume, zentraler Renderaufruf und schaltbare Laufzeitmessung.
-- `js/input.js`: Tastaturstatus, Hotkeys, Mausposition, Mausbau, Kachel-Inspektion, Panel-Toggles.
+- `js/input.js`: Tastaturstatus, Hotkeys, DPI-skalierte Mausposition, Mausbau, temporaere Blaupausen-/Loeschmodi, Kachel-Inspektion und Panel-Toggles.
 - `js/camera.js`: Kamera folgt Spieler, Welt-zu-Screen-Umrechnung, sichtbarer Bereich.
 - `js/random.js`: Seedbarer Zufall fuer Map und Wellen.
 - `js/utils.js`: Kosten, Inventar, Formatierung, Distanzrechnung, Effekte und kleine Helfer.

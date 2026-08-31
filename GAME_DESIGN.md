@@ -108,7 +108,7 @@ Gegner duerfen aus unbekannten Bereichen kommen. Fog of War begrenzt Information
 - Bewegung: WASD oder Pfeiltasten.
 - Aktion: Leertaste mit der Kachel vor dem Spieler.
 - Der Spieler kollidiert mit Terrain, Ressourcen, Wrack und Bauwerken, aber nicht mit Gegnern.
-- Linksklick inspiziert eine Kachel oder baut im Baumodus direkt.
+- Linksklick inspiziert eine Kachel oder baut im Baumodus direkt. Strg + Linksklick bzw. Ziehen setzt Blaupausen; Alt + Linksklick bzw. Ziehen entfernt sie.
 - Rechtsklick beendet den Baumodus.
 
 Werkzeuge:
@@ -136,7 +136,7 @@ Es gibt kein Gewichtslimit. Ressourcen werden automatisch ins globale Inventar a
 
 ## 8. BAU UND VERTEIDIGUNG
 
-Alle Bauwerke stehen auf einzelnen Gitterkacheln. Bau ist nicht auf Wrack, Ressourcen, Truhen, Monsterlager oder blockiertem Terrain moeglich. Blaupausen erlauben es, Bauwerke und Bauwerkslinien ohne Materialkosten vorzumerken; sie blockieren keine Bewegung und koennen spaeter einzeln oder gesammelt errichtet werden.
+Alle Bauwerke stehen auf einzelnen Gitterkacheln. Bau ist nicht auf Wrack, Ressourcen, Truhen, Monsterlager oder blockiertem Terrain moeglich. Blaupausen werden mit gedrueckter Strg-Taste gesetzt, erlauben Bauwerke und Bauwerkslinien ohne Materialkosten vorzumerken, blockieren keine Bewegung und koennen spaeter einzeln oder gesammelt errichtet werden. Alt entfernt sie wieder direkt auf der Karte.
 
 ### Mauern und Bruecke
 

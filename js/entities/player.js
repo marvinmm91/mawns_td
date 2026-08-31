@@ -67,8 +67,9 @@ PW.Player = {
     if (!PW.Tiles.inBounds(target.x, target.y)) return;
 
     if (state.player.selectedTool === "build") {
-      if (state.buildMode === "blueprint") PW.BuildingSystem.placeBlueprintSelected(target.x, target.y);
-      else PW.BuildingSystem.placeSelected(target.x, target.y);
+      const action = PW.Input.buildAction();
+      if (action === "build") PW.BuildingSystem.placeSelected(target.x, target.y);
+      else PW.Input.applyBlueprintAction(action, target.x, target.y);
       return;
     }
     if (PW.OutpostSystem && PW.OutpostSystem.interactAt(target.x, target.y)) return;

@@ -78,8 +78,7 @@ Object.assign(PW.UI, {
     const build = document.createElement("div");
     build.className = "build-card";
     const selected = PW.BUILDINGS[state.selectedBuild];
-    const modeText = state.buildMode === "blueprint" ? "Blaupausen" : "Bauen";
-    build.innerHTML = `<h3>Aktiver Bauplan</h3><div class="meta">${selected ? selected.name : "Keiner"}, Modus ${modeText}. Werkzeug 4 und Linksklick auf die Maus-Kachel.</div>`;
+    build.innerHTML = `<h3>Aktiver Bauplan</h3><div class="meta">${selected ? selected.name : "Keiner"}. Werkzeug 4 und Linksklick auf die Maus-Kachel; Strg setzt Blaupausen.</div>`;
     if (selected) {
       const costs = document.createElement("div");
       costs.className = "costs";
@@ -173,25 +172,7 @@ Object.assign(PW.UI, {
     const state = PW.state;
     const card = document.createElement("div");
     card.className = "build-card";
-    card.innerHTML = "<h3>Bauweise</h3><div class=\"meta\">Blaupausen kosten kein Material und blockieren nicht. Ziehen plant zusammenhaengende Linien.</div>";
-    const modes = document.createElement("div");
-    modes.className = "build-mode";
-    [
-      ["build", "Bauen"],
-      ["blueprint", "Blaupausen"]
-    ].forEach(([mode, label]) => {
-      const button = document.createElement("button");
-      button.textContent = label;
-      button.className = state.buildMode === mode ? "active" : "";
-      button.addEventListener("click", () => {
-        state.buildMode = mode;
-        state.player.selectedTool = "build";
-        this.renderHud();
-        this.renderPanel();
-      });
-      modes.appendChild(button);
-    });
-    card.appendChild(modes);
+    card.innerHTML = "<h3>Blaupausen</h3><div class=\"meta\">Strg gedrueckt halten und ziehen: kostenfreie, nicht blockierende Bauvorhaben planen. Alt gedrueckt halten und ziehen: vorhandene Blaupausen entfernen.</div>";
     const blueprints = state.world.blueprints || [];
     const summary = document.createElement("div");
     summary.className = "meta";

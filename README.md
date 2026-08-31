@@ -28,6 +28,8 @@ Das Wrack muss repariert und bis zum Start verteidigt werden. Verliert es alle S
 - WASD oder Pfeiltasten: Bewegung.
 - Space: Aktion auf der Kachel vor dem Spieler.
 - Linksklick: Im Baumodus direkt auf die Maus-Kachel bauen, sonst Kachel/Bauwerk/Ressource rechts inspizieren.
+- Strg + Linksklick/Ziehen im Baumodus: Blaupausen setzen.
+- Alt + Linksklick/Ziehen im Baumodus: Blaupausen entfernen.
 - Rechtsklick: Baumodus verlassen.
 - 1-5: Werkzeug wechseln.
 - E: Inventar.

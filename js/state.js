@@ -34,7 +34,10 @@ PW.createInitialState = function createInitialState() {
     },
     input: {
       keys: new Set(),
-      pressed: new Set()
+      pressed: new Set(),
+      blueprintPainting: false,
+      blueprintPaintTile: null,
+      blueprintPaintAction: null
     },
     mouse: {
       x: 0,
@@ -107,7 +110,6 @@ PW.createInitialState = function createInitialState() {
     knownResources: new Set(["wood", "stone"]),
     unlockedBuildings: new Set(["palisade", "ballista"]),
     selectedBuild: "palisade",
-    buildMode: "build",
     enemies: [],
     projectiles: [],
     drops: [],

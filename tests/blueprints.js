@@ -38,8 +38,8 @@ const { pathToFileURL } = require("url");
     PW.BuildingSystem.placeBlueprint("palisade", second.x, second.y);
     PW.BuildingSystem.placeBlueprint("palisade", third.x, third.y);
     state.player.selectedTool = "build";
-    state.buildMode = "blueprint";
     state.input.blueprintPainting = true;
+    state.input.blueprintPaintAction = "blueprint";
     state.input.blueprintPaintTile = { x: lineStart.x, y: lineStart.y };
     PW.BuildingSystem.placeBlueprintSelected(lineStart.x, lineStart.y, true);
     state.mouse.tileX = lineStart.x + 2;
@@ -47,9 +47,18 @@ const { pathToFileURL } = require("url");
     PW.Input.placeBlueprintWhileDragging();
     const linePlanned = [0, 1, 2].every((offset) => Boolean(PW.Tiles.getBlueprint(lineStart.x + offset, lineStart.y)));
     state.input.blueprintPainting = false;
+    state.input.blueprintPaintAction = null;
     const builtAll = PW.BuildingSystem.buildAllBlueprints();
     const allCleared = !PW.Tiles.getBlueprint(second.x, second.y) && !PW.Tiles.getBlueprint(third.x, third.y) && [0, 1, 2].every((offset) => !PW.Tiles.getBlueprint(lineStart.x + offset, lineStart.y));
-    PW.BuildingSystem.placeBlueprint("palisade", fourth.x, fourth.y);
+    state.input.keys.add("control");
+    const controlPlans = PW.Input.buildAction() === "blueprint" && PW.Input.applyBlueprintAction(PW.Input.buildAction(), fourth.x, fourth.y);
+    state.input.keys.add("alt");
+    const altErases = PW.Input.buildAction() === "eraseBlueprint" && PW.Input.applyBlueprintAction(PW.Input.buildAction(), fourth.x, fourth.y);
+    state.input.keys.clear();
+    const replanned = PW.BuildingSystem.placeBlueprint("palisade", fourth.x, fourth.y);
+    const rect = state.canvas.getBoundingClientRect();
+    PW.Input.updateMouse({ clientX: rect.left + rect.width * 0.25, clientY: rect.top + rect.height * 0.75 });
+    const mouseTracksCanvas = Math.abs(state.mouse.x - state.camera.w * 0.25) < 0.01 && Math.abs(state.mouse.y - state.camera.h * 0.75) < 0.01;
     state.inspectedTile = { x: fourth.x, y: fourth.y };
     state.panel = "context";
     PW.UI.renderPanel();
@@ -67,6 +76,10 @@ const { pathToFileURL } = require("url");
       builtAll,
       allCleared,
       linePlanned,
+      controlPlans,
+      altErases,
+      replanned,
+      mouseTracksCanvas,
       contextVisible,
       loaded,
       restored: Boolean(restored),
@@ -79,7 +92,7 @@ const { pathToFileURL } = require("url");
   if (!result.plannedWithoutResources || !result.duplicateRejected || !result.nonBlocking || !result.firstIndexed) {
     throw new Error(`Blaupause konnte nicht korrekt geplant werden: ${JSON.stringify(result)}`);
   }
-  if (!result.builtSingle || !result.singleCleared || result.builtAll !== 5 || !result.allCleared || !result.linePlanned) {
+  if (!result.builtSingle || !result.singleCleared || result.builtAll !== 5 || !result.allCleared || !result.linePlanned || !result.controlPlans || !result.altErases || !result.replanned || !result.mouseTracksCanvas) {
     throw new Error(`Blaupausen wurden nicht korrekt errichtet: ${JSON.stringify(result)}`);
   }
   if (!result.contextVisible || !result.loaded || !result.restored || result.restoredType !== "palisade") {

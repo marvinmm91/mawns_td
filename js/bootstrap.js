@@ -40,6 +40,9 @@ PW.Bootstrap = {
     state.canvas.addEventListener("pointerdown", () => state.canvas.focus());
     PW.UI.initPanels();
     window.addEventListener("resize", () => PW.Camera.resize());
+    if (window.ResizeObserver) {
+      new ResizeObserver(() => PW.Camera.resize()).observe(state.canvas);
+    }
     window.addEventListener("beforeunload", () => PW.Save.markReloadAndSave());
     PW.Camera.resize();
     PW.Progression.refreshUnlocks();
