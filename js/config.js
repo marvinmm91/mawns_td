@@ -159,7 +159,7 @@ PW.CONFIG = Object.freeze({
         description: "Gegner respektieren freie Wege und brechen nur vollstaendige Blockaden auf.",
         structureTargeting: "blockade",
         waveMultiplier: 1,
-        structureDamageMultiplier: 1
+        structureDamageMultiplier: 1.65
       },
       {
         id: "aggressive",

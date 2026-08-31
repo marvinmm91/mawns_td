@@ -249,6 +249,8 @@ Feedback erfolgt ueber Morgenberichte, Nachrichten, Schadensanzeigen, Reichweite
 
 Vor einer neuen Partie wird zusaetzlich zur Schwierigkeit ein Verteidigungsmodus gewaehlt. Classic ist der Kompatibilitaetsstandard fuer bestehende Spielstaende. Die Modusauswahl wird gespeichert und im Status angezeigt. Die konkreten Angriffs- und Wellenregeln werden getrennt von den Schwierigkeitsprofilen definiert, damit der Modus Zielverhalten und die Schwierigkeit den Director-Druck steuert.
 
+Im Classic Mode greifen regulaere Bodengegner keine Verteidigung an, solange ein Weg zum Wrack existiert. Erst eine vollstaendige Blockade laesst sie auf ein erreichbares Durchbruchziel zusteuern. Dieser Classic-Strukturschaden ist erhoeht, gilt nur fuer Mauer-, Palisaden- und Turmziele und niemals fuer das Wrack. Luftgegner sowie stationaere Horden- und Aussenpostenwachen behalten ihre lokalen Regeln.
+
 Jede Nacht besitzt ein Threat-Budget:
 
 ```text

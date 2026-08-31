@@ -58,13 +58,26 @@ PW.EnemySystem = {
       return;
     }
     if (this.attackShipIfClose(enemy, def)) return;
-    if (def.moveType === "ground" && this.attackBlockingWall(enemy, def)) return;
+    let route = null;
+    if (def.moveType === "ground") {
+      const mode = PW.GameModes.profile();
+      if (mode.structureTargeting === "blockade") {
+        route = PW.Pathfinding.routeInfoFor(enemy);
+        if (!route.hasPath) {
+          if (this.attackBuilding(enemy, def, route.blockadeTarget, PW.state.world.tileSize * 0.9, mode.structureDamageMultiplier)) return;
+          if (route.breakthroughStep) {
+            this.moveToward(enemy, route.breakthroughStep.x, route.breakthroughStep.y, dt);
+            return;
+          }
+        }
+      } else if (this.attackBlockingWall(enemy, def)) return;
+    }
 
     let target;
     if (def.moveType === "air") {
       target = this.shipCenter();
     } else {
-      target = PW.Pathfinding.nextStepFor(enemy) || this.shipCenter();
+      target = (route || PW.Pathfinding.routeInfoFor(enemy)).pathStep || this.shipCenter();
     }
     this.moveToward(enemy, target.x, target.y, dt);
   },
@@ -143,12 +156,13 @@ PW.EnemySystem = {
     }
     return best;
   },
-  attackBuilding(enemy, def, building, rangePx) {
+  attackBuilding(enemy, def, building, rangePx, damageMultiplier = 1) {
+    if (!building) return false;
     const bx = PW.Utils.tileToWorld(building.x);
     const by = PW.Utils.tileToWorld(building.y);
     if (PW.Utils.distance(enemy.x, enemy.y, bx, by) > rangePx) return false;
     if (enemy.attackCooldown <= 0) {
-      const damage = def.wallDamage || def.damage;
+      const damage = (def.wallDamage || def.damage) * damageMultiplier;
       PW.DamageVisuals.building(building, damage);
       enemy.attackCooldown = def.attackCooldown;
       if (PW.state.nightStats) PW.state.nightStats.wallDamage += damage;

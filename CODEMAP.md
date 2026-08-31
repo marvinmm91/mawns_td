@@ -47,7 +47,7 @@ Die UI-Dateien sind inzwischen konsolidiert: Bau-, Inventar-, Wrack-, Kontext- u
 ## Akteure und Systeme
 
 - `js/entities/player.js`: Spielerposition, Bewegung, Kollision, Blickrichtung.
-- `js/entities/enemies.js`: Gegnerlisten, Bewegung, Zielwahl, rollenspezifische Schadensmodifikatoren und Schaden am Wrack.
+- `js/entities/enemies.js`: Gegnerlisten, Bewegung, Classic-Blockadeangriffe, Zielwahl, rollenspezifische Schadensmodifikatoren und Schaden am Wrack.
 - `js/entities/projectiles.js`: Turmprojektile, Treffer, Lebensdauer und gegnerspezifische Slow-Resistenz.
 - `js/systems/dayNight.js`: Tag, Daemmerung, Nacht, Morgengrauen, Timer, Phasenwechsel.
 - `js/systems/gameModes.js`: Aufloesung und Validierung der zentralen Spielmodusprofile.
