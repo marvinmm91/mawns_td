@@ -24,6 +24,7 @@ PW.RenderWorld = {
     this.drawWarnings(ctx);
     this.drawShip(ctx);
     this.drawResources(ctx, bounds);
+    this.drawOutposts(ctx, bounds);
     this.drawTreasureChests(ctx);
     this.drawBlueprints(ctx, bounds);
     this.drawBuildings(ctx, bounds);
@@ -87,25 +88,20 @@ PW.RenderWorld = {
     const y = ship.y * ts - state.camera.y;
     const w = ship.size * ts;
     const custom = PW.PixelArt && PW.PixelArt.draw(ctx, "ship.wreck", x, y, w, w);
-    if (custom) {
-      if (ship.launchActive) {
-        const pulse = Math.sin(state.elapsed * 10) * 0.5 + 0.5;
-        ctx.fillStyle = `rgba(240,184,77,${0.25 + pulse * 0.35})`;
-        ctx.fillRect(x + 12, y + w - 12, w - 24, 10);
-      }
-      return;
+    if (!custom) {
+      ctx.fillStyle = "#596066";
+      ctx.fillRect(x, y, w, w);
+      ctx.fillStyle = "#30363a";
+      ctx.fillRect(x + 10, y + 12, w - 20, w - 24);
+      ctx.fillStyle = ship.launchActive ? "#f0b84d" : "#76c7b4";
+      ctx.fillRect(x + w / 2 - 12, y + 18, 24, 18);
+      ctx.fillStyle = "#25282b";
+      ctx.fillRect(x + 8, y + w - 28, w - 16, 12);
+      ctx.strokeStyle = "#d8d1ad";
+      ctx.lineWidth = 2;
+      ctx.strokeRect(x + 1, y + 1, w - 2, w - 2);
     }
-    ctx.fillStyle = "#596066";
-    ctx.fillRect(x, y, w, w);
-    ctx.fillStyle = "#30363a";
-    ctx.fillRect(x + 10, y + 12, w - 20, w - 24);
-    ctx.fillStyle = ship.launchActive ? "#f0b84d" : "#76c7b4";
-    ctx.fillRect(x + w / 2 - 12, y + 18, 24, 18);
-    ctx.fillStyle = "#25282b";
-    ctx.fillRect(x + 8, y + w - 28, w - 16, 12);
-    ctx.strokeStyle = "#d8d1ad";
-    ctx.lineWidth = 2;
-    ctx.strokeRect(x + 1, y + 1, w - 2, w - 2);
+    this.drawStructureDamage(ctx, x, y, w, w, ship.hp / ship.maxHp, ship.damageFlash, "ship");
     if (ship.launchActive) {
       const pulse = Math.sin(state.elapsed * 10) * 0.5 + 0.5;
       ctx.fillStyle = `rgba(240,184,77,${0.25 + pulse * 0.35})`;
@@ -201,6 +197,7 @@ PW.RenderWorld = {
       ctx.restore();
       const accent = def.category === "tower" ? this.towerColor(building.type) : building.type === "bridge" ? "#83e3da" : "#d8d1ad";
       this.drawStateCorners(ctx, sx + ts / 2, sy + ts / 2, accent, 13);
+      this.drawStructureDamage(ctx, sx, sy, ts, ts, building.hp / building.maxHp, building.damageFlash, building.type);
       if (building.level > 1) {
         ctx.fillStyle = "#f0b84d";
         for (let i = 0; i < building.level; i++) ctx.fillRect(sx + 4 + i * 6, sy + 4, 4, 4);
@@ -245,6 +242,87 @@ PW.RenderWorld = {
       if (!custom) PW.Icons.drawChest(ctx, sx, sy, ts, chest.variant || 0);
       this.drawStateCorners(ctx, sx + ts / 2, sy + ts / 2, "#f3d36b", 13);
     });
+  },
+  drawOutposts(ctx, bounds) {
+    const state = PW.state;
+    const ts = state.world.tileSize;
+    PW.SpatialIndex.visible("outposts", bounds).forEach((outpost) => {
+      if (!PW.Fog.isKnown(outpost.x, outpost.y)) return;
+      const sx = outpost.x * ts - state.camera.x;
+      const sy = outpost.y * ts - state.camera.y;
+      const def = PW.OutpostSystem.variants[outpost.type];
+      this.drawGroundShadow(ctx, sx + ts / 2, sy + ts - 4, 26, 4);
+      const custom = PW.PixelArt && PW.PixelArt.draw(ctx, `world.outpost.${outpost.type}`, sx, sy, ts, ts);
+      if (!custom) this.drawOutpostShape(ctx, sx, sy, outpost, def);
+      const color = outpost.status === "claimed" ? "#66c6a6" : def.color;
+      this.drawStateCorners(ctx, sx + ts / 2, sy + ts / 2, color, 14);
+    });
+  },
+  drawOutpostShape(ctx, sx, sy, outpost, def) {
+    const active = outpost.status === "active";
+    const claimed = outpost.status === "claimed";
+    ctx.save();
+    ctx.fillStyle = "#25282b";
+    ctx.fillRect(sx + 5, sy + 10, 22, 16);
+    if (outpost.type === "cache") {
+      ctx.fillStyle = claimed ? "#62685e" : "#8a5a34";
+      ctx.fillRect(sx + 6, sy + 12, 20, 13);
+      ctx.fillStyle = "#d08b51";
+      ctx.fillRect(sx + 8, sy + 14, 16, 3);
+      ctx.fillStyle = "#f0b84d";
+      ctx.fillRect(sx + 14, sy + 12, 4, 13);
+    } else if (outpost.type === "research") {
+      ctx.fillStyle = claimed ? "#596066" : "#315b63";
+      ctx.fillRect(sx + 8, sy + 14, 16, 11);
+      ctx.fillStyle = "#83e3da";
+      ctx.fillRect(sx + 14, sy + 5, 4, 13);
+      ctx.fillRect(sx + 9, sy + 8, 14, 3);
+      ctx.fillStyle = "#d7fffb";
+      ctx.fillRect(sx + 15, sy + 6, 2, 5);
+    } else {
+      ctx.fillStyle = claimed ? "#5a5b59" : "#552b2c";
+      ctx.fillRect(sx + 9, sy + 17, 14, 9);
+      ctx.fillStyle = "#6f3534";
+      ctx.fillRect(sx + 14, sy + 5, 4, 14);
+      const pulse = active ? Math.sin(PW.state.elapsed * 9) * 0.5 + 0.5 : 0.25;
+      ctx.fillStyle = claimed ? "#66c6a6" : `rgba(227,93,87,${0.45 + pulse * 0.55})`;
+      ctx.fillRect(sx + 13, sy + 4, 6, 5);
+      if (active) {
+        ctx.strokeStyle = "rgba(227,93,87,.56)";
+        ctx.lineWidth = 1;
+        ctx.strokeRect(sx + 4, sy + 4, 24, 24);
+      }
+    }
+    ctx.restore();
+  },
+  drawStructureDamage(ctx, x, y, width, height, hpRatio, damageFlash, kind) {
+    const damage = PW.Utils.clamp(1 - hpRatio, 0, 1);
+    if (damage <= 0 && !(damageFlash > 0)) return;
+    ctx.save();
+    if (damage > 0) {
+      const marks = [
+        [0.18, 0.24, 0.18, 0.12], [0.68, 0.18, -0.12, 0.2], [0.5, 0.66, 0.16, -0.14],
+        [0.22, 0.72, 0.2, 0.08], [0.74, 0.58, -0.18, 0.12]
+      ];
+      const count = Math.max(1, Math.ceil(damage * marks.length));
+      ctx.fillStyle = kind === "bridge" ? "rgba(58,42,30,.78)" : "rgba(25,26,25,.75)";
+      for (let i = 0; i < count; i++) {
+        const [mx, my, dx, dy] = marks[i];
+        const sx = Math.round(x + width * mx);
+        const sy = Math.round(y + height * my);
+        ctx.fillRect(sx, sy, Math.max(2, Math.round(Math.abs(dx) * width)), 2);
+        ctx.fillRect(sx + Math.round(dx * width), sy, 2, Math.max(2, Math.round(Math.abs(dy) * height)));
+      }
+      if (damage > 0.42) {
+        ctx.fillStyle = "rgba(227,93,87,.28)";
+        ctx.fillRect(x + Math.round(width * 0.38), y + Math.round(height * 0.62), Math.max(4, Math.round(width * 0.2)), 3);
+      }
+    }
+    if (damageFlash > 0) {
+      ctx.fillStyle = `rgba(227,93,87,${Math.min(0.42, damageFlash * 1.3)})`;
+      ctx.fillRect(x + 2, y + 2, width - 4, height - 4);
+    }
+    ctx.restore();
   },
   drawMapPins(ctx, bounds) {
     const state = PW.state;

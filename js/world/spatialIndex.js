@@ -2,7 +2,7 @@
 
 PW.SpatialIndex = {
   cellSize: 8,
-  staticKinds: new Set(["resources", "buildings", "blueprints"]),
+  staticKinds: new Set(["resources", "buildings", "blueprints", "outposts"]),
   dynamicKinds: ["drops", "enemies", "birds", "wildlife", "projectiles"],
   reset() {
     const world = PW.state.world;
@@ -33,6 +33,7 @@ PW.SpatialIndex = {
     if (kind === "resources") return state.world.resources;
     if (kind === "buildings") return state.world.buildings;
     if (kind === "blueprints") return state.world.blueprints || [];
+    if (kind === "outposts") return state.world.outposts || [];
     if (kind === "drops") return state.drops;
     if (kind === "enemies") return state.enemies;
     if (kind === "birds") return state.world.birds || [];
@@ -41,7 +42,7 @@ PW.SpatialIndex = {
     return [];
   },
   tilePosition(kind, item) {
-    if (kind === "resources" || kind === "buildings" || kind === "blueprints") return { x: item.x, y: item.y };
+    if (kind === "resources" || kind === "buildings" || kind === "blueprints" || kind === "outposts") return { x: item.x, y: item.y };
     return { x: PW.Utils.worldToTile(item.x), y: PW.Utils.worldToTile(item.y) };
   },
   cellKey(tileX, tileY) {
@@ -64,6 +65,7 @@ PW.SpatialIndex = {
     this.rebuild("resources");
     this.rebuild("buildings");
     this.rebuild("blueprints");
+    this.rebuild("outposts");
   },
   syncDynamic() {
     this.dynamicKinds.forEach((kind) => this.rebuild(kind));
@@ -157,7 +159,7 @@ PW.SpatialIndex = {
     return result;
   },
   worldPosition(kind, item) {
-    if (kind === "resources" || kind === "buildings" || kind === "blueprints") return PW.Tiles.tileCenter(item.x, item.y);
+    if (kind === "resources" || kind === "buildings" || kind === "blueprints" || kind === "outposts") return PW.Tiles.tileCenter(item.x, item.y);
     return { x: item.x, y: item.y };
   },
   nearby(kind, x, y, radius) {

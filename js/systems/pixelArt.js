@@ -29,6 +29,9 @@ PW.PixelArt = {
       { id: "tile.water", name: "Tiefes Wasser", category: "Welt", cols: 32, rows: 32 },
       { id: "tile.shallowWater", name: "Furt/Bach", category: "Welt", cols: 32, rows: 32 },
       { id: "world.chest", name: "Schatztruhe", category: "Welt", cols: 32, rows: 32 },
+      { id: "world.outpost.cache", name: "Versorgungslager", category: "Welt", cols: 32, rows: 32 },
+      { id: "world.outpost.research", name: "Forschungsterminal", category: "Welt", cols: 32, rows: 32 },
+      { id: "world.outpost.beacon", name: "Sicherheitsbake", category: "Welt", cols: 32, rows: 32 },
       { id: "ship.wreck", name: "Wrack", category: "Welt", cols: 32, rows: 32 },
       { id: "player.down", name: "Figur unten", category: "Figur", cols: 24, rows: 24 },
       { id: "player.up", name: "Figur oben", category: "Figur", cols: 24, rows: 24 },
@@ -61,7 +64,7 @@ PW.PixelArt = {
       list.push({ id: `tool.${def.id}`, name: `${def.label} Werkzeug`, category: "Werkzeuge", cols: 16, rows: 16 });
     });
     [
-      "hit", "damage", "splash", "treasureOpen", "campClear",
+      "hit", "damage", "splash", "treasureOpen", "campClear", "outpostClaim", "outpostAlert", "structureHit",
       "wildlifePoof",
       "catapultSplash", "flakBurst", "teslaPulse", "laserBeam", "laserHit", "boltHit",
       "enemySwarmBite", "enemyClaw", "enemySlam", "enemyBreakerHit",
@@ -311,12 +314,13 @@ PW.PixelArt = {
   },
 
   drawDefaultAsset(ctx, asset, x, y, w, h) {
-    const [kind, id] = asset.id.split(".");
+    const [kind, id, variant] = asset.id.split(".");
     ctx.save();
     ctx.translate(x, y);
     if (kind === "tile") this.drawDefaultTile(ctx, id, w, h);
     else if (kind === "ship") this.drawDefaultShip(ctx, w, h);
     else if (kind === "world" && id === "chest") PW.Icons.drawChest(ctx, 0, 0, Math.min(w, h), 0);
+    else if (kind === "world" && id === "outpost") this.drawDefaultOutpost(ctx, variant, w, h);
     else if (kind === "player") this.drawDefaultPlayer(ctx, id, w, h);
     else if (kind === "resource") this.drawDefaultResourceNode(ctx, id, w, h);
     else if (kind === "resourceIcon") PW.Icons.drawResource(ctx, id, Math.min(w, h));
@@ -371,6 +375,30 @@ PW.PixelArt = {
     ctx.fillRect(w * 0.08, h * 0.78, w * 0.84, h * 0.12);
     ctx.strokeStyle = "#d8d1ad";
     ctx.strokeRect(0.5, 0.5, w - 1, h - 1);
+  },
+
+  drawDefaultOutpost(ctx, type, w, h) {
+    ctx.fillStyle = "#25282b";
+    ctx.fillRect(w * 0.16, h * 0.34, w * 0.68, h * 0.5);
+    if (type === "cache") {
+      ctx.fillStyle = "#8a5a34";
+      ctx.fillRect(w * 0.2, h * 0.42, w * 0.6, h * 0.4);
+      ctx.fillStyle = "#f0b84d";
+      ctx.fillRect(w * 0.45, h * 0.42, w * 0.12, h * 0.4);
+    } else if (type === "research") {
+      ctx.fillStyle = "#315b63";
+      ctx.fillRect(w * 0.25, h * 0.48, w * 0.5, h * 0.34);
+      ctx.fillStyle = "#83e3da";
+      ctx.fillRect(w * 0.45, h * 0.16, w * 0.12, h * 0.42);
+      ctx.fillRect(w * 0.3, h * 0.27, w * 0.44, h * 0.1);
+    } else {
+      ctx.fillStyle = "#552b2c";
+      ctx.fillRect(w * 0.3, h * 0.58, w * 0.4, h * 0.24);
+      ctx.fillStyle = "#6f3534";
+      ctx.fillRect(w * 0.45, h * 0.16, w * 0.12, h * 0.45);
+      ctx.fillStyle = "#e35d57";
+      ctx.fillRect(w * 0.4, h * 0.12, w * 0.22, h * 0.16);
+    }
   },
 
   drawDefaultPlayer(ctx, facing, w, h) {

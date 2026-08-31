@@ -18,6 +18,7 @@ PW.Save = {
         wildlife: state.world.wildlife || [],
         treasureChests: state.world.treasureChests || [],
         monsterCamps: state.world.monsterCamps || [],
+        outposts: state.world.outposts || [],
         waterways: state.world.waterways || { river: [], brooks: [] },
         buildings: state.world.buildings,
         blueprints: state.world.blueprints || [],
@@ -71,6 +72,7 @@ PW.Save = {
       PW.state.world.wildlife = PW.state.world.wildlife || [];
       PW.state.world.treasureChests = PW.state.world.treasureChests || [];
       PW.state.world.monsterCamps = PW.state.world.monsterCamps || [];
+      PW.state.world.outposts = PW.state.world.outposts || [];
       PW.state.world.waterways = PW.state.world.waterways || { river: [], brooks: [] };
       PW.state.world.blueprints = PW.state.world.blueprints || [];
       PW.state.world.mapPins = PW.state.world.mapPins || [];
@@ -110,6 +112,7 @@ PW.Save = {
         PW.state.world.blueprintMap.set(PW.Utils.tileKey(blueprint.x, blueprint.y), blueprint);
         return true;
       });
+      PW.OutpostSystem.restore(PW.state.world.outposts);
       PW.MapPins.restore(PW.state.world.mapPins);
       if (PW.WildlifeSystem) PW.WildlifeSystem.ensurePopulation();
       PW.SpatialIndex.reset();

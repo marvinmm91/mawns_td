@@ -93,6 +93,27 @@ PW.RenderEffects = {
         ctx.stroke();
         ctx.fillStyle = `rgba(102,198,166,${0.24 * t})`;
         ctx.fillRect(x - 18, y - 6, 36, 12);
+      } else if (effect.type === "outpostClaim") {
+        const radius = (1 - t) * 28 * effect.size;
+        ctx.strokeStyle = effect.color;
+        ctx.lineWidth = 3;
+        ctx.strokeRect(x - radius, y - radius, radius * 2, radius * 2);
+        ctx.fillStyle = `rgba(215,255,251,${0.28 * t})`;
+        ctx.fillRect(x - 5, y - 18, 10, 26);
+      } else if (effect.type === "outpostAlert") {
+        const radius = (1 - t) * 32 * effect.size;
+        ctx.strokeStyle = "#e35d57";
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(x, y, radius, 0, Math.PI * 2);
+        ctx.stroke();
+      } else if (effect.type === "structureHit") {
+        const radius = 10 + (1 - t) * 14 * effect.size;
+        ctx.strokeStyle = "#f0b84d";
+        ctx.lineWidth = 2;
+        ctx.strokeRect(x - radius, y - radius, radius * 2, radius * 2);
+        ctx.fillStyle = "#e35d57";
+        ctx.fillRect(x - 3, y - radius - 3, 6, 6);
       } else if (effect.type === "wildlifePoof") {
         ctx.fillStyle = `rgba(111,182,93,${0.45 * t})`;
         ctx.fillRect(x - 10 - (1 - t) * 10, y - 5, 8, 8);

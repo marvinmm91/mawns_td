@@ -23,7 +23,11 @@ PW.EnemySystem = {
       campY: options.campY || null,
       campLeash: options.campLeash || 0,
       campAggro: options.campAggro || 0,
-      campKeyCarrier: options.campKeyCarrier === true
+      campKeyCarrier: options.campKeyCarrier === true,
+      outpostId: options.outpostId || null,
+      outpostX: options.outpostX || null,
+      outpostY: options.outpostY || null,
+      outpostLeash: options.outpostLeash || 0
     };
     PW.state.enemies.push(enemy);
     PW.SpatialIndex.add("enemies", enemy);
@@ -47,6 +51,10 @@ PW.EnemySystem = {
     const def = PW.ENEMIES[enemy.type];
     if (enemy.campId) {
       this.updateCamp(enemy, def, dt);
+      return;
+    }
+    if (enemy.outpostId) {
+      this.updateOutpostGuard(enemy, def, dt);
       return;
     }
     if (this.attackShipIfClose(enemy, def)) return;
@@ -88,6 +96,35 @@ PW.EnemySystem = {
       this.moveToward(enemy, enemy.roamX, enemy.roamY, dt * 0.45);
     }
   },
+  updateOutpostGuard(enemy, def, dt) {
+    const outpost = PW.OutpostSystem && PW.OutpostSystem.byId(enemy.outpostId);
+    if (!outpost || outpost.status !== "active") {
+      enemy.outpostId = null;
+      this.updateAttack(enemy, def, dt);
+      return;
+    }
+    const anchor = { x: PW.Utils.tileToWorld(outpost.x), y: PW.Utils.tileToWorld(outpost.y), aggroPx: outpost.guardRadius };
+    const target = this.findCampBuildingTarget(enemy, anchor);
+    if (target) {
+      if (this.attackBuilding(enemy, def, target, PW.CONFIG.treasure.campAttackRange)) return;
+      this.moveToward(enemy, PW.Utils.tileToWorld(target.x), PW.Utils.tileToWorld(target.y), dt);
+      return;
+    }
+    const dist = PW.Utils.distance(enemy.x, enemy.y, anchor.x, anchor.y);
+    const roamRadius = Math.max(18, outpost.guardRadius * 0.3);
+    if (dist > roamRadius) {
+      this.moveToward(enemy, anchor.x, anchor.y, dt);
+    } else if (!enemy.roamTimer || enemy.roamTimer <= 0) {
+      enemy.roamTimer = PW.state.rng.float(1.1, 2.7);
+      const angle = PW.state.rng.float(0, Math.PI * 2);
+      const radius = PW.state.rng.float(8, roamRadius);
+      enemy.roamX = anchor.x + Math.cos(angle) * radius;
+      enemy.roamY = anchor.y + Math.sin(angle) * radius;
+    } else {
+      enemy.roamTimer -= dt;
+      this.moveToward(enemy, enemy.roamX, enemy.roamY, dt * 0.45);
+    }
+  },
   findCampBuildingTarget(enemy, camp) {
     let best = null;
     let bestDist = Infinity;
@@ -112,7 +149,7 @@ PW.EnemySystem = {
     if (PW.Utils.distance(enemy.x, enemy.y, bx, by) > rangePx) return false;
     if (enemy.attackCooldown <= 0) {
       const damage = def.wallDamage || def.damage;
-      building.hp -= damage;
+      PW.DamageVisuals.building(building, damage);
       enemy.attackCooldown = def.attackCooldown;
       if (PW.state.nightStats) PW.state.nightStats.wallDamage += damage;
       this.addAttackEffect(enemy, def, bx, by, 0.8);
@@ -156,7 +193,7 @@ PW.EnemySystem = {
     if (dist > range) return false;
     if (enemy.attackCooldown <= 0) {
       const damage = Math.ceil(def.damage * (PW.state.ship.launchActive ? 0.35 : 1));
-      PW.state.ship.hp = Math.max(0, PW.state.ship.hp - damage);
+      PW.DamageVisuals.ship(damage);
         if (PW.state.nightStats) {
           PW.state.nightStats.shipDamageTaken += damage;
           if (def.moveType === "air") PW.state.nightStats.airDamage += damage;
@@ -176,7 +213,7 @@ PW.EnemySystem = {
       const building = PW.Tiles.getBuilding(tx + dx, ty + dy);
       if (!building || !PW.BUILDINGS[building.type].blocksGround) continue;
       if (enemy.attackCooldown <= 0) {
-        building.hp -= def.wallDamage || def.damage;
+        PW.DamageVisuals.building(building, def.wallDamage || def.damage);
         enemy.attackCooldown = def.attackCooldown;
         if (PW.state.nightStats) PW.state.nightStats.wallDamage += def.wallDamage || def.damage;
         this.addAttackEffect(enemy, def, PW.Utils.tileToWorld(building.x), PW.Utils.tileToWorld(building.y), 1.1);
@@ -199,6 +236,7 @@ PW.EnemySystem = {
       }
       PW.DropSystem.spawnForEnemy(enemy, sourceType);
       if (enemy.campId && PW.TreasureSystem) PW.TreasureSystem.noteEnemyKilled(enemy);
+      if (enemy.outpostId && PW.OutpostSystem) PW.OutpostSystem.noteEnemyKilled(enemy);
     }
   },
   addAttackEffect(enemy, def, x, y, size) {
@@ -217,6 +255,8 @@ PW.EnemySystem = {
     return { type: def.moveType === "air" ? "enemyDroneZap" : "enemyClaw", color: def.color, life: 0.34 };
   },
   retreatAll() {
-    PW.state.enemies.forEach((enemy) => { enemy.retreating = true; });
+    PW.state.enemies.forEach((enemy) => {
+      if (!enemy.outpostId) enemy.retreating = true;
+    });
   }
 };

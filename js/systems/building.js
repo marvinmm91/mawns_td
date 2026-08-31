@@ -177,6 +177,7 @@ PW.BuildingSystem = {
     }
     PW.Utils.pay(cost);
     building.hp = Math.min(building.maxHp, building.hp + Math.ceil(building.maxHp * 0.28));
+    if (building.hp >= building.maxHp) building.damageFlash = 0;
     PW.Messages.add(`${def.name} repariert.`, "ok");
     PW.UI.renderHud();
     PW.UI.renderPanel();
@@ -225,6 +226,7 @@ PW.BuildingSystem = {
     building.level += 1;
     building.maxHp = Math.round(def.maxHp * (1 + (building.level - 1) * 0.35));
     building.hp = building.maxHp;
+    building.damageFlash = 0;
     PW.Messages.add(`${def.name} auf Stufe ${building.level}.`, "ok");
     PW.UI.renderPanel();
   },

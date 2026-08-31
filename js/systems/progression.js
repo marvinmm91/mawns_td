@@ -27,6 +27,7 @@ PW.Progression = {
     }
     PW.Utils.pay(cost);
     state.ship.hp = Math.min(state.ship.maxHp, state.ship.hp + 50);
+    if (state.ship.hp >= state.ship.maxHp) state.ship.damageFlash = 0;
     PW.Utils.addEffect("splash", PW.EnemySystem.shipCenter().x, PW.EnemySystem.shipCenter().y, "#6ec36e", 0.5, 1.7);
     PW.Messages.add("Wrack +50 HP.", "ok");
     PW.UI.renderHud();
@@ -107,4 +108,3 @@ PW.Progression = {
     PW.UI.showEndDialog(true);
   }
 };
-

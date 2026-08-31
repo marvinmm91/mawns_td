@@ -212,6 +212,7 @@ Module kosten normale und seltene Ressourcen. Sie sind frueh im Wrackmenue sicht
 
 - Schatztruhen erscheinen ausserhalb des Startbereichs und benoetigen Schluessel.
 - Monsterhorden bewachen Lager, greifen Bauwerke in ihrem Gebiet an und koennen Schluessel fallen lassen.
+- Drei verlassene Aussenposten liegen weit ausserhalb des Startbereichs: ein Versorgungslager liefert Material, ein Forschungsterminal schaltet einen Bauplan frei und eine Sicherheitsbake startet eine kleine ortsgebundene Wachgruppen-Aufgabe.
 - Voegel sind dekorativ und besitzen keine Hitbox.
 - Waldhuepfer und Mooskaefer wandern, fliehen vor dem Spieler und geben kleine Belohnungen.
 - Das Pixel-Art-System erlaubt eigene Designs, Zuruecksetzen sowie JSON-/JavaScript-Import und -Export.
@@ -236,7 +237,7 @@ Panels:
 - Kachel-/Objektkontext
 - Pixel-Design
 
-Feedback erfolgt ueber Morgenberichte, Nachrichten, Schadensanzeigen, Reichweitenvorschau, HP-Balken, Warnrichtungen und Pixel-Effekte.
+Feedback erfolgt ueber Morgenberichte, Nachrichten, Schadensanzeigen, Reichweitenvorschau, HP-Balken, Warnrichtungen und Pixel-Effekte. Beschaedigte Mauern, Tuerme, Bruecken und das Wrack zeigen zudem sichtbare Risse, Brandspuren und kurze Trefferblitze; nach voller Reparatur verschwinden diese wieder.
 
 ## 14. BALANCING-MODELL
 

@@ -304,6 +304,7 @@ Object.assign(PW.UI, {
     const resource = PW.Tiles.getResource(tile.x, tile.y);
     const chest = PW.Tiles.getChest(tile.x, tile.y);
     const camp = PW.Tiles.getCamp(tile.x, tile.y);
+    const outpost = PW.Tiles.getOutpost(tile.x, tile.y);
     const wildlife = PW.WildlifeSystem ? PW.WildlifeSystem.atTile(tile.x, tile.y) : null;
     const building = PW.Tiles.getBuilding(tile.x, tile.y);
     const blueprint = PW.Tiles.getBlueprint(tile.x, tile.y);
@@ -338,6 +339,11 @@ Object.assign(PW.UI, {
       this.renderCampContext(body, camp);
       this.renderMapPinControl(body, tile.x, tile.y);
       title.textContent = "Monsterhorde";
+      return;
+    }
+    if (outpost) {
+      this.renderOutpostContext(body, outpost);
+      title.textContent = PW.OutpostSystem.variants[outpost.type].name;
       return;
     }
     const ground = PW.Tiles.get(tile.x, tile.y);
@@ -582,6 +588,39 @@ Object.assign(PW.UI, {
     hint.className = "meta";
     hint.textContent = "Baue Tuerme im roten Radius, um die Horde zu bekaempfen. Die Horde greift Bauwerke in ihrem Gebiet an.";
     card.appendChild(hint);
+    body.appendChild(card);
+  },
+  renderOutpostContext(body, outpost) {
+    const def = PW.OutpostSystem.variants[outpost.type];
+    const card = document.createElement("div");
+    card.className = "build-card";
+    const titleRow = document.createElement("div");
+    titleRow.className = "build-title";
+    const heading = document.createElement("h3");
+    heading.style.color = def.color;
+    heading.textContent = def.name;
+    const status = document.createElement("strong");
+    status.textContent = outpost.status === "claimed" ? "gesichert" : outpost.status === "active" ? "aktiv" : "untersuchen";
+    titleRow.append(heading, status);
+    card.appendChild(titleRow);
+    card.appendChild(this.infoLine("Fund", def.description));
+    if (outpost.type === "beacon") {
+      const alive = PW.state.enemies.filter((enemy) => enemy.outpostId === outpost.id && enemy.hp > 0 && !enemy.remove).length;
+      card.appendChild(this.infoLine("Wachgruppe", outpost.status === "active" ? `${alive} Gegner` : outpost.status === "claimed" ? "besiegt" : "wartet"));
+      card.appendChild(this.infoLine("Gebiet", `${Math.round(outpost.guardRadius / PW.state.world.tileSize)} Felder`));
+    } else if (outpost.type === "research" && outpost.unlockedBuilding) {
+      card.appendChild(this.infoLine("Bauplan", PW.BUILDINGS[outpost.unlockedBuilding].name));
+    } else {
+      card.appendChild(this.infoLine("Belohnung", PW.Utils.costText(def.rewards)));
+    }
+    const button = document.createElement("button");
+    button.textContent = outpost.status === "claimed" ? "Geborgen" : outpost.status === "active" ? "Wachgruppe aktiv" : "Untersuchen";
+    button.disabled = outpost.status === "claimed";
+    button.addEventListener("click", () => {
+      PW.OutpostSystem.interactAt(outpost.x, outpost.y);
+      this.inspectTile(outpost.x, outpost.y);
+    });
+    card.appendChild(button);
     body.appendChild(card);
   },
   infoLine(label, value) {

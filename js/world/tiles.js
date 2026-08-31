@@ -31,6 +31,9 @@ PW.Tiles = {
   getCamp(x, y) {
     return (PW.state.world.monsterCamps || []).find((camp) => !camp.cleared && camp.tileX === x && camp.tileY === y) || null;
   },
+  getOutpost(x, y) {
+    return PW.state.world.outpostMap.get(PW.Utils.tileKey(x, y)) || null;
+  },
   tileCenter(x, y) {
     const ts = PW.state.world.tileSize;
     return { x: x * ts + ts / 2, y: y * ts + ts / 2 };
@@ -56,6 +59,7 @@ PW.Tiles = {
     if (resource && PW.RESOURCE_NODES[resource.type].blocks) return true;
     if (this.getChest(x, y)) return true;
     if (this.getCamp(x, y)) return true;
+    if (this.getOutpost(x, y)) return true;
     return Boolean(building);
   },
   isBlockedForGround(x, y) {
@@ -69,19 +73,20 @@ PW.Tiles = {
     if (resource && PW.RESOURCE_NODES[resource.type].blocks) return true;
     if (this.getChest(x, y)) return true;
     if (this.getCamp(x, y)) return true;
+    if (this.getOutpost(x, y)) return true;
     return Boolean(building && PW.BUILDINGS[building.type].blocksGround);
   },
   canBuildAt(x, y) {
     if (!this.inBounds(x, y)) return false;
     if (this.isShipTile(x, y)) return false;
-    if (this.getResource(x, y) || this.getBuilding(x, y) || this.getChest(x, y) || this.getCamp(x, y)) return false;
+    if (this.getResource(x, y) || this.getBuilding(x, y) || this.getChest(x, y) || this.getCamp(x, y) || this.getOutpost(x, y)) return false;
     const tile = this.get(x, y);
     return tile && !tile.blocked && !this.isWaterKind(tile.kind);
   },
   canBuildBridgeAt(x, y) {
     if (!this.inBounds(x, y)) return false;
     if (this.isShipTile(x, y)) return false;
-    if (this.getResource(x, y) || this.getBuilding(x, y) || this.getChest(x, y) || this.getCamp(x, y)) return false;
+    if (this.getResource(x, y) || this.getBuilding(x, y) || this.getChest(x, y) || this.getCamp(x, y) || this.getOutpost(x, y)) return false;
     const tile = this.get(x, y);
     return Boolean(tile && this.isWaterKind(tile.kind));
   },

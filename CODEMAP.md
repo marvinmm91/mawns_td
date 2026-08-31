@@ -38,7 +38,7 @@ Die UI-Dateien sind inzwischen konsolidiert: Bau-, Inventar-, Wrack-, Kontext- u
 
 ## Welt und Karte
 
-- `js/world/mapGenerator.js`: Tilemap-Erzeugung, groessere Biome, Fluss/Baeche/Furten, Startbereich und biomeabhaengige Ressourcenverteilung.
+- `js/world/mapGenerator.js`: Tilemap-Erzeugung, groessere Biome, Fluss/Baeche/Furten, Startbereich und biomeabhaengige Ressourcenverteilung inklusive seltener Aussenposten.
 - `js/world/tiles.js`: Tile-Helfer, Kacheltypen, Begehbarkeit, Bauplatz- und Blaupausenregeln.
 - `js/world/spatialIndex.js`: 8x8-Kachelindex fuer sichtbare Weltobjekte, Radiusabfragen und ID-Lookups. Bewegte Objekte werden beim Spawn registriert und nur beim Zellwechsel umindexiert; Kartengenerierung sowie Laden bauen den Index vollstaendig neu auf. Bei ausgetauschten Laufzeitlisten erkennt der Index auch gleiche Listengroessen.
 - `js/world/fog.js`: Fog-of-War-Speicher, Sichtkreis, erkundete Kacheln.
@@ -50,12 +50,14 @@ Die UI-Dateien sind inzwischen konsolidiert: Bau-, Inventar-, Wrack-, Kontext- u
 - `js/entities/enemies.js`: Gegnerlisten, Bewegung, Zielwahl, Schaden am Wrack.
 - `js/entities/projectiles.js`: Turmprojektile, Treffer, Lebensdauer.
 - `js/systems/dayNight.js`: Tag, Daemmerung, Nacht, Morgengrauen, Timer, Phasenwechsel.
+- `js/systems/damageVisuals.js`: Zentraler Treffereffekt und kurzzeitige Schadensblitze fuer Wrack und Bauwerke.
 - `js/systems/building.js`: Bauplatzpruefung, Platzieren, Blaupausen, Reparieren, Abreissen, Kosten.
 - `js/systems/pathfinding.js`: Grid-Pfade fuer Bodengegner und Blockade-Erkennung.
 - `js/systems/combat.js`: Turmzielwahl mit Prioritaeten, Schaden, AoE, Slow, Luft-/Bodenfilter.
 - `js/systems/spawning.js`: Nachtspawns, Spawnpunkte, Sicherheitsradius, Warnrichtungen.
 - `js/systems/drops.js`: Gegnerdrops, Einsammeln, Drop-Verfall optional.
 - `js/systems/treasure.js`: Schatztruhen, stationaere Monsterhorden, Schluesseldrops und Truhenbelohnungen.
+- `js/systems/outposts.js`: Einmalige Versorgungslager, Forschungsterminals und Sicherheitsbaken mit lokalen Wachgruppen.
 - `js/systems/wildlife.js`: Kleine Voegel ohne Hitbox, passive Waldbewohner mit Wander-/Fluchtverhalten, Trefferlogik und Beutedrops.
 - `js/systems/progression.js`: Wrackmodule, Siegbedingung, finale Startsequenz.
 - `js/systems/autobalance.js`: Auswertung vergangener Nacht und Anpassung der naechsten Welle.
@@ -73,7 +75,7 @@ Die UI-Dateien sind inzwischen konsolidiert: Bau-, Inventar-, Wrack-, Kontext- u
 ## Rendering
 
 - `js/render/renderMain.js`: Zentrale Render-Reihenfolge.
-- `js/render/renderWorld.js`: Tiles, Ressourcen, Blaupausen, Bauwerke, Wrack.
+- `js/render/renderWorld.js`: Tiles, Ressourcen, Aussenposten, Blaupausen, Bauwerke, Wrack und dauerhafte Schadensspuren.
 - `js/render/renderEntities.js`: Spieler, Gegner, Wildlife, Projektile, Drops.
 - `js/render/renderFog.js`: Fog of War und Nachtabdunklung.
 - `js/render/renderEffects.js`: Treffer, Partikel, Warnmarker, Schadensfeedback.
@@ -102,7 +104,7 @@ Jeder Frame wird in dieser Reihenfolge verarbeitet:
 ## Spielzustand und Persistenz
 
 - `PW.state` ist die zentrale Runtime-Struktur aus `js/state.js`.
-- Die Welt enthaelt Tiles, Fog, Ressourcen, Bauwerke, Wasserwege, Wildlife, Truhen und Monsterlager.
+- Die Welt enthaelt Tiles, Fog, Ressourcen, Bauwerke, Wasserwege, Wildlife, Truhen, Monsterlager und Aussenposten.
 - Der Spieler, das Wrack, Gegner, Projektile, Drops und Effekte liegen als Laufzeitlisten bzw. Objekte im State.
 - `js/systems/save.js` speichert den spielrelevanten State in `localStorage` unter `PW.CONFIG.saveKey`.
 - Autosave laeuft alle 15 Sekunden; `F6` speichert manuell, `F9` laedt.
@@ -113,7 +115,7 @@ Jeder Frame wird in dieser Reihenfolge verarbeitet:
 
 - `config.js` liefert globale Werte fuer Karte, Phasen, Sicht, Ressourcen, Bauen und Balancing.
 - `data/*.js` enthaelt die unveraenderlichen Definitionen fuer Ressourcen, Bauwerke, Gegner, Wildlife, Wellen und Wrackmodule.
-- `mapGenerator.js` erzeugt aus `state.seed` die Tilemap und legt darauf Ressourcen, Horden, Truhen und Wildlife an.
+- `mapGenerator.js` erzeugt aus `state.seed` die Tilemap und legt darauf Ressourcen, Horden, Truhen, Aussenposten und Wildlife an.
 - `building.js` veraendert Inventar, Bauwerkslisten und den Pathfinding-Cache.
 - `spawning.js` kauft Gegner aus dem Threat-Budget; `enemies.js` bewegt und attackiert sie.
 - `combat.js` waehlt Ziele ueber Radiusabfragen; `projectiles.js` loest Treffer, AoE, Slow und Schaden per ID-Lookup beziehungsweise Radiusabfrage aus.

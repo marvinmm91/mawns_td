@@ -119,11 +119,11 @@ Die folgenden Punkte wurden aus `ROADMAP.md` verbindlich fuer die naechste Entwi
 ### DESIGN UND UX
 
 - [x] **Lesbare Spielzustände** (`M`): Einheitliche Schatten, Umrisse und Farbcodes machen Gegner, Beute, interaktive Objekte und Verbundene klar unterscheidbar. Betroffene Dateien: `js/render/*`, `tests/`. Akzeptanz: Keine neue Hitbox oder Regel; relevante Zustände sind auch bei Nacht und in dichter Szene unterscheidbar.
-- [ ] **Schadenszustände fuer Weltobjekte** (`S`): Mauern, Tuerme, Bruecken und Wrack erhalten klarere visuelle Beschaedigung. Betroffene Dateien: `js/render/renderWorld.js`, `js/render/renderEffects.js`. Akzeptanz: Der Schaden ist ohne Panel erkennbar und verschwindet nach der Reparatur.
+- [x] **Schadenszustände fuer Weltobjekte** (`S`): Mauern, Tuerme, Bruecken und Wrack erhalten klarere visuelle Beschaedigung. Betroffene Dateien: `js/systems/damageVisuals.js`, `js/entities/enemies.js`, `js/render/renderWorld.js`, `js/render/renderEffects.js`, `tests/`. Akzeptanz: Der Schaden ist ohne Panel erkennbar und verschwindet nach der Reparatur.
 
 ### NEUE SPIELINHALTE
 
-- [ ] **Verlassene Aussenposten** (`M`): Seltene Weltziele liefern eine einmalige Belohnung wie Ressourcen, Bauplan oder kurze Verteidigungsaufgabe. Betroffene Dateien: `js/world/mapGenerator.js`, `js/systems/*`, `js/render/*`, `js/ui/*`, `js/systems/save.js`. Akzeptanz: Mehrere Outpost-Varianten sind erreichbar, lesbar und konfliktfrei mit Wasser, Ressourcen und Lagern platziert.
+- [x] **Verlassene Aussenposten** (`M`): Seltene Weltziele liefern eine einmalige Belohnung wie Ressourcen, Bauplan oder kurze Verteidigungsaufgabe. Betroffene Dateien: `js/world/mapGenerator.js`, `js/systems/outposts.js`, `js/entities/*`, `js/render/*`, `js/ui/*`, `js/systems/save.js`, `tests/`. Akzeptanz: Mehrere Outpost-Varianten sind erreichbar, lesbar und konfliktfrei mit Wasser, Ressourcen und Lagern platziert.
 - [ ] **Hordenanfuehrer** (`M`): Staerkste Horden enthalten einen klar erkennbaren Anfuehrer mit garantiertem Schluessel- oder Bauteildrop. Betroffene Dateien: `js/data/enemies.js`, `js/systems/treasure.js`, `js/entities/*`, `js/render/*`. Akzeptanz: Der Drop faellt genau einmal und die Horde bleibt weiterhin eine optionale Herausforderung.
 
 ### BALANCING

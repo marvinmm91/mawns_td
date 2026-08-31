@@ -29,6 +29,12 @@ PW.CONFIG = Object.freeze({
     campAggroTiles: 7.8,
     campAttackRange: 34
   },
+  outposts: {
+    count: 3,
+    minShipDistance: 24,
+    minSpacing: 18,
+    guardRadiusTiles: 6.5
+  },
   gatherTicks: {
     tree: [1, 2],
     rock: [2, 3],

@@ -71,6 +71,7 @@ PW.Player = {
       else PW.BuildingSystem.placeSelected(target.x, target.y);
       return;
     }
+    if (PW.OutpostSystem && PW.OutpostSystem.interactAt(target.x, target.y)) return;
     if (PW.TreasureSystem && PW.TreasureSystem.openChestAt(target.x, target.y)) return;
     if (state.player.selectedTool === "repair") {
       if (PW.BuildingSystem.repairAt(target.x, target.y)) return;

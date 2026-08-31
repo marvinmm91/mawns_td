@@ -12,6 +12,8 @@ PW.MapGenerator = {
     world.wildlife = [];
     world.treasureChests = [];
     world.monsterCamps = [];
+    world.outposts = [];
+    world.outpostMap.clear();
     world.buildings = [];
     world.buildingMap.clear();
     world.blueprints = [];
@@ -39,6 +41,7 @@ PW.MapGenerator = {
     this.clearArea(Math.floor(state.player.x / world.tileSize), Math.floor(state.player.y / world.tileSize), 4);
     this.scatterResources();
     if (PW.TreasureSystem) PW.TreasureSystem.generateInitial();
+    if (PW.OutpostSystem) PW.OutpostSystem.generateInitial();
     if (PW.WildlifeSystem) PW.WildlifeSystem.generateInitial();
     PW.SpatialIndex.rebuildStatic();
     PW.SpatialIndex.syncDynamic();
