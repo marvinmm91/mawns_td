@@ -99,7 +99,34 @@ Noch nicht beschlossene Vorschlaege gehoeren ausschliesslich in `ROADMAP.md`. So
 
 ## VERBINDLICH FESTGELEGTE OFFENE PUNKTE
 
-Aktuell gibt es keine verbindlich festgelegten offenen Entwicklungspunkte.
+Die folgenden Punkte wurden aus `ROADMAP.md` verbindlich fuer die naechste Entwicklungsphase ausgewaehlt. Sie werden einzeln umgesetzt, jeweils mit einem eigenen Commit. Nach jedem abgeschlossenen Punkt wird vor dem naechsten Punkt Ruecksprache gehalten.
+
+### PERFORMANCE
+
+- [ ] **Messung und Stresstest** (`S`): Laufzeitmessung fuer Update und Rendern, sichtbares Debug-Overlay und ein reproduzierbarer Browser-Stresstest. Betroffene Dateien: `js/gameLoop.js`, `js/render/*`, `js/config.js`, `tests/`. Akzeptanz: Messwerte sind nur bei aktiviertem Debug sichtbar; der Stresstest prueft eine grosse Gegner-/Turmmenge ohne Browserfehler.
+- [ ] **Raeumlicher Weltindex** (`M`): Ressourcen, Gebaeude, Drops und Akteure werden fuer sichtbare Bereiche und lokale Abfragen indexiert. Betroffene Dateien: `js/world/*`, `js/render/*`, `js/systems/*`. Abhaengigkeit: Messung und Stresstest. Akzeptanz: Das Verhalten bleibt identisch, Rendering und Abfragen laufen nicht mehr ueber alle Weltobjekte.
+- [ ] **Raeumliche Kampfqueries** (`M`): Turmzielwahl und Projektil-Zielsuche verwenden lokale Abfragen beziehungsweise ID-Lookups. Betroffene Dateien: `js/systems/combat.js`, `js/entities/projectiles.js`, `js/entities/enemies.js`. Abhaengigkeit: Raeumlicher Weltindex. Akzeptanz: Zielauswahl, AoE und Spezialeffekte bleiben korrekt; Lasttest misst keine Verschlechterung.
+
+### GAMEPLAY
+
+- [ ] **Turm-Zielprioritaeten** (`M`): Pro Turm waehlt der Spieler eine Prioritaet wie Naechster, Staerkster, Luft zuerst oder Brecher zuerst. Betroffene Dateien: `js/data/buildings.js`, `js/systems/combat.js`, `js/ui/panels.js`. Akzeptanz: Prioritaeten sind im Baukontext lesbar, speicherbar und durch Tests abgedeckt.
+- [ ] **Kartennadeln** (`S`): Spieler kann wichtige Ressourcen, Truhen, Horden und Brueckenplaetze markieren. Betroffene Dateien: `js/input.js`, `js/render/*`, `js/ui/*`, `js/systems/save.js`. Akzeptanz: Markierungen sind auf der erkundeten Karte sichtbar und bleiben nach Speichern/Laden erhalten.
+
+### DESIGN UND UX
+
+- [ ] **Lesbare Spielzustände** (`M`): Einheitliche Schatten, Umrisse und Farbcodes machen Gegner, Beute, interaktive Objekte und Verbundene klar unterscheidbar. Betroffene Dateien: `js/render/*`, `js/ui/icons.js`. Akzeptanz: Keine neue Hitbox oder Regel; relevante Zustände sind auch bei Nacht und in dichter Szene unterscheidbar.
+- [ ] **Schadenszustände fuer Weltobjekte** (`S`): Mauern, Tuerme, Bruecken und Wrack erhalten klarere visuelle Beschaedigung. Betroffene Dateien: `js/render/renderWorld.js`, `js/render/renderEffects.js`. Akzeptanz: Der Schaden ist ohne Panel erkennbar und verschwindet nach der Reparatur.
+
+### NEUE SPIELINHALTE
+
+- [ ] **Verlassene Aussenposten** (`M`): Seltene Weltziele liefern eine einmalige Belohnung wie Ressourcen, Bauplan oder kurze Verteidigungsaufgabe. Betroffene Dateien: `js/world/mapGenerator.js`, `js/systems/*`, `js/render/*`, `js/ui/*`, `js/systems/save.js`. Akzeptanz: Mehrere Outpost-Varianten sind erreichbar, lesbar und konfliktfrei mit Wasser, Ressourcen und Lagern platziert.
+- [ ] **Hordenanfuehrer** (`M`): Staerkste Horden enthalten einen klar erkennbaren Anfuehrer mit garantiertem Schluessel- oder Bauteildrop. Betroffene Dateien: `js/data/enemies.js`, `js/systems/treasure.js`, `js/entities/*`, `js/render/*`. Akzeptanz: Der Drop faellt genau einmal und die Horde bleibt weiterhin eine optionale Herausforderung.
+
+### BALANCING
+
+- [ ] **Seed-basierter Balance- und Lasttest** (`M`): Viele feste Karten-Seeds bis zur spaeten Nacht simulieren und Kennzahlen zu Ressourcen, Verlusten, Wellen und Last erfassen. Betroffene Dateien: `tests/`, gegebenenfalls `js/config.js`. Akzeptanz: Der Lauf ist reproduzierbar und zeigt Ausreisser direkt an.
+- [ ] **Skalierende Horden- und Truhenbelohnungen** (`M`): Beute richtet sich nachvollziehbar nach Entfernung, Nacht und Hordenstaerke. Betroffene Dateien: `js/systems/treasure.js`, `js/data/*`, `GAME_DESIGN.md`. Abhaengigkeit: Balance- und Lasttest. Akzeptanz: Fruehe Truhen brechen die Oekonomie nicht, spaete Ziele bleiben attraktiv.
+- [ ] **Vergleichbare Turmoekonomie** (`S`): Eine automatisierte Tabelle prueft Schaden pro Kosten, Reichweite, Zieltypen und Upgrade-Wert aller Tuerme. Betroffene Dateien: `tests/`, `js/data/buildings.js`, `js/systems/building.js`. Akzeptanz: Jede Turmrolle und jedes Upgrade hat einen belegbaren wirtschaftlichen Zweck.
 
 Neue Punkte werden erst hier aufgenommen, wenn sie aus `ROADMAP.md` ausgewaehlt und konkretisiert wurden. Jeder aufgenommene Punkt soll mindestens enthalten:
 
