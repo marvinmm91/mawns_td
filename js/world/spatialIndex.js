@@ -9,17 +9,21 @@ PW.SpatialIndex = {
     world.spatialIndex = {
       cellSize: this.cellSize,
       buckets: {},
+      locations: {},
+      sources: {},
       sourceCounts: {}
     };
     [...this.staticKinds, ...this.dynamicKinds].forEach((kind) => {
       world.spatialIndex.buckets[kind] = new Map();
+      world.spatialIndex.locations[kind] = new Map();
+      world.spatialIndex.sources[kind] = this.source(kind);
       world.spatialIndex.sourceCounts[kind] = 0;
     });
     return world.spatialIndex;
   },
   index() {
     const index = PW.state.world.spatialIndex;
-    if (!index || index.cellSize !== this.cellSize) return this.reset();
+    if (!index || index.cellSize !== this.cellSize || !index.locations || !index.sources) return this.reset();
     return index;
   },
   source(kind) {
@@ -43,9 +47,12 @@ PW.SpatialIndex = {
   rebuild(kind) {
     const index = this.index();
     const buckets = index.buckets[kind] || (index.buckets[kind] = new Map());
+    const locations = index.locations[kind] || (index.locations[kind] = new Map());
     buckets.clear();
+    locations.clear();
     const source = this.source(kind);
-    source.forEach((item) => this.addToBuckets(buckets, kind, item));
+    source.forEach((item) => this.addToBuckets(kind, item));
+    index.sources[kind] = source;
     index.sourceCounts[kind] = source.length;
   },
   rebuildStatic() {
@@ -55,39 +62,71 @@ PW.SpatialIndex = {
   syncDynamic() {
     this.dynamicKinds.forEach((kind) => this.rebuild(kind));
   },
-  addToBuckets(buckets, kind, item) {
+  addToBuckets(kind, item) {
     if (!item) return;
+    const index = this.index();
+    const buckets = index.buckets[kind] || (index.buckets[kind] = new Map());
+    const locations = index.locations[kind] || (index.locations[kind] = new Map());
     const pos = this.tilePosition(kind, item);
     if (!Number.isFinite(pos.x) || !Number.isFinite(pos.y)) return;
     const key = this.cellKey(pos.x, pos.y);
     const bucket = buckets.get(key);
     if (bucket) bucket.push(item);
     else buckets.set(key, [item]);
+    locations.set(item, key);
   },
   add(kind, item) {
     const index = this.index();
+    const locations = index.locations[kind] || (index.locations[kind] = new Map());
+    if (locations.has(item)) this.update(kind, item);
+    else this.addToBuckets(kind, item);
+    const source = this.source(kind);
+    index.sources[kind] = source;
+    index.sourceCounts[kind] = source.length;
+  },
+  update(kind, item) {
+    const index = this.index();
     const buckets = index.buckets[kind] || (index.buckets[kind] = new Map());
-    this.addToBuckets(buckets, kind, item);
-    index.sourceCounts[kind] = this.source(kind).length;
+    const locations = index.locations[kind] || (index.locations[kind] = new Map());
+    if (!item) return;
+    const pos = this.tilePosition(kind, item);
+    if (!Number.isFinite(pos.x) || !Number.isFinite(pos.y)) return;
+    const nextKey = this.cellKey(pos.x, pos.y);
+    const previousKey = locations.get(item);
+    if (previousKey === nextKey) return;
+    if (previousKey) this.removeFromBucket(buckets, previousKey, item);
+    const bucket = buckets.get(nextKey);
+    if (bucket) bucket.push(item);
+    else buckets.set(nextKey, [item]);
+    locations.set(item, nextKey);
+  },
+  removeFromBucket(buckets, key, item) {
+    const bucket = buckets.get(key);
+    if (!bucket) return;
+    const next = bucket.filter((candidate) => candidate !== item);
+    if (next.length) buckets.set(key, next);
+    else buckets.delete(key);
   },
   remove(kind, item) {
     const index = this.index();
     const buckets = index.buckets[kind];
+    const locations = index.locations[kind];
     if (!buckets || !item) return;
-    const pos = this.tilePosition(kind, item);
-    const key = this.cellKey(pos.x, pos.y);
-    const bucket = buckets.get(key);
-    if (bucket) {
-      const next = bucket.filter((candidate) => candidate !== item);
-      if (next.length) buckets.set(key, next);
-      else buckets.delete(key);
-    }
-    index.sourceCounts[kind] = this.source(kind).length;
+    const key = locations && locations.get(item);
+    if (key) this.removeFromBucket(buckets, key, item);
+    if (locations) locations.delete(item);
+    const source = this.source(kind);
+    index.sources[kind] = source;
+    index.sourceCounts[kind] = source.length;
+  },
+  ensure(kind) {
+    const index = this.index();
+    const source = this.source(kind);
+    if (index.sources[kind] !== source || index.sourceCounts[kind] !== source.length) this.rebuild(kind);
   },
   visible(kind, bounds) {
     const index = this.index();
-    const source = this.source(kind);
-    if (this.staticKinds.has(kind) && index.sourceCounts[kind] !== source.length) this.rebuild(kind);
+    this.ensure(kind);
     const buckets = index.buckets[kind];
     if (!buckets) return [];
     const minCellX = Math.floor(bounds.minX / this.cellSize);

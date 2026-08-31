@@ -29,7 +29,18 @@ const { pathToFileURL } = require("url");
     const building = free ? PW.Tiles.getBuilding(free.x, free.y) : null;
     PW.DropSystem.spawn("wood", 1, state.player.x + 12, state.player.y);
     PW.DropSystem.spawn("stone", 1, state.player.x + state.world.width * state.world.tileSize, state.player.y);
-    PW.SpatialIndex.syncDynamic();
+    const woodDrop = state.drops.find((drop) => drop.resource === "wood");
+    const startTile = PW.Utils.worldToTile(woodDrop.x);
+    const startBounds = { minX: startTile - 1, maxX: startTile + 1, minY: PW.Utils.worldToTile(woodDrop.y) - 1, maxY: PW.Utils.worldToTile(woodDrop.y) + 1 };
+    const movedTile = startTile + PW.SpatialIndex.cellSize + 2;
+    woodDrop.x = PW.Utils.tileToWorld(movedTile);
+    PW.SpatialIndex.update("drops", woodDrop);
+    const movedBounds = { minX: movedTile - 1, maxX: movedTile + 1, minY: startBounds.minY, maxY: startBounds.maxY };
+    const dropMovedOut = !PW.SpatialIndex.visible("drops", startBounds).includes(woodDrop);
+    const dropMovedIn = PW.SpatialIndex.visible("drops", movedBounds).includes(woodDrop);
+    const replacementDrop = { ...woodDrop, id: "replacement-drop" };
+    state.drops = state.drops.map((drop) => drop === woodDrop ? replacementDrop : drop);
+    const replacementVisible = PW.SpatialIndex.visible("drops", movedBounds).includes(replacementDrop);
     const drops = PW.SpatialIndex.visible("drops", bounds).map((drop) => drop.resource);
     const buildingVisible = building ? PW.SpatialIndex.visible("buildings", bounds).includes(building) : false;
     PW.Save.save(false);
@@ -41,6 +52,9 @@ const { pathToFileURL } = require("url");
       built,
       buildingVisible,
       drops,
+      dropMovedOut,
+      dropMovedIn,
+      replacementVisible,
       loaded,
       rebuiltResources,
       resourceCount: state.world.resources.length,
@@ -51,7 +65,7 @@ const { pathToFileURL } = require("url");
   await browser.close();
   if (errors.length) throw new Error(`Browserfehler:\n${errors.join("\n")}`);
   if (JSON.stringify(result.manualResources) !== JSON.stringify(result.indexedResources)) throw new Error(`Ressourcenindex weicht ab: ${JSON.stringify(result)}`);
-  if (!result.built || !result.buildingVisible || !result.drops.includes("wood") || result.drops.includes("stone")) {
+  if (!result.built || !result.buildingVisible || !result.drops.includes("wood") || result.drops.includes("stone") || !result.dropMovedOut || !result.dropMovedIn || !result.replacementVisible) {
     throw new Error(`Sichtbarer Objektindex fehlerhaft: ${JSON.stringify(result)}`);
   }
   if (!result.loaded || result.rebuiltResources < 1 || result.stats.cellSize !== 8) throw new Error(`Index nach Laden fehlerhaft: ${JSON.stringify(result)}`);

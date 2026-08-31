@@ -19,14 +19,16 @@ PW.DropSystem = {
   },
   spawn(resource, amount, x, y) {
     const state = PW.state;
-    state.drops.push({
+    const drop = {
       id: `drop-${Date.now()}-${Math.random()}`,
       resource,
       amount,
       x: x + state.rng.float(-8, 8),
       y: y + state.rng.float(-8, 8),
       life: 999
-    });
+    };
+    state.drops.push(drop);
+    PW.SpatialIndex.add("drops", drop);
   },
   update(dt) {
     const state = PW.state;
@@ -42,7 +44,10 @@ PW.DropSystem = {
         drop.x += (state.player.x - drop.x) / dist * Math.min(speed, dist);
         drop.y += (state.player.y - drop.y) / dist * Math.min(speed, dist);
       }
+      if (!drop.remove) PW.SpatialIndex.update("drops", drop);
     }
+    const removed = state.drops.filter((drop) => drop.remove || drop.life <= 0);
     state.drops = state.drops.filter((drop) => !drop.remove && drop.life > 0);
+    removed.forEach((drop) => PW.SpatialIndex.remove("drops", drop));
   }
 };

@@ -6,6 +6,8 @@ PW.WildlifeSystem = {
     const world = state.world;
     world.birds = [];
     world.wildlife = [];
+    PW.SpatialIndex.rebuild("birds");
+    PW.SpatialIndex.rebuild("wildlife");
     state.fauna = state.fauna || {};
     state.fauna.birdTarget = state.rng.int(PW.WILDLIFE.birds.target[0], PW.WILDLIFE.birds.target[1]);
     state.fauna.critterTarget = state.rng.int(PW.WILDLIFE.critterTarget[0], PW.WILDLIFE.critterTarget[1]);
@@ -58,6 +60,8 @@ PW.WildlifeSystem = {
     if (!Number.isFinite(state.fauna.critterRespawnTimer)) {
       state.fauna.critterRespawnTimer = state.rng.float(PW.WILDLIFE.respawnEvery[0], PW.WILDLIFE.respawnEvery[1]);
     }
+    PW.SpatialIndex.rebuild("birds");
+    PW.SpatialIndex.rebuild("wildlife");
     while (world.birds.length < state.fauna.birdTarget) this.spawnBird();
     while (this.activeCritters().length < state.fauna.critterTarget) {
       if (!this.spawnCritter()) break;
@@ -97,7 +101,7 @@ PW.WildlifeSystem = {
     const ts = world.tileSize;
     const tileX = origin ? PW.Utils.clamp(origin.x + rng.float(-origin.radius, origin.radius), 2, world.width - 2) : rng.float(2, world.width - 2);
     const tileY = origin ? PW.Utils.clamp(origin.y + rng.float(-origin.radius, origin.radius), 2, world.height - 2) : rng.float(2, world.height - 2);
-    world.birds.push({
+    const bird = {
       id: `bird-${Date.now()}-${world.birds.length}-${rng.int(0, 99999)}`,
       x: tileX * ts + rng.float(-8, 8),
       y: tileY * ts + rng.float(-8, 8),
@@ -108,7 +112,9 @@ PW.WildlifeSystem = {
       wingPhase: rng.float(0, Math.PI * 2),
       turnTimer: rng.float(0.8, 2.4),
       age: rng.float(0, 10)
-    });
+    };
+    world.birds.push(bird);
+    PW.SpatialIndex.add("birds", bird);
   },
 
   spawnCritter(type = null) {
@@ -120,7 +126,7 @@ PW.WildlifeSystem = {
     if (!def) return false;
     const spot = this.findCritterSpawn(def);
     if (!spot) return false;
-    state.world.wildlife.push({
+    const critter = {
       id: `wild-${Date.now()}-${state.world.wildlife.length}-${rng.int(0, 99999)}`,
       type: id,
       x: spot.x,
@@ -138,7 +144,9 @@ PW.WildlifeSystem = {
       targetY: spot.y,
       fleeTimer: 0,
       hurtTimer: 0
-    });
+    };
+    state.world.wildlife.push(critter);
+    PW.SpatialIndex.add("wildlife", critter);
     return true;
   },
 
@@ -204,6 +212,7 @@ PW.WildlifeSystem = {
       if (bird.x > maxX + margin) bird.x = -margin;
       if (bird.y < -margin) bird.y = maxY + margin;
       if (bird.y > maxY + margin) bird.y = -margin;
+      PW.SpatialIndex.update("birds", bird);
     }
   },
 
@@ -255,8 +264,11 @@ PW.WildlifeSystem = {
         critter.vx *= 0.82;
         critter.vy *= 0.82;
       }
+      PW.SpatialIndex.update("wildlife", critter);
     }
+    const removed = state.world.wildlife.filter((critter) => critter.remove);
     state.world.wildlife = state.world.wildlife.filter((critter) => !critter.remove);
+    removed.forEach((critter) => PW.SpatialIndex.remove("wildlife", critter));
   },
 
   pickWanderTarget(critter, def) {

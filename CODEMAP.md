@@ -40,7 +40,7 @@ Die UI-Dateien sind inzwischen konsolidiert: Bau-, Inventar-, Wrack-, Kontext- u
 
 - `js/world/mapGenerator.js`: Tilemap-Erzeugung, groessere Biome, Fluss/Baeche/Furten, Startbereich und biomeabhaengige Ressourcenverteilung.
 - `js/world/tiles.js`: Tile-Helfer, Kacheltypen, Begehbarkeit, Bauplatzregeln.
-- `js/world/spatialIndex.js`: 8x8-Kachelindex fuer sichtbare Weltobjekte und lokale Abfragen.
+- `js/world/spatialIndex.js`: 8x8-Kachelindex fuer sichtbare Weltobjekte und lokale Abfragen. Bewegte Objekte werden beim Spawn registriert und nur beim Zellwechsel umindexiert; Kartengenerierung sowie Laden bauen den Index vollstaendig neu auf. Bei ausgetauschten Laufzeitlisten erkennt der Index auch gleiche Listengroessen.
 - `js/world/fog.js`: Fog-of-War-Speicher, Sichtkreis, erkundete Kacheln.
 - `js/world/resources.js`: Ressourcenknoten, Abbaufortschritt, Inventarzugang.
 
@@ -117,6 +117,7 @@ Jeder Frame wird in dieser Reihenfolge verarbeitet:
 - `building.js` veraendert Inventar, Bauwerkslisten und den Pathfinding-Cache.
 - `spawning.js` kauft Gegner aus dem Threat-Budget; `enemies.js` bewegt und attackiert sie.
 - `combat.js` waehlt Ziele; `projectiles.js` loest Treffer, AoE, Slow und Schaden aus.
+- Dynamische Listen melden Spawn, Bewegung und Entfernung an `spatialIndex.js`; die Render-Schleife liest den fertigen Index nur noch aus.
 - `drops.js` erzeugt Beute und sammelt sie ueber Pickup-/Magnetradius ein.
 - `dayNight.js`, `progression.js` und `autobalance.js` verbinden Phasen, Nachtberichte, Module und Sieg/Niederlage.
 

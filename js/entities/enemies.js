@@ -26,6 +26,7 @@ PW.EnemySystem = {
       campKeyCarrier: options.campKeyCarrier === true
     };
     PW.state.enemies.push(enemy);
+    PW.SpatialIndex.add("enemies", enemy);
     return enemy;
   },
   update(dt) {
@@ -36,8 +37,11 @@ PW.EnemySystem = {
       if (enemy.slowTimer <= 0) enemy.slowFactor = 1;
       if (enemy.retreating) this.updateRetreat(enemy, dt);
       else this.updateAttack(enemy, dt);
+      if (enemy.hp > 0 && !enemy.remove) PW.SpatialIndex.update("enemies", enemy);
     }
+    const removed = state.enemies.filter((enemy) => enemy.hp <= 0 || enemy.remove);
     state.enemies = state.enemies.filter((enemy) => enemy.hp > 0 && !enemy.remove);
+    removed.forEach((enemy) => PW.SpatialIndex.remove("enemies", enemy));
   },
   updateAttack(enemy, dt) {
     const def = PW.ENEMIES[enemy.type];

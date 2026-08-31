@@ -19,6 +19,14 @@ const { pathToFileURL } = require("url");
 
   const result = await page.evaluate(async () => {
     const state = PW.state;
+    state.seed = 0x51a71c;
+    state.rng = PW.Random.create(state.seed);
+    state.enemies = [];
+    state.projectiles = [];
+    state.drops = [];
+    state.effects = [];
+    PW.MapGenerator.generate();
+    PW.Camera.update();
     PW.Performance.setEnabled(true);
     const towerTiles = [];
     const centerX = state.ship.x + Math.floor(state.ship.size / 2);
@@ -38,6 +46,7 @@ const { pathToFileURL } = require("url");
       state.world.buildings.push(building);
       state.world.buildingMap.set(PW.Utils.tileKey(tile.x, tile.y), building);
     });
+    PW.SpatialIndex.rebuildStatic();
     for (let index = 0; index < 360; index++) {
       const angle = index * 2.399963229728653;
       const radius = 120 + (index % 18) * 13;
@@ -52,6 +61,7 @@ const { pathToFileURL } = require("url");
     }
     return {
       profile: PW.Performance.snapshot(),
+      seed: state.seed,
       towers: towerTiles.length,
       enemies: state.enemies.length,
       overlayPixels
@@ -60,13 +70,14 @@ const { pathToFileURL } = require("url");
 
   await browser.close();
   if (errors.length) throw new Error(`Browserfehler:\n${errors.join("\n")}`);
-  if (result.towers < 45 || result.enemies < 300) throw new Error(`Stressszene unvollstaendig: ${JSON.stringify(result)}`);
+  if (result.seed !== 0x51a71c || result.towers < 45 || result.enemies < 300) throw new Error(`Stressszene unvollstaendig: ${JSON.stringify(result)}`);
   if (!result.profile.enabled || result.profile.frames < 20 || !Number.isFinite(result.profile.fps) || result.profile.fps <= 0) {
     throw new Error(`Leistungsmessung fehlerhaft: ${JSON.stringify(result)}`);
   }
   if (!Number.isFinite(result.profile.updateMs) || !Number.isFinite(result.profile.renderMs) || result.overlayPixels < 300) {
     throw new Error(`Leistungsanzeige fehlt: ${JSON.stringify(result)}`);
   }
+  if (result.profile.workMs > 40) throw new Error(`Stresstest zu langsam: ${JSON.stringify(result)}`);
   console.log("OK performance stress", JSON.stringify(result));
 })().catch((error) => {
   console.error(error);

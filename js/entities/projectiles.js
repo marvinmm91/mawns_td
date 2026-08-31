@@ -14,7 +14,7 @@ PW.ProjectileSystem = {
       PW.EnemySystem.damage(enemy, def.damage, tower.type);
       return;
     }
-    PW.state.projectiles.push({
+    const projectile = {
       x: origin.x,
       y: origin.y,
       prevX: origin.x,
@@ -28,7 +28,9 @@ PW.ProjectileSystem = {
       color: this.colorFor(tower.type),
       life: 2.4,
       sourceType: tower.type
-    });
+    };
+    PW.state.projectiles.push(projectile);
+    PW.SpatialIndex.add("projectiles", projectile);
   },
   colorFor(type) {
     if (type === "flak") return "#a9d8ff";
@@ -59,8 +61,11 @@ PW.ProjectileSystem = {
       projectile.x += (dx / Math.max(1, dist)) * projectile.speed * dt;
       projectile.y += (dy / Math.max(1, dist)) * projectile.speed * dt;
       if (projectile.life <= 0) projectile.remove = true;
+      if (!projectile.remove) PW.SpatialIndex.update("projectiles", projectile);
     }
+    const removed = state.projectiles.filter((projectile) => projectile.remove);
     state.projectiles = state.projectiles.filter((projectile) => !projectile.remove);
+    removed.forEach((projectile) => PW.SpatialIndex.remove("projectiles", projectile));
   },
   hit(projectile, target) {
     if (projectile.splash > 0) {
