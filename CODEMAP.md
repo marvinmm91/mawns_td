@@ -65,6 +65,8 @@ Die UI-Dateien sind inzwischen konsolidiert: Bau-, Inventar-, Wrack-, Kontext- u
 - `js/systems/pixelArt.js`: Pixel-Design-Overrides, Asset-Katalog, LocalStorage, Import/Export und Start-Mods.
 - `mods/pixel-overrides.js`: Optional geladene Pixel-Mod-Datei fuer Designs, die beim Spielstart aktiv sein sollen; aktuell leerer Mod-Container.
 
+Die zusammengefasste Modusregression liegt in `tests/defense-modes-regression.js`; sie startet Auswahl-/Migrationstest, Routenabfrage, Classic, Aggressive und Modusbudget als getrennte reproduzierbare Browser-Szenarien.
+
 ## UI
 
 - `js/ui/hud.js`: Wrack-HP, Timer, Nachtzaehler, Modulfortschritt, Werkzeugleiste und Ressourcen-Kurzliste.

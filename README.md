@@ -45,3 +45,4 @@ Das Wrack muss repariert und bis zum Start verteidigt werden. Verliert es alle S
 - `node tests/endurance.js`
 - `node tests/floating-feedback.js`
 - `node tests/tower-role-economy.js`
+- `node tests/defense-modes-regression.js`
