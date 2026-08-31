@@ -43,7 +43,7 @@ PW.ProjectileSystem = {
     const state = PW.state;
     for (const projectile of state.projectiles) {
       projectile.life -= dt;
-      const target = state.enemies.find((enemy) => enemy.id === projectile.targetId);
+      const target = PW.SpatialIndex.byId("enemies", projectile.targetId);
       if (!target || target.hp <= 0) {
         projectile.remove = true;
         continue;
@@ -70,10 +70,10 @@ PW.ProjectileSystem = {
   hit(projectile, target) {
     if (projectile.splash > 0) {
       const radius = projectile.splash * PW.state.world.tileSize;
-      for (const enemy of PW.state.enemies) {
+      for (const enemy of PW.SpatialIndex.nearby("enemies", target.x, target.y, radius)) {
+        if (enemy.hp <= 0 || enemy.remove) continue;
         if (PW.ENEMIES[enemy.type].moveType !== PW.ENEMIES[target.type].moveType) continue;
-        const dist = PW.Utils.distance(enemy.x, enemy.y, target.x, target.y);
-        if (dist <= radius) PW.EnemySystem.damage(enemy, projectile.damage * (enemy === target ? 1 : 0.62), projectile.sourceType);
+        PW.EnemySystem.damage(enemy, projectile.damage * (enemy === target ? 1 : 0.62), projectile.sourceType);
       }
       PW.Utils.addEffect("catapultSplash", target.x, target.y, projectile.color, 0.58, projectile.splash);
       return;

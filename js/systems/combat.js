@@ -29,15 +29,14 @@ PW.Combat = {
     const scaled = this.scaledTowerDef(building, def);
     const origin = PW.Tiles.tileCenter(building.x, building.y);
     const rangePx = scaled.range * PW.state.world.tileSize;
+    const ship = PW.EnemySystem.shipCenter();
     let best = null;
     let bestScore = Infinity;
-    for (const enemy of PW.state.enemies) {
-      if (enemy.retreating) continue;
+    for (const enemy of PW.SpatialIndex.nearby("enemies", origin.x, origin.y, rangePx)) {
+      if (enemy.hp <= 0 || enemy.remove || enemy.retreating) continue;
       const enemyDef = PW.ENEMIES[enemy.type];
       if (!scaled.targets.includes(enemyDef.moveType)) continue;
       const dist = PW.Utils.distance(origin.x, origin.y, enemy.x, enemy.y);
-      if (dist > rangePx) continue;
-      const ship = PW.EnemySystem.shipCenter();
       const score = PW.Utils.distance(enemy.x, enemy.y, ship.x, ship.y) + dist * 0.05;
       if (score < bestScore) {
         best = enemy;
@@ -49,9 +48,11 @@ PW.Combat = {
   disruptionAt(tileX, tileY) {
     const x = PW.Utils.tileToWorld(tileX);
     const y = PW.Utils.tileToWorld(tileY);
-    return PW.state.enemies.some((enemy) => {
+    const maxAura = Math.max(0, ...Object.values(PW.ENEMIES).map((def) => def.aura || 0)) * PW.state.world.tileSize;
+    if (maxAura <= 0) return false;
+    return PW.SpatialIndex.nearby("enemies", x, y, maxAura).some((enemy) => {
       const def = PW.ENEMIES[enemy.type];
-      return def.aura && PW.Utils.distance(enemy.x, enemy.y, x, y) <= def.aura * PW.state.world.tileSize;
+      return enemy.hp > 0 && !enemy.remove && def.aura && PW.Utils.distance(enemy.x, enemy.y, x, y) <= def.aura * PW.state.world.tileSize;
     });
   }
 };

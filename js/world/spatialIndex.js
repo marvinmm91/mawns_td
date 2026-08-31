@@ -9,12 +9,14 @@ PW.SpatialIndex = {
     world.spatialIndex = {
       cellSize: this.cellSize,
       buckets: {},
+      ids: {},
       locations: {},
       sources: {},
       sourceCounts: {}
     };
     [...this.staticKinds, ...this.dynamicKinds].forEach((kind) => {
       world.spatialIndex.buckets[kind] = new Map();
+      world.spatialIndex.ids[kind] = new Map();
       world.spatialIndex.locations[kind] = new Map();
       world.spatialIndex.sources[kind] = this.source(kind);
       world.spatialIndex.sourceCounts[kind] = 0;
@@ -23,7 +25,7 @@ PW.SpatialIndex = {
   },
   index() {
     const index = PW.state.world.spatialIndex;
-    if (!index || index.cellSize !== this.cellSize || !index.locations || !index.sources) return this.reset();
+    if (!index || index.cellSize !== this.cellSize || !index.ids || !index.locations || !index.sources) return this.reset();
     return index;
   },
   source(kind) {
@@ -47,8 +49,10 @@ PW.SpatialIndex = {
   rebuild(kind) {
     const index = this.index();
     const buckets = index.buckets[kind] || (index.buckets[kind] = new Map());
+    const ids = index.ids[kind] || (index.ids[kind] = new Map());
     const locations = index.locations[kind] || (index.locations[kind] = new Map());
     buckets.clear();
+    ids.clear();
     locations.clear();
     const source = this.source(kind);
     source.forEach((item) => this.addToBuckets(kind, item));
@@ -66,6 +70,7 @@ PW.SpatialIndex = {
     if (!item) return;
     const index = this.index();
     const buckets = index.buckets[kind] || (index.buckets[kind] = new Map());
+    const ids = index.ids[kind] || (index.ids[kind] = new Map());
     const locations = index.locations[kind] || (index.locations[kind] = new Map());
     const pos = this.tilePosition(kind, item);
     if (!Number.isFinite(pos.x) || !Number.isFinite(pos.y)) return;
@@ -73,6 +78,7 @@ PW.SpatialIndex = {
     const bucket = buckets.get(key);
     if (bucket) bucket.push(item);
     else buckets.set(key, [item]);
+    if (item.id) ids.set(item.id, item);
     locations.set(item, key);
   },
   add(kind, item) {
@@ -110,10 +116,12 @@ PW.SpatialIndex = {
   remove(kind, item) {
     const index = this.index();
     const buckets = index.buckets[kind];
+    const ids = index.ids[kind];
     const locations = index.locations[kind];
     if (!buckets || !item) return;
     const key = locations && locations.get(item);
     if (key) this.removeFromBucket(buckets, key, item);
+    if (ids && item.id && ids.get(item.id) === item) ids.delete(item.id);
     if (locations) locations.delete(item);
     const source = this.source(kind);
     index.sources[kind] = source;
@@ -145,6 +153,28 @@ PW.SpatialIndex = {
       }
     }
     return result;
+  },
+  worldPosition(kind, item) {
+    if (kind === "resources" || kind === "buildings") return PW.Tiles.tileCenter(item.x, item.y);
+    return { x: item.x, y: item.y };
+  },
+  nearby(kind, x, y, radius) {
+    const safeRadius = Math.max(0, radius);
+    const bounds = {
+      minX: PW.Utils.worldToTile(x - safeRadius),
+      maxX: PW.Utils.worldToTile(x + safeRadius),
+      minY: PW.Utils.worldToTile(y - safeRadius),
+      maxY: PW.Utils.worldToTile(y + safeRadius)
+    };
+    return this.visible(kind, bounds).filter((item) => {
+      const pos = this.worldPosition(kind, item);
+      return PW.Utils.distance(x, y, pos.x, pos.y) <= safeRadius;
+    });
+  },
+  byId(kind, id) {
+    this.ensure(kind);
+    const ids = this.index().ids[kind];
+    return ids ? ids.get(id) || null : null;
   },
   stats() {
     const index = this.index();

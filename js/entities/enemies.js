@@ -91,7 +91,7 @@ PW.EnemySystem = {
   findCampBuildingTarget(enemy, camp) {
     let best = null;
     let bestDist = Infinity;
-    for (const building of PW.state.world.buildings) {
+    for (const building of PW.SpatialIndex.nearby("buildings", camp.x, camp.y, camp.aggroPx)) {
       const def = PW.BUILDINGS[building.type];
       if (!def || (def.category !== "tower" && def.category !== "wall")) continue;
       const bx = PW.Utils.tileToWorld(building.x);

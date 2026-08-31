@@ -97,6 +97,7 @@ Noch nicht beschlossene Vorschlaege gehoeren ausschliesslich in `ROADMAP.md`. So
 - [x] Panel-Refresh-Test.
 - [x] Responsive-Layout-Test.
 - [x] Raeumlicher Index: Sichtbarkeit, Zellwechsel bewegter Objekte sowie Neuaufbau nach Speichern/Laden.
+- [x] Raeumliche Kampfqueries: Turmziele, Stoerfelder, AoE, Projektil-ID-Lookups und Hordenangriffe.
 - [x] Deterministischer Performance-Stresstest mit bereinigtem Laufzeit-Zustand und Arbeitszeitgrenze.
 
 ## VERBINDLICH FESTGELEGTE OFFENE PUNKTE
@@ -107,7 +108,7 @@ Die folgenden Punkte wurden aus `ROADMAP.md` verbindlich fuer die naechste Entwi
 
 - [x] **Messung und Stresstest** (`S`): Laufzeitmessung fuer Update und Rendern, sichtbares Debug-Overlay und ein Browser-Stresstest mit festem Seed und grosszuegiger Arbeitszeitgrenze. Betroffene Dateien: `js/gameLoop.js`, `js/render/*`, `js/config.js`, `tests/`. Akzeptanz: Messwerte sind nur bei aktiviertem Debug sichtbar; die feste Stressszene prueft viele Gegner/Tuerme ohne Browserfehler oder unvertretbare Laufzeit.
 - [x] **Raeumlicher Weltindex** (`M`): Ressourcen, Gebaeude, Drops und Akteure werden fuer sichtbare Bereiche und lokale Abfragen indexiert. Betroffene Dateien: `js/world/*`, `js/render/*`, `js/systems/*`. Abhaengigkeit: Messung und Stresstest. Akzeptanz: Das Verhalten bleibt identisch, Rendering und Abfragen laufen nicht mehr ueber alle Weltobjekte; bewegte Objekte werden nur bei Zellwechsel umindexiert.
-- [ ] **Raeumliche Kampfqueries** (`M`): Turmzielwahl und Projektil-Zielsuche verwenden lokale Abfragen beziehungsweise ID-Lookups. Betroffene Dateien: `js/systems/combat.js`, `js/entities/projectiles.js`, `js/entities/enemies.js`. Abhaengigkeit: Raeumlicher Weltindex. Akzeptanz: Zielauswahl, AoE und Spezialeffekte bleiben korrekt; Lasttest misst keine Verschlechterung.
+- [x] **Raeumliche Kampfqueries** (`M`): Turmzielwahl, Stoerfelder, Hordenangriffe und AoE verwenden lokale Radiusabfragen; Projektile loesen Ziele per ID-Lookup auf. Betroffene Dateien: `js/world/spatialIndex.js`, `js/systems/combat.js`, `js/entities/projectiles.js`, `js/entities/enemies.js`, `tests/`. Abhaengigkeit: Raeumlicher Weltindex. Akzeptanz: Zielauswahl, AoE und Spezialeffekte bleiben korrekt; Lasttest misst keine Verschlechterung.
 
 ### GAMEPLAY
 
