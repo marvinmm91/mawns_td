@@ -18,8 +18,8 @@ Die UI-Dateien sind inzwischen konsolidiert: Bau-, Inventar-, Wrack-, Kontext- u
 
 - `index.html`: Canvas, HUD-Grundstruktur, Panel-Container und Script-Reihenfolge.
 - `css/styles.css`: Grundlayout, Canvas-Rahmen, HUD, Panels, Buttons, Hotbar, Tag-/Nacht-Stimmung.
-- `js/config.js`: Globale Balancing-Werte, fuenf Schwierigkeitsprofile, Tilegroessen, Phasenlaengen, Startwerte, Debug-Schalter.
-- `js/state.js`: Zentraler Spielzustand, Laufzeitlisten, Inputstatus, Kamera, Timer, Inventar, Schwierigkeitsprofil und Wrackdaten.
+- `js/config.js`: Globale Balancing-Werte, Schwierigkeitsprofile, Spielmodi, Tilegroessen, Phasenlaengen, Startwerte, Debug-Schalter.
+- `js/state.js`: Zentraler Spielzustand, Laufzeitlisten, Inputstatus, Kamera, Timer, Inventar, Schwierigkeitsprofil, Spielmodus und Wrackdaten.
 - `js/bootstrap.js`: Initialisierung, Event Listener, Start des Game Loops.
 - `js/gameLoop.js`: Feste Update-Reihenfolge, Delta-Time-Begrenzung, Pause/Resume, zentraler Renderaufruf und schaltbare Laufzeitmessung.
 - `js/input.js`: Tastaturstatus, Hotkeys, DPI-skalierte Mausposition, Mausbau, temporaere Blaupausen-/Loeschmodi, Kachel-Inspektion und Panel-Toggles.
@@ -50,6 +50,7 @@ Die UI-Dateien sind inzwischen konsolidiert: Bau-, Inventar-, Wrack-, Kontext- u
 - `js/entities/enemies.js`: Gegnerlisten, Bewegung, Zielwahl, rollenspezifische Schadensmodifikatoren und Schaden am Wrack.
 - `js/entities/projectiles.js`: Turmprojektile, Treffer, Lebensdauer und gegnerspezifische Slow-Resistenz.
 - `js/systems/dayNight.js`: Tag, Daemmerung, Nacht, Morgengrauen, Timer, Phasenwechsel.
+- `js/systems/gameModes.js`: Aufloesung und Validierung der zentralen Spielmodusprofile.
 - `js/systems/damageVisuals.js`: Zentraler Treffereffekt und kurzzeitige Schadensblitze fuer Wrack und Bauwerke.
 - `js/systems/building.js`: Bauplatzpruefung, Platzieren, Blaupausen, Reparieren, Abreissen, Kosten.
 - `js/systems/pathfinding.js`: Grid-Pfade fuer Bodengegner und Blockade-Erkennung.

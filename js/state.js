@@ -108,6 +108,7 @@ PW.createInitialState = function createInitialState() {
     },
     inventory,
     difficulty: cfg.difficulty.default,
+    gameMode: cfg.gameModes.default,
     knownResources: new Set(["wood", "stone"]),
     unlockedBuildings: new Set(["palisade", "ballista", "catapult", "flak", "tesla", "laser"]),
     selectedBuild: "palisade",

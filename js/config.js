@@ -149,6 +149,29 @@ PW.CONFIG = Object.freeze({
       }
     ]
   },
+  gameModes: {
+    default: "classic",
+    profiles: [
+      {
+        id: "classic",
+        name: "Classic",
+        shortName: "Classic",
+        description: "Gegner respektieren freie Wege und brechen nur vollstaendige Blockaden auf.",
+        structureTargeting: "blockade",
+        waveMultiplier: 1,
+        structureDamageMultiplier: 1
+      },
+      {
+        id: "aggressive",
+        name: "Aggressive",
+        shortName: "Aggressiv",
+        description: "Gegner greifen Verteidigungen auf ihrem direkten Weg aktiv an.",
+        structureTargeting: "direct-path",
+        waveMultiplier: 1,
+        structureDamageMultiplier: 1
+      }
+    ]
+  },
   debug: {
     enabled: false,
     fastForward: false

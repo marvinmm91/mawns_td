@@ -62,6 +62,7 @@ Object.assign(PW.UI, {
     const state = PW.state;
     const forecastNight = state.wave.active ? state.phase.night : state.phase.night + 1;
     const forecast = PW.Autobalance.forecastForNight(forecastNight);
+    const gameMode = PW.GameModes.profile();
     body.innerHTML = "";
     const phaseNames = { day: "Tag", dusk: "Daemmerung", night: state.ship.launchActive ? "Startsequenz" : "Nacht", dawn: "Morgen" };
     const stats = document.createElement("div");
@@ -76,6 +77,7 @@ Object.assign(PW.UI, {
       <div class="stat-box"><span>${state.wave.active ? "Restbudget" : "Naechste Welle"}</span><strong>${Math.ceil(state.wave.active ? state.wave.budgetRemaining : forecast.budget)}</strong></div>
       <div class="stat-box"><span>Balance</span><strong>${Math.round(state.balance.drift * 100)}%</strong></div>
       <div class="stat-box"><span>Schwierigkeit</span><strong>${forecast.profile.shortName}</strong></div>
+      <div class="stat-box"><span>Spielmodus</span><strong>${gameMode.shortName}</strong></div>
       <div class="stat-box"><span>Bedrohung Nacht ${forecast.night}</span><strong>${forecast.label}</strong></div>
     `;
     body.appendChild(stats);

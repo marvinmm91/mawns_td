@@ -79,6 +79,7 @@ PW.Bootstrap = {
     PW.state.paused = true;
     const hasSave = PW.Save.hasSave();
     const dialogDifficulty = hasSave ? PW.Save.savedDifficulty() : PW.state.difficulty;
+    const dialogGameMode = hasSave ? PW.Save.savedGameMode() : PW.state.gameMode;
     const actions = [];
     if (hasSave) {
       actions.push({ label: "Fortsetzen", action: () => {
@@ -104,6 +105,13 @@ PW.Bootstrap = {
       <p>Beschuetze das Wrack in der Kartenmitte, sammle Ressourcen, baue Verteidigung und repariere alle Schiffsmodule.</p>
       <p>Die Gegner greifen nachts das Wrack an. Du selbst wirst ignoriert, aber jede Sekunde ausserhalb der Basis fehlt beim Reparieren.</p>
       ${fromReload && hasSave ? "<p>Das Spiel wurde nach dem Aktualisieren gesichert. Du kannst fortsetzen oder neu starten.</p>" : ""}
+      <section class="mode-picker${hasSave ? " mode-picker-readonly" : ""}" aria-labelledby="modeTitle">
+        <h3 id="modeTitle">Spielmodus${hasSave ? " (gespeichert)" : ""}</h3>
+        ${hasSave ? "<p class=\"meta\">Beim Fortsetzen ist diese Auswahl reine Information und nicht änderbar.</p>" : ""}
+        <div class="mode-options" role="radiogroup">
+          ${PW.CONFIG.gameModes.profiles.map((profile) => `<button type="button" class="mode-option" data-game-mode="${profile.id}" role="radio" aria-checked="${profile.id === dialogGameMode}"${hasSave ? " disabled" : ""}><strong>${profile.name}</strong><span>${profile.description}</span></button>`).join("")}
+        </div>
+      </section>
       <section class="difficulty-picker${hasSave ? " difficulty-picker-readonly" : ""}" aria-labelledby="difficultyTitle">
         <h3 id="difficultyTitle">Schwierigkeitsgrad${hasSave ? " (gespeichert)" : ""}</h3>
         ${hasSave ? "<p class=\"meta\">Beim Fortsetzen ist diese Auswahl reine Information und nicht änderbar.</p>" : ""}
@@ -130,6 +138,18 @@ PW.Bootstrap = {
         });
       });
       if (button.dataset.difficulty === dialogDifficulty) button.classList.add("active");
+    });
+    document.querySelectorAll(".mode-option").forEach((button) => {
+      button.addEventListener("click", () => {
+        const mode = PW.GameModes.profile(button.dataset.gameMode);
+        PW.state.gameMode = mode.id;
+        document.querySelectorAll(".mode-option").forEach((option) => {
+          const selected = option.dataset.gameMode === mode.id;
+          option.classList.toggle("active", selected);
+          option.setAttribute("aria-checked", String(selected));
+        });
+      });
+      if (button.dataset.gameMode === dialogGameMode) button.classList.add("active");
     });
   }
 };

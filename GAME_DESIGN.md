@@ -245,6 +245,10 @@ Feedback erfolgt ueber Morgenberichte, Nachrichten, Schadensanzeigen, Reichweite
 
 ## 14. BALANCING-MODELL
 
+### Verteidigungsmodi
+
+Vor einer neuen Partie wird zusaetzlich zur Schwierigkeit ein Verteidigungsmodus gewaehlt. Classic ist der Kompatibilitaetsstandard fuer bestehende Spielstaende. Die Modusauswahl wird gespeichert und im Status angezeigt. Die konkreten Angriffs- und Wellenregeln werden getrennt von den Schwierigkeitsprofilen definiert, damit der Modus Zielverhalten und die Schwierigkeit den Director-Druck steuert.
+
 Jede Nacht besitzt ein Threat-Budget:
 
 ```text

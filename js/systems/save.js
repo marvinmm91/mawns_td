@@ -29,6 +29,7 @@ PW.Save = {
       phase: state.phase,
       inventory: state.inventory,
       difficulty: state.difficulty,
+      gameMode: state.gameMode,
       knownResources: Array.from(state.knownResources),
       unlockedBuildings: Array.from(state.unlockedBuildings),
       selectedBuild: state.selectedBuild,
@@ -72,6 +73,7 @@ PW.Save = {
       if (!PW.CONFIG.difficulty.profiles.some((profile) => profile.id === PW.state.difficulty)) {
         PW.state.difficulty = PW.CONFIG.difficulty.default;
       }
+      PW.state.gameMode = PW.GameModes.normalize(PW.state.gameMode);
       PW.state.world.tileSize = PW.state.world.tileSize || PW.CONFIG.tileSize;
       PW.state.world.birds = PW.state.world.birds || [];
       PW.state.world.wildlife = PW.state.world.wildlife || [];
@@ -150,6 +152,15 @@ PW.Save = {
       return PW.CONFIG.difficulty.profiles.some((profile) => profile.id === data.difficulty) ? data.difficulty : fallback;
     } catch (error) {
       return fallback;
+    }
+  },
+  savedGameMode() {
+    const raw = localStorage.getItem(PW.CONFIG.saveKey);
+    if (!raw) return PW.CONFIG.gameModes.default;
+    try {
+      return PW.GameModes.normalize(JSON.parse(raw).gameMode);
+    } catch (error) {
+      return PW.CONFIG.gameModes.default;
     }
   },
   clear() {
