@@ -75,7 +75,7 @@ PW.ENEMIES = Object.freeze({
     damage: 26,
     attackCooldown: 1.8,
     color: "#6157b8",
-    drops: { scrap: [1, 2, 4], parts: [0.18, 1, 1] }
+    drops: { scrap: [1, 2, 4], iron: [0.22, 1, 2], parts: [0.18, 1, 1] }
   },
   disruptor: {
     id: "disruptor",
@@ -89,7 +89,7 @@ PW.ENEMIES = Object.freeze({
     aura: 4.2,
     slowTowers: 0.45,
     color: "#a267c7",
-    drops: { scrap: [1, 2, 4], parts: [0.28, 1, 1] }
+    drops: { scrap: [1, 2, 4], crystal: [0.16, 1, 1], parts: [0.28, 1, 1] }
   },
   guardian: {
     id: "guardian",
@@ -102,7 +102,6 @@ PW.ENEMIES = Object.freeze({
     attackCooldown: 1.55,
     wallDamage: 36,
     color: "#7a5a2e",
-    drops: { scrap: [1, 5, 8], parts: [0.75, 1, 2] }
+    drops: { scrap: [1, 5, 8], iron: [0.55, 1, 3], gold: [0.1, 1, 1], crystal: [0.1, 1, 1], parts: [0.75, 1, 2] }
   }
 });
-

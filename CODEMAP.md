@@ -38,11 +38,11 @@ Die UI-Dateien sind inzwischen konsolidiert: Bau-, Inventar-, Wrack-, Kontext- u
 
 ## Welt und Karte
 
-- `js/world/mapGenerator.js`: Tilemap-Erzeugung, groessere Biome, Fluss/Baeche/Furten, Startbereich und biomeabhaengige Ressourcenverteilung inklusive seltener Aussenposten.
+- `js/world/mapGenerator.js`: Tilemap-Erzeugung, groessere Biome, Fluss/Baeche/Furten, Startbereich, biomeabhaengige Ressourcenverteilung, konfliktfreie Baum-Respawnplaetze und seltene Aussenposten.
 - `js/world/tiles.js`: Tile-Helfer, Kacheltypen, Begehbarkeit, Bauplatz- und Blaupausenregeln.
 - `js/world/spatialIndex.js`: 8x8-Kachelindex fuer sichtbare Weltobjekte, Radiusabfragen und ID-Lookups. Bewegte Objekte werden beim Spawn registriert und nur beim Zellwechsel umindexiert; Kartengenerierung sowie Laden bauen den Index vollstaendig neu auf. Bei ausgetauschten Laufzeitlisten erkennt der Index auch gleiche Listengroessen.
 - `js/world/fog.js`: Fog-of-War-Speicher, Sichtkreis, erkundete Kacheln.
-- `js/world/resources.js`: Ressourcenknoten, Abbaufortschritt, Inventarzugang.
+- `js/world/resources.js`: Ressourcenknoten, Abbaufortschritt, Inventarzugang und langsames, konfigurierbares Baumwachstum.
 
 ## Akteure und Systeme
 
@@ -58,7 +58,7 @@ Die UI-Dateien sind inzwischen konsolidiert: Bau-, Inventar-, Wrack-, Kontext- u
 - `js/systems/drops.js`: Gegnerdrops, Einsammeln, Drop-Verfall optional.
 - `js/systems/treasure.js`: Schatztruhen, stationaere Monsterhorden, Schluesseldrops und Truhenbelohnungen.
 - `js/systems/outposts.js`: Einmalige Versorgungslager, Forschungsterminals und Sicherheitsbaken mit lokalen Wachgruppen.
-- `js/systems/wildlife.js`: Kleine Voegel ohne Hitbox, passive Waldbewohner mit Wander-/Fluchtverhalten, Trefferlogik und Beutedrops.
+- `js/systems/wildlife.js`: Kleine Voegel ohne Hitbox, passive Waldbewohner mit Wander-/Fluchtverhalten, Trefferlogik, Beutedrops und gespeichertem Kartenmaximum mit Respawn.
 - `js/systems/progression.js`: Turmverfuegbarkeit, Wrackmodule, Siegbedingung und finale Startsequenz.
 - `js/systems/autobalance.js`: Auswertung vergangener Nacht und Anpassung der naechsten Welle.
 - `js/systems/pixelArt.js`: Pixel-Design-Overrides, Asset-Katalog, LocalStorage, Import/Export und Start-Mods.

@@ -1,6 +1,41 @@
 "use strict";
 
 PW.ResourceSystem = {
+  resetGrowth() {
+    const state = PW.state;
+    state.resourceGrowth = state.resourceGrowth || {};
+    state.resourceGrowth.treeRespawnTimer = this.nextTreeRespawnDelay();
+  },
+  ensureGrowthState() {
+    const state = PW.state;
+    state.resourceGrowth = state.resourceGrowth || {};
+    if (!Number.isFinite(state.resourceGrowth.treeRespawnTimer) || state.resourceGrowth.treeRespawnTimer <= 0) {
+      state.resourceGrowth.treeRespawnTimer = this.nextTreeRespawnDelay();
+    }
+    return state.resourceGrowth;
+  },
+  nextTreeRespawnDelay() {
+    return PW.state.rng.float(PW.CONFIG.resourceGrowth.treeRespawnEvery[0], PW.CONFIG.resourceGrowth.treeRespawnEvery[1]);
+  },
+  scheduleTreeRespawn() {
+    this.ensureGrowthState().treeRespawnTimer = this.nextTreeRespawnDelay();
+  },
+  update(dt) {
+    const growth = this.ensureGrowthState();
+    growth.treeRespawnTimer -= dt;
+    if (growth.treeRespawnTimer > 0) return;
+    const treeCount = PW.state.world.resources.filter((node) => node.type === "tree").length;
+    if (treeCount >= PW.CONFIG.resourceGrowth.treeMax) {
+      growth.treeRespawnTimer = PW.CONFIG.resourceGrowth.treeRetryEvery;
+      return;
+    }
+    const spot = PW.MapGenerator.findTreeRespawnTile();
+    if (spot && PW.MapGenerator.addResource("tree", spot.x, spot.y)) {
+      this.scheduleTreeRespawn();
+      return;
+    }
+    growth.treeRespawnTimer = PW.CONFIG.resourceGrowth.treeRetryEvery;
+  },
   interactWithTarget(x, y) {
     const state = PW.state;
     const node = PW.Tiles.getResource(x, y);
@@ -24,6 +59,7 @@ PW.ResourceSystem = {
     world.resourceMap.delete(PW.Utils.tileKey(node.x, node.y));
     world.resources = world.resources.filter((item) => item !== node);
     PW.SpatialIndex.remove("resources", node);
+    if (node.type === "tree") this.scheduleTreeRespawn();
   },
   nearestKnownResource(type) {
     const state = PW.state;

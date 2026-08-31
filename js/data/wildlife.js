@@ -43,6 +43,6 @@ PW.WILDLIFE = Object.freeze({
       }
     }
   },
-  critterTarget: [18, 26],
+  critterMax: [18, 26],
   respawnEvery: [24, 42]
 });

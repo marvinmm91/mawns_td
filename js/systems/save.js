@@ -35,6 +35,7 @@ PW.Save = {
       projectiles: state.projectiles,
       drops: state.drops,
       fauna: state.fauna,
+      resourceGrowth: state.resourceGrowth,
       treasure: state.treasure,
       wave: state.wave,
       nightStats: state.nightStats,
@@ -76,7 +77,9 @@ PW.Save = {
       PW.state.world.waterways = PW.state.world.waterways || { river: [], brooks: [] };
       PW.state.world.blueprints = PW.state.world.blueprints || [];
       PW.state.world.mapPins = PW.state.world.mapPins || [];
-      PW.state.fauna = data.fauna || PW.state.fauna || { birdTarget: 0, critterTarget: 0, critterRespawnTimer: 0 };
+      PW.state.fauna = data.fauna || PW.state.fauna || { birdTarget: 0, critterMax: 0, critterRespawnTimer: 0 };
+      PW.state.resourceGrowth = data.resourceGrowth || PW.state.resourceGrowth || { treeRespawnTimer: 0 };
+      if (PW.ResourceSystem) PW.ResourceSystem.ensureGrowthState();
       PW.state.treasure = data.treasure || PW.state.treasure || { chestRespawnTimer: 0, campRespawnTimer: 0, campTarget: PW.CONFIG.treasure.campCount[0] };
       if (!PW.state.treasure.campTarget) PW.state.treasure.campTarget = Math.max(PW.CONFIG.treasure.campCount[0], PW.state.world.monsterCamps.filter((camp) => !camp.cleared).length);
       PW.state.inventory.key = PW.state.inventory.key || 0;

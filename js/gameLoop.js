@@ -85,6 +85,7 @@ PW.GameLoop = {
     PW.Player.update(dt);
     PW.Camera.update();
     PW.Fog.update();
+    PW.ResourceSystem.update(dt);
     PW.Pathfinding.update();
     PW.DamageVisuals.update(dt);
     PW.TreasureSystem.update(dt);

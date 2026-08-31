@@ -115,8 +115,11 @@ PW.createInitialState = function createInitialState() {
     drops: [],
     fauna: {
       birdTarget: 0,
-      critterTarget: 0,
+      critterMax: 0,
       critterRespawnTimer: 0
+    },
+    resourceGrowth: {
+      treeRespawnTimer: 0
     },
     treasure: {
       chestRespawnTimer: 0,

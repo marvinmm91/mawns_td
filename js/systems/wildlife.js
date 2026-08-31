@@ -10,7 +10,7 @@ PW.WildlifeSystem = {
     PW.SpatialIndex.rebuild("wildlife");
     state.fauna = state.fauna || {};
     state.fauna.birdTarget = state.rng.int(PW.WILDLIFE.birds.target[0], PW.WILDLIFE.birds.target[1]);
-    state.fauna.critterTarget = state.rng.int(PW.WILDLIFE.critterTarget[0], PW.WILDLIFE.critterTarget[1]);
+    state.fauna.critterMax = state.rng.int(PW.WILDLIFE.critterMax[0], PW.WILDLIFE.critterMax[1]);
     state.fauna.critterRespawnTimer = state.rng.float(PW.WILDLIFE.respawnEvery[0], PW.WILDLIFE.respawnEvery[1]);
     Object.keys(PW.WILDLIFE.critters).forEach((id) => this.spawnCritter(id));
     for (let i = 0; i < 5; i++) this.spawnBird({
@@ -18,10 +18,10 @@ PW.WildlifeSystem = {
       y: PW.Utils.worldToTile(state.player.y),
       radius: 8
     });
-    this.ensurePopulation();
+    this.ensurePopulation(true);
   },
 
-  ensurePopulation() {
+  ensurePopulation(fillToLimit = false) {
     const state = PW.state;
     const world = state.world;
     world.birds = (world.birds || []).filter((bird) => Number.isFinite(bird.x) && Number.isFinite(bird.y));
@@ -54,17 +54,19 @@ PW.WildlifeSystem = {
       critter.fleeTimer = Number.isFinite(critter.fleeTimer) ? critter.fleeTimer : 0;
       critter.hurtTimer = Number.isFinite(critter.hurtTimer) ? critter.hurtTimer : 0;
     });
-    state.fauna = state.fauna || { birdTarget: 0, critterTarget: 0, critterRespawnTimer: 0 };
+    state.fauna = state.fauna || { birdTarget: 0, critterMax: 0, critterRespawnTimer: 0 };
     if (!state.fauna.birdTarget) state.fauna.birdTarget = state.rng.int(PW.WILDLIFE.birds.target[0], PW.WILDLIFE.birds.target[1]);
-    if (!state.fauna.critterTarget) state.fauna.critterTarget = state.rng.int(PW.WILDLIFE.critterTarget[0], PW.WILDLIFE.critterTarget[1]);
+    if (!state.fauna.critterMax) state.fauna.critterMax = state.fauna.critterTarget || state.rng.int(PW.WILDLIFE.critterMax[0], PW.WILDLIFE.critterMax[1]);
     if (!Number.isFinite(state.fauna.critterRespawnTimer)) {
       state.fauna.critterRespawnTimer = state.rng.float(PW.WILDLIFE.respawnEvery[0], PW.WILDLIFE.respawnEvery[1]);
     }
     PW.SpatialIndex.rebuild("birds");
     PW.SpatialIndex.rebuild("wildlife");
     while (world.birds.length < state.fauna.birdTarget) this.spawnBird();
-    while (this.activeCritters().length < state.fauna.critterTarget) {
-      if (!this.spawnCritter()) break;
+    if (fillToLimit) {
+      while (this.activeCritters().length < this.critterLimit()) {
+        if (!this.spawnCritter()) break;
+      }
     }
   },
 
@@ -73,7 +75,7 @@ PW.WildlifeSystem = {
     const world = state.world;
     world.birds = world.birds || [];
     world.wildlife = world.wildlife || [];
-    state.fauna = state.fauna || { birdTarget: 0, critterTarget: 0, critterRespawnTimer: 0 };
+    state.fauna = state.fauna || { birdTarget: 0, critterMax: 0, critterRespawnTimer: 0 };
     if (!Number.isFinite(state.fauna.critterRespawnTimer)) {
       state.fauna.critterRespawnTimer = state.rng.float(PW.WILDLIFE.respawnEvery[0], PW.WILDLIFE.respawnEvery[1]);
     }
@@ -81,7 +83,7 @@ PW.WildlifeSystem = {
     this.updateCritters(dt);
     if (world.birds.length < (state.fauna.birdTarget || 0)) this.spawnBird();
     const living = this.activeCritters().length;
-    if (living < (state.fauna.critterTarget || 0)) {
+    if (living < this.critterLimit()) {
       state.fauna.critterRespawnTimer -= dt;
       if (state.fauna.critterRespawnTimer <= 0) {
         this.spawnCritter();
@@ -92,6 +94,10 @@ PW.WildlifeSystem = {
 
   activeCritters() {
     return (PW.state.world.wildlife || []).filter((critter) => !critter.remove && critter.hp > 0);
+  },
+  critterLimit() {
+    const fauna = PW.state.fauna || {};
+    return fauna.critterMax || fauna.critterTarget || 0;
   },
 
   spawnBird(origin = null) {
@@ -123,7 +129,7 @@ PW.WildlifeSystem = {
     const ids = Object.keys(PW.WILDLIFE.critters);
     const id = type || rng.pick(ids);
     const def = PW.WILDLIFE.critters[id];
-    if (!def) return false;
+    if (!def || this.activeCritters().length >= this.critterLimit()) return false;
     const spot = this.findCritterSpawn(def);
     if (!spot) return false;
     const critter = {
@@ -189,7 +195,7 @@ PW.WildlifeSystem = {
     const tile = PW.Tiles.get(x, y);
     if (!tile || tile.blocked || PW.Tiles.isWaterKind(tile.kind)) return false;
     if (PW.Tiles.isShipTile(x, y)) return false;
-    if (PW.Tiles.getResource(x, y) || PW.Tiles.getBuilding(x, y) || PW.Tiles.getChest(x, y) || PW.Tiles.getCamp(x, y)) return false;
+    if (PW.Tiles.getResource(x, y) || PW.Tiles.getBuilding(x, y) || PW.Tiles.getBlueprint(x, y) || PW.Tiles.getChest(x, y) || PW.Tiles.getCamp(x, y) || PW.Tiles.getOutpost(x, y)) return false;
     return true;
   },
 
@@ -317,7 +323,7 @@ PW.WildlifeSystem = {
     const tile = PW.Tiles.get(x, y);
     if (!tile || tile.blocked || PW.Tiles.isWaterKind(tile.kind)) return false;
     if (PW.Tiles.isShipTile(x, y)) return false;
-    if (PW.Tiles.getResource(x, y) || PW.Tiles.getBuilding(x, y) || PW.Tiles.getChest(x, y) || PW.Tiles.getCamp(x, y)) return false;
+    if (PW.Tiles.getResource(x, y) || PW.Tiles.getBuilding(x, y) || PW.Tiles.getBlueprint(x, y) || PW.Tiles.getChest(x, y) || PW.Tiles.getCamp(x, y) || PW.Tiles.getOutpost(x, y)) return false;
     return true;
   },
 

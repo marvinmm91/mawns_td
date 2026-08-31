@@ -19,6 +19,14 @@ PW.CONFIG = Object.freeze({
   dropPickupRadius: 30,
   dropMagnetRadius: 72,
   dropMagnetSpeed: 260,
+  resourceGrowth: {
+    treeRespawnEvery: [58, 96],
+    treeRetryEvery: 16,
+    treeMax: 1600,
+    treeSafeRadius: 18,
+    treeMinSpacing: 2.4,
+    treeStructureClearance: 3
+  },
   treasure: {
     minActiveChests: 1,
     maxActiveChests: 2,

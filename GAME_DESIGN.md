@@ -134,6 +134,8 @@ Werkzeuge:
 
 Es gibt kein Gewichtslimit. Ressourcen werden automatisch ins globale Inventar aufgenommen.
 
+Die Wirtschaft bleibt dauerhaft spielbar: Baeume wachsen langsam auf freien Waldkacheln ausserhalb des Wrack-Sicherheitsbereichs nach. Waldhuepfer und Mooskaefer erscheinen bis zu ihrem Kartenmaximum erneut und liefern weiter Holz beziehungsweise Stein. Seltene Materialien bleiben ueber Truhen, Horden und seltene Drops spaeter Gegner erreichbar.
+
 ## 8. BAU UND VERTEIDIGUNG
 
 Alle Bauwerke stehen auf einzelnen Gitterkacheln. Bau ist nicht auf Wrack, Ressourcen, Truhen, Monsterlager oder blockiertem Terrain moeglich. Blaupausen werden mit gedrueckter Strg-Taste gesetzt, erlauben Bauwerke und Bauwerkslinien ohne Materialkosten vorzumerken, blockieren keine Bewegung und koennen spaeter einzeln oder gesammelt errichtet werden. Alt entfernt sie wieder direkt auf der Karte.

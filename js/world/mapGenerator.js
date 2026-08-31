@@ -40,6 +40,7 @@ PW.MapGenerator = {
     this.clearArea(state.ship.x + state.ship.size / 2, state.ship.y + state.ship.size / 2, 8);
     this.clearArea(Math.floor(state.player.x / world.tileSize), Math.floor(state.player.y / world.tileSize), 4);
     this.scatterResources();
+    if (PW.ResourceSystem) PW.ResourceSystem.resetGrowth();
     if (PW.TreasureSystem) PW.TreasureSystem.generateInitial();
     if (PW.OutpostSystem) PW.OutpostSystem.generateInitial();
     if (PW.WildlifeSystem) PW.WildlifeSystem.generateInitial();
@@ -75,9 +76,7 @@ PW.MapGenerator = {
   addResource(type, x, y) {
     const world = PW.state.world;
     const def = PW.RESOURCE_NODES[type];
-    if (!def || !PW.Tiles.inBounds(x, y) || PW.Tiles.isShipTile(x, y)) return false;
-    const tile = PW.Tiles.get(x, y);
-    if (!tile || tile.blocked || PW.Tiles.isWaterKind(tile.kind) || PW.Tiles.getResource(x, y) || PW.Tiles.getBuilding(x, y)) return false;
+    if (!def || !this.addResourceCheck(type, x, y)) return false;
     const rng = PW.state.rng;
     const scale = rng.float(0.78, 1.28);
     const amount = Math.max(1, Math.round(rng.int(def.amount[0], def.amount[1]) * (0.88 + scale * 0.14)));
@@ -147,6 +146,41 @@ PW.MapGenerator = {
     this.ensureResourceRing("iron", 22, 38, 7);
     this.ensureResourceRing("gold", 46, 66, 6);
     this.ensureResourceRing("crystal", 48, 70, 6);
+  },
+
+  findTreeRespawnTile() {
+    const state = PW.state;
+    const cfg = PW.CONFIG.resourceGrowth;
+    const shipX = state.ship.x + state.ship.size / 2;
+    const shipY = state.ship.y + state.ship.size / 2;
+    for (let attempt = 0; attempt < 360; attempt++) {
+      const x = state.rng.int(2, state.world.width - 3);
+      const y = state.rng.int(2, state.world.height - 3);
+      const tile = PW.Tiles.get(x, y);
+      if (!tile || (tile.kind !== "forestFloor" && (tile.forest || 0) < 0.42)) continue;
+      if (Math.hypot(x - shipX, y - shipY) < cfg.treeSafeRadius) continue;
+      if (!this.canRegrowTreeAt(x, y)) continue;
+      return { x, y };
+    }
+    return null;
+  },
+
+  canRegrowTreeAt(x, y) {
+    const state = PW.state;
+    const cfg = PW.CONFIG.resourceGrowth;
+    if (!this.addResourceCheck("tree", x, y)) return false;
+    const tooCloseToTree = state.world.resources.some((node) => node.type === "tree" && Math.hypot(node.x - x, node.y - y) < cfg.treeMinSpacing);
+    if (tooCloseToTree) return false;
+    const hasStructureNearby = state.world.buildings.some((building) => Math.hypot(building.x - x, building.y - y) <= cfg.treeStructureClearance) ||
+      state.world.blueprints.some((blueprint) => Math.hypot(blueprint.x - x, blueprint.y - y) <= cfg.treeStructureClearance);
+    return !hasStructureNearby;
+  },
+
+  addResourceCheck(type, x, y) {
+    const def = PW.RESOURCE_NODES[type];
+    if (!def || !PW.Tiles.inBounds(x, y) || PW.Tiles.isShipTile(x, y)) return false;
+    const tile = PW.Tiles.get(x, y);
+    return Boolean(tile && !tile.blocked && !PW.Tiles.isWaterKind(tile.kind) && !PW.Tiles.getResource(x, y) && !PW.Tiles.getBuilding(x, y) && !PW.Tiles.getBlueprint(x, y) && !PW.Tiles.getChest(x, y) && !PW.Tiles.getCamp(x, y) && !PW.Tiles.getOutpost(x, y));
   },
 
   pickResourceForTile(tile, distanceToShip) {
