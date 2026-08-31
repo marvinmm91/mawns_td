@@ -59,7 +59,9 @@ PW.createInitialState = function createInitialState() {
       monsterCamps: [],
       waterways: { river: [], brooks: [] },
       buildings: [],
-      buildingMap: new Map()
+      buildingMap: new Map(),
+      blueprints: [],
+      blueprintMap: new Map()
     },
     camera: {
       x: 0,
@@ -100,6 +102,7 @@ PW.createInitialState = function createInitialState() {
     knownResources: new Set(["wood", "stone"]),
     unlockedBuildings: new Set(["palisade", "ballista"]),
     selectedBuild: "palisade",
+    buildMode: "build",
     enemies: [],
     projectiles: [],
     drops: [],

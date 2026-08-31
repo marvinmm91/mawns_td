@@ -136,7 +136,7 @@ Es gibt kein Gewichtslimit. Ressourcen werden automatisch ins globale Inventar a
 
 ## 8. BAU UND VERTEIDIGUNG
 
-Alle Bauwerke stehen auf einzelnen Gitterkacheln. Bau ist nicht auf Wrack, Ressourcen, Truhen, Monsterlager oder blockiertem Terrain moeglich.
+Alle Bauwerke stehen auf einzelnen Gitterkacheln. Bau ist nicht auf Wrack, Ressourcen, Truhen, Monsterlager oder blockiertem Terrain moeglich. Blaupausen erlauben es, Bauwerke und Bauwerkslinien ohne Materialkosten vorzumerken; sie blockieren keine Bewegung und koennen spaeter einzeln oder gesammelt errichtet werden.
 
 ### Mauern und Bruecke
 

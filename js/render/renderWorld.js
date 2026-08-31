@@ -25,6 +25,7 @@ PW.RenderWorld = {
     this.drawShip(ctx);
     this.drawResources(ctx, bounds);
     this.drawTreasureChests(ctx);
+    this.drawBlueprints(ctx, bounds);
     this.drawBuildings(ctx, bounds);
   },
   tileColor(tile) {
@@ -205,6 +206,26 @@ PW.RenderWorld = {
         ctx.fillStyle = building.hp / building.maxHp < 0.35 ? "#e35d57" : "#d7c951";
         ctx.fillRect(sx + 4, sy + 27, 24 * building.hp / building.maxHp, 3);
       }
+    });
+  },
+  drawBlueprints(ctx, bounds) {
+    const state = PW.state;
+    const ts = state.world.tileSize;
+    PW.SpatialIndex.visible("blueprints", bounds).forEach((blueprint) => {
+      if (!PW.Fog.isKnown(blueprint.x, blueprint.y)) return;
+      const sx = blueprint.x * ts - state.camera.x;
+      const sy = blueprint.y * ts - state.camera.y;
+      ctx.save();
+      ctx.globalAlpha = 0.34;
+      ctx.translate(sx, sy);
+      PW.Icons.drawBuilding(ctx, blueprint.type, ts, 1);
+      ctx.restore();
+      ctx.save();
+      ctx.strokeStyle = "#83e3da";
+      ctx.lineWidth = 1;
+      ctx.setLineDash([3, 3]);
+      ctx.strokeRect(sx + 3.5, sy + 3.5, ts - 7, ts - 7);
+      ctx.restore();
     });
   },
   drawTreasureChests(ctx) {

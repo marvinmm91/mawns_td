@@ -31,25 +31,28 @@ PW.Render = {
     if (state.player.selectedTool === "build") {
       const ts = state.world.tileSize;
       const def = PW.BUILDINGS[state.selectedBuild];
-      const ok = def && PW.BuildingSystem.canPlaceBuilding(state.selectedBuild, target.x, target.y) && state.unlockedBuildings.has(state.selectedBuild) && PW.Utils.canAfford(def.cost);
+      const blueprintMode = state.buildMode === "blueprint";
+      const ok = def && state.unlockedBuildings.has(state.selectedBuild) && (blueprintMode
+        ? PW.BuildingSystem.canPlaceBlueprint(state.selectedBuild, target.x, target.y)
+        : PW.BuildingSystem.canPlaceBuilding(state.selectedBuild, target.x, target.y) && PW.Utils.canAfford(def.cost));
       const sx = target.x * ts - state.camera.x;
       const sy = target.y * ts - state.camera.y;
       if (def) {
         ctx.save();
         ctx.translate(sx, sy);
-        PW.Icons.drawBuilding(ctx, state.selectedBuild, ts, ok ? 0.62 : 0.38);
+        PW.Icons.drawBuilding(ctx, state.selectedBuild, ts, ok ? (blueprintMode ? 0.38 : 0.62) : 0.24);
         ctx.restore();
         if (def.category === "tower") {
           const cx = sx + ts / 2;
           const cy = sy + ts / 2;
-          ctx.strokeStyle = ok ? "rgba(102,198,166,.32)" : "rgba(227,93,87,.24)";
+          ctx.strokeStyle = ok ? (blueprintMode ? "rgba(131,227,218,.38)" : "rgba(102,198,166,.32)") : "rgba(227,93,87,.24)";
           ctx.lineWidth = 2;
           ctx.beginPath();
           ctx.arc(cx, cy, def.range * ts, 0, Math.PI * 2);
           ctx.stroke();
         }
       }
-      ctx.strokeStyle = ok ? "rgba(110,195,110,.95)" : "rgba(227,93,87,.9)";
+      ctx.strokeStyle = ok ? (blueprintMode ? "rgba(131,227,218,.95)" : "rgba(110,195,110,.95)") : "rgba(227,93,87,.9)";
       ctx.lineWidth = 3;
       ctx.strokeRect(sx + 2, sy + 2, ts - 4, ts - 4);
     } else if (state.mouse.inside) {

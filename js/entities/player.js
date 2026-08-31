@@ -67,7 +67,8 @@ PW.Player = {
     if (!PW.Tiles.inBounds(target.x, target.y)) return;
 
     if (state.player.selectedTool === "build") {
-      PW.BuildingSystem.placeSelected(target.x, target.y);
+      if (state.buildMode === "blueprint") PW.BuildingSystem.placeBlueprintSelected(target.x, target.y);
+      else PW.BuildingSystem.placeSelected(target.x, target.y);
       return;
     }
     if (PW.TreasureSystem && PW.TreasureSystem.openChestAt(target.x, target.y)) return;

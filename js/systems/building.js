@@ -2,8 +2,10 @@
 
 PW.BuildingSystem = {
   placeSelected(x, y) {
+    return this.place(PW.state.selectedBuild, x, y);
+  },
+  place(type, x, y) {
     const state = PW.state;
-    const type = state.selectedBuild;
     const def = PW.BUILDINGS[type];
     if (!def) return false;
     if (!state.unlockedBuildings.has(type)) {
@@ -31,16 +33,70 @@ PW.BuildingSystem = {
       hp: def.maxHp,
       maxHp: def.maxHp,
       cooldown: state.rng.float(0, 0.5),
-      level: 1
+      level: 1,
+      targetPriority: def.category === "tower" ? "ship" : undefined
     };
     state.world.buildings.push(building);
     state.world.buildingMap.set(PW.Utils.tileKey(x, y), building);
     PW.SpatialIndex.add("buildings", building);
+    this.removeBlueprintAt(x, y, false);
     PW.Pathfinding.markDirty();
     PW.Messages.add(`${def.name} gebaut.`, "ok");
     PW.UI.renderHud();
     PW.UI.renderPanel();
     return true;
+  },
+  canPlaceBlueprint(type, x, y) {
+    return !PW.Tiles.getBlueprint(x, y) && this.canPlaceBuilding(type, x, y);
+  },
+  placeBlueprintSelected(x, y, quiet = false) {
+    return this.placeBlueprint(PW.state.selectedBuild, x, y, quiet);
+  },
+  placeBlueprint(type, x, y, quiet = false) {
+    const state = PW.state;
+    const def = PW.BUILDINGS[type];
+    if (!def || !state.unlockedBuildings.has(type) || !this.canPlaceBlueprint(type, x, y)) return false;
+    const blueprint = {
+      id: `blueprint-${Date.now()}-${state.world.blueprints.length}`,
+      type,
+      x,
+      y
+    };
+    state.world.blueprints.push(blueprint);
+    state.world.blueprintMap.set(PW.Utils.tileKey(x, y), blueprint);
+    PW.SpatialIndex.add("blueprints", blueprint);
+    if (!quiet) {
+      PW.Messages.add(`${def.name} vorgemerkt.`, "ok");
+      PW.UI.renderPanel();
+    }
+    return true;
+  },
+  removeBlueprintAt(x, y, showMessage = true) {
+    const state = PW.state;
+    const blueprint = PW.Tiles.getBlueprint(x, y);
+    if (!blueprint) return false;
+    state.world.blueprintMap.delete(PW.Utils.tileKey(x, y));
+    state.world.blueprints = state.world.blueprints.filter((item) => item !== blueprint);
+    PW.SpatialIndex.remove("blueprints", blueprint);
+    if (showMessage) {
+      PW.Messages.add("Blaupause entfernt.");
+      PW.UI.renderPanel();
+    }
+    return true;
+  },
+  buildBlueprint(blueprintId) {
+    const blueprint = PW.state.world.blueprints.find((item) => item.id === blueprintId);
+    if (!blueprint) return false;
+    return this.place(blueprint.type, blueprint.x, blueprint.y);
+  },
+  buildAllBlueprints() {
+    let built = 0;
+    [...PW.state.world.blueprints].forEach((blueprint) => {
+      if (this.buildBlueprint(blueprint.id)) built += 1;
+    });
+    if (!built) PW.Messages.add("Keine Blaupause konnte errichtet werden.");
+    PW.UI.renderPanel();
+    return built;
   },
   canPlaceBuilding(type, x, y) {
     const def = PW.BUILDINGS[type];
@@ -179,5 +235,16 @@ PW.BuildingSystem = {
     const cost = {};
     Object.entries(base).forEach(([id, amount]) => { cost[id] = Math.max(1, Math.ceil(amount * factor)); });
     return cost;
+  },
+  setTargetPriority(buildingId, priority) {
+    const building = PW.state.world.buildings.find((item) => item.id === buildingId);
+    const def = building && PW.BUILDINGS[building.type];
+    if (!building || !def || def.category !== "tower") return false;
+    const valid = PW.Combat.targetPriorityOptions(building, def).some((option) => option.id === priority);
+    if (!valid) return false;
+    building.targetPriority = priority;
+    PW.Messages.add(`${def.name}: ${PW.Combat.targetPriorityLabel(building, def)}.`, "ok");
+    PW.UI.renderPanel();
+    return true;
   }
 };

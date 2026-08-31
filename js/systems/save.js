@@ -19,7 +19,8 @@ PW.Save = {
         treasureChests: state.world.treasureChests || [],
         monsterCamps: state.world.monsterCamps || [],
         waterways: state.world.waterways || { river: [], brooks: [] },
-        buildings: state.world.buildings
+        buildings: state.world.buildings,
+        blueprints: state.world.blueprints || []
       },
       player: state.player,
       ship: state.ship,
@@ -70,6 +71,7 @@ PW.Save = {
       PW.state.world.treasureChests = PW.state.world.treasureChests || [];
       PW.state.world.monsterCamps = PW.state.world.monsterCamps || [];
       PW.state.world.waterways = PW.state.world.waterways || { river: [], brooks: [] };
+      PW.state.world.blueprints = PW.state.world.blueprints || [];
       PW.state.fauna = data.fauna || PW.state.fauna || { birdTarget: 0, critterTarget: 0, critterRespawnTimer: 0 };
       PW.state.treasure = data.treasure || PW.state.treasure || { chestRespawnTimer: 0, campRespawnTimer: 0, campTarget: PW.CONFIG.treasure.campCount[0] };
       if (!PW.state.treasure.campTarget) PW.state.treasure.campTarget = Math.max(PW.CONFIG.treasure.campCount[0], PW.state.world.monsterCamps.filter((camp) => !camp.cleared).length);
@@ -94,7 +96,18 @@ PW.Save = {
         PW.state.world.resourceMap.set(PW.Utils.tileKey(node.x, node.y), node);
       });
       PW.state.world.buildingMap = new Map();
-      PW.state.world.buildings.forEach((building) => PW.state.world.buildingMap.set(PW.Utils.tileKey(building.x, building.y), building));
+      PW.state.world.buildings.forEach((building) => {
+        const def = PW.BUILDINGS[building.type];
+        if (def && def.category === "tower") building.targetPriority = PW.Combat.targetPriority(building, def);
+        PW.state.world.buildingMap.set(PW.Utils.tileKey(building.x, building.y), building);
+      });
+      PW.state.world.blueprintMap = new Map();
+      PW.state.world.blueprints = PW.state.world.blueprints.filter((blueprint) => {
+        const def = PW.BUILDINGS[blueprint.type];
+        if (!def || PW.Tiles.getBuilding(blueprint.x, blueprint.y)) return false;
+        PW.state.world.blueprintMap.set(PW.Utils.tileKey(blueprint.x, blueprint.y), blueprint);
+        return true;
+      });
       if (PW.WildlifeSystem) PW.WildlifeSystem.ensurePopulation();
       PW.SpatialIndex.reset();
       PW.SpatialIndex.rebuildStatic();

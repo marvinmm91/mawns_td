@@ -78,7 +78,8 @@ Object.assign(PW.UI, {
     const build = document.createElement("div");
     build.className = "build-card";
     const selected = PW.BUILDINGS[state.selectedBuild];
-    build.innerHTML = `<h3>Aktiver Bauplan</h3><div class="meta">${selected ? selected.name : "Keiner"} mit Werkzeug 4. Linksklick baut auf die Maus-Kachel.</div>`;
+    const modeText = state.buildMode === "blueprint" ? "Blaupausen" : "Bauen";
+    build.innerHTML = `<h3>Aktiver Bauplan</h3><div class="meta">${selected ? selected.name : "Keiner"}, Modus ${modeText}. Werkzeug 4 und Linksklick auf die Maus-Kachel.</div>`;
     if (selected) {
       const costs = document.createElement("div");
       costs.className = "costs";
@@ -126,6 +127,7 @@ Object.assign(PW.UI, {
   },
   renderBuild(body) {
     body.innerHTML = "";
+    this.renderBlueprintControls(body);
     Object.values(PW.BUILDINGS).forEach((def) => {
       const unlocked = PW.state.unlockedBuildings.has(def.id);
       const affordable = PW.Utils.canAfford(def.cost);
@@ -166,6 +168,42 @@ Object.assign(PW.UI, {
       body.appendChild(card);
     });
     this.renderUpgradeList(body);
+  },
+  renderBlueprintControls(body) {
+    const state = PW.state;
+    const card = document.createElement("div");
+    card.className = "build-card";
+    card.innerHTML = "<h3>Bauweise</h3><div class=\"meta\">Blaupausen kosten kein Material und blockieren nicht. Ziehen plant zusammenhaengende Linien.</div>";
+    const modes = document.createElement("div");
+    modes.className = "build-mode";
+    [
+      ["build", "Bauen"],
+      ["blueprint", "Blaupausen"]
+    ].forEach(([mode, label]) => {
+      const button = document.createElement("button");
+      button.textContent = label;
+      button.className = state.buildMode === mode ? "active" : "";
+      button.addEventListener("click", () => {
+        state.buildMode = mode;
+        state.player.selectedTool = "build";
+        this.renderHud();
+        this.renderPanel();
+      });
+      modes.appendChild(button);
+    });
+    card.appendChild(modes);
+    const blueprints = state.world.blueprints || [];
+    const summary = document.createElement("div");
+    summary.className = "meta";
+    summary.textContent = blueprints.length ? `${blueprints.length} Blaupausen vorgemerkt.` : "Keine Blaupausen vorgemerkt.";
+    card.appendChild(summary);
+    if (blueprints.length) {
+      const buildAll = document.createElement("button");
+      buildAll.textContent = "Alle errichten";
+      buildAll.addEventListener("click", () => PW.BuildingSystem.buildAllBlueprints());
+      card.appendChild(buildAll);
+    }
+    body.appendChild(card);
   },
   renderCostChips(container, cost) {
     Object.entries(cost).forEach(([id, required]) => {
@@ -268,9 +306,15 @@ Object.assign(PW.UI, {
     const camp = PW.Tiles.getCamp(tile.x, tile.y);
     const wildlife = PW.WildlifeSystem ? PW.WildlifeSystem.atTile(tile.x, tile.y) : null;
     const building = PW.Tiles.getBuilding(tile.x, tile.y);
+    const blueprint = PW.Tiles.getBlueprint(tile.x, tile.y);
     if (building) {
       this.renderBuildingContext(body, building);
       title.textContent = PW.BUILDINGS[building.type].name;
+      return;
+    }
+    if (blueprint) {
+      this.renderBlueprintContext(body, blueprint);
+      title.textContent = `${PW.BUILDINGS[blueprint.type].name} (Blaupause)`;
       return;
     }
     if (resource) {
@@ -346,6 +390,21 @@ Object.assign(PW.UI, {
       card.appendChild(this.infoLine("Schaden", `${Math.round(def.damage * (1 + (building.level - 1) * 0.35))}`));
       card.appendChild(this.infoLine("Reichweite", `${def.range} Felder`));
       card.appendChild(this.infoLine("Ziele", def.targets.includes("air") && def.targets.includes("ground") ? "Boden + Luft" : def.targets.includes("air") ? "Luft" : "Boden"));
+      const priority = document.createElement("label");
+      priority.className = "target-priority";
+      priority.append(document.createTextNode("Zielprioritaet"));
+      const select = document.createElement("select");
+      select.setAttribute("aria-label", "Zielprioritaet");
+      PW.Combat.targetPriorityOptions(building, def).forEach((option) => {
+        const entry = document.createElement("option");
+        entry.value = option.id;
+        entry.textContent = option.label;
+        entry.selected = option.id === PW.Combat.targetPriority(building, def);
+        select.appendChild(entry);
+      });
+      select.addEventListener("change", () => PW.BuildingSystem.setTargetPriority(building.id, select.value));
+      priority.appendChild(select);
+      card.appendChild(priority);
     }
     const actions = document.createElement("div");
     actions.className = "build-actions";
@@ -375,6 +434,35 @@ Object.assign(PW.UI, {
       this.renderCostChips(costs, PW.BuildingSystem.upgradeCost(building));
       card.appendChild(costs);
     }
+    body.appendChild(card);
+  },
+  renderBlueprintContext(body, blueprint) {
+    const def = PW.BUILDINGS[blueprint.type];
+    const card = document.createElement("div");
+    card.className = "build-card";
+    const titleRow = document.createElement("div");
+    titleRow.className = "build-title";
+    const heading = document.createElement("h3");
+    heading.append(PW.Icons.buildingCanvas(blueprint.type, 32), document.createTextNode(def.name));
+    const state = document.createElement("strong");
+    state.textContent = "Vorgemerkt";
+    titleRow.append(heading, state);
+    card.append(titleRow, this.infoLine("Position", `${blueprint.x}/${blueprint.y}`));
+    const costs = document.createElement("div");
+    costs.className = "costs";
+    this.renderCostChips(costs, def.cost);
+    card.appendChild(costs);
+    const actions = document.createElement("div");
+    actions.className = "build-actions";
+    const build = document.createElement("button");
+    build.textContent = "Errichten";
+    build.disabled = !PW.Utils.canAfford(def.cost) || !PW.BuildingSystem.canPlaceBuilding(blueprint.type, blueprint.x, blueprint.y);
+    build.addEventListener("click", () => PW.BuildingSystem.buildBlueprint(blueprint.id));
+    const remove = document.createElement("button");
+    remove.textContent = "Entfernen";
+    remove.addEventListener("click", () => PW.BuildingSystem.removeBlueprintAt(blueprint.x, blueprint.y));
+    actions.append(build, remove);
+    card.appendChild(actions);
     body.appendChild(card);
   },
   renderResourceContext(body, node) {

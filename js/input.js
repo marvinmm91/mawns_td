@@ -25,13 +25,27 @@ PW.Input = {
   },
   initMouse() {
     const canvas = PW.state.canvas;
-    canvas.addEventListener("mousemove", (event) => this.updateMouse(event));
+    canvas.addEventListener("mousemove", (event) => {
+      this.updateMouse(event);
+      this.placeBlueprintWhileDragging();
+    });
     canvas.addEventListener("mouseenter", (event) => {
       PW.state.mouse.inside = true;
       this.updateMouse(event);
     });
     canvas.addEventListener("mouseleave", () => {
       PW.state.mouse.inside = false;
+      PW.state.input.blueprintPainting = false;
+      PW.state.input.blueprintPaintTile = null;
+    });
+    canvas.addEventListener("pointerup", () => {
+      if (PW.state.input.blueprintPainting) PW.UI.renderPanel();
+      PW.state.input.blueprintPainting = false;
+      PW.state.input.blueprintPaintTile = null;
+    });
+    canvas.addEventListener("pointercancel", () => {
+      PW.state.input.blueprintPainting = false;
+      PW.state.input.blueprintPaintTile = null;
     });
     canvas.addEventListener("contextmenu", (event) => {
       event.preventDefault();
@@ -46,12 +60,32 @@ PW.Input = {
       if (event.button === 2) return;
       if (PW.state.paused || PW.state.reportOpen || PW.state.gameOver || PW.state.victory) return;
       if (PW.state.player.selectedTool === "build") {
-        PW.BuildingSystem.placeSelected(PW.state.mouse.tileX, PW.state.mouse.tileY);
+        if (PW.state.buildMode === "blueprint") {
+          PW.state.input.blueprintPainting = true;
+          PW.state.input.blueprintPaintTile = { x: PW.state.mouse.tileX, y: PW.state.mouse.tileY };
+          PW.BuildingSystem.placeBlueprintSelected(PW.state.mouse.tileX, PW.state.mouse.tileY);
+        } else {
+          PW.BuildingSystem.placeSelected(PW.state.mouse.tileX, PW.state.mouse.tileY);
+        }
         PW.UI.renderPanel();
       } else {
         PW.UI.inspectTile(PW.state.mouse.tileX, PW.state.mouse.tileY);
       }
     });
+  },
+  placeBlueprintWhileDragging() {
+    const state = PW.state;
+    if (!state.input.blueprintPainting || state.player.selectedTool !== "build" || state.buildMode !== "blueprint") return;
+    const from = state.input.blueprintPaintTile || { x: state.mouse.tileX, y: state.mouse.tileY };
+    const dx = state.mouse.tileX - from.x;
+    const dy = state.mouse.tileY - from.y;
+    const steps = Math.max(Math.abs(dx), Math.abs(dy));
+    for (let step = 1; step <= steps; step++) {
+      const x = Math.round(from.x + dx * step / steps);
+      const y = Math.round(from.y + dy * step / steps);
+      PW.BuildingSystem.placeBlueprintSelected(x, y, true);
+    }
+    state.input.blueprintPaintTile = { x: state.mouse.tileX, y: state.mouse.tileY };
   },
   updateMouse(event) {
     const state = PW.state;

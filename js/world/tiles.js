@@ -22,6 +22,9 @@ PW.Tiles = {
   getBuilding(x, y) {
     return PW.state.world.buildingMap.get(PW.Utils.tileKey(x, y)) || null;
   },
+  getBlueprint(x, y) {
+    return PW.state.world.blueprintMap.get(PW.Utils.tileKey(x, y)) || null;
+  },
   getChest(x, y) {
     return (PW.state.world.treasureChests || []).find((chest) => !chest.opened && chest.x === x && chest.y === y) || null;
   },

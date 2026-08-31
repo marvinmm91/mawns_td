@@ -1,6 +1,13 @@
 "use strict";
 
 PW.Combat = {
+  targetPriorityDefinitions: Object.freeze({
+    ship: { label: "Wracknah" },
+    nearest: { label: "Naechster" },
+    strongest: { label: "Staerkster" },
+    breaker: { label: "Brecher zuerst" },
+    air: { label: "Luft zuerst" }
+  }),
   update(dt) {
     const state = PW.state;
     const energyBonus = state.ship.modules.energy ? 1.1 : 1;
@@ -25,19 +32,53 @@ PW.Combat = {
       splash: (def.splash || 0) * (1 + (building.level - 1) * 0.08)
     };
   },
+  targetPriorityOptions(building, def) {
+    const options = ["ship", "nearest", "strongest", "breaker"];
+    if (def.targets.includes("ground") && def.targets.includes("air")) options.push("air");
+    return options.map((id) => ({ id, ...this.targetPriorityDefinitions[id] }));
+  },
+  targetPriority(building, def) {
+    const options = this.targetPriorityOptions(building, def);
+    return options.some((option) => option.id === building.targetPriority) ? building.targetPriority : "ship";
+  },
+  targetPriorityLabel(building, def) {
+    const priority = this.targetPriority(building, def);
+    return this.targetPriorityDefinitions[priority].label;
+  },
+  preferredCandidates(candidates, priority) {
+    if (priority === "air") {
+      const airTargets = candidates.filter((enemy) => PW.ENEMIES[enemy.type].moveType === "air");
+      return airTargets.length ? airTargets : candidates;
+    }
+    if (priority === "breaker") {
+      const breakers = candidates.filter((enemy) => enemy.type === "breaker");
+      return breakers.length ? breakers : candidates;
+    }
+    return candidates;
+  },
+  targetScore(enemy, origin, ship, priority) {
+    const dist = PW.Utils.distance(origin.x, origin.y, enemy.x, enemy.y);
+    if (priority === "nearest") return dist;
+    if (priority === "strongest") return -(enemy.maxHp || enemy.hp) * 1000 + dist;
+    return PW.Utils.distance(enemy.x, enemy.y, ship.x, ship.y) + dist * 0.05;
+  },
   findTarget(building, def) {
     const scaled = this.scaledTowerDef(building, def);
     const origin = PW.Tiles.tileCenter(building.x, building.y);
     const rangePx = scaled.range * PW.state.world.tileSize;
     const ship = PW.EnemySystem.shipCenter();
-    let best = null;
-    let bestScore = Infinity;
+    const candidates = [];
     for (const enemy of PW.SpatialIndex.nearby("enemies", origin.x, origin.y, rangePx)) {
       if (enemy.hp <= 0 || enemy.remove || enemy.retreating) continue;
       const enemyDef = PW.ENEMIES[enemy.type];
-      if (!scaled.targets.includes(enemyDef.moveType)) continue;
-      const dist = PW.Utils.distance(origin.x, origin.y, enemy.x, enemy.y);
-      const score = PW.Utils.distance(enemy.x, enemy.y, ship.x, ship.y) + dist * 0.05;
+      if (scaled.targets.includes(enemyDef.moveType)) candidates.push(enemy);
+    }
+    const priority = this.targetPriority(building, def);
+    const preferred = this.preferredCandidates(candidates, priority);
+    let best = null;
+    let bestScore = Infinity;
+    for (const enemy of preferred) {
+      const score = this.targetScore(enemy, origin, ship, priority);
       if (score < bestScore) {
         best = enemy;
         bestScore = score;

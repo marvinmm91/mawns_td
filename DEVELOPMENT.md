@@ -112,7 +112,8 @@ Die folgenden Punkte wurden aus `ROADMAP.md` verbindlich fuer die naechste Entwi
 
 ### GAMEPLAY
 
-- [ ] **Turm-Zielprioritaeten** (`M`): Pro Turm waehlt der Spieler eine Prioritaet wie Naechster, Staerkster, Luft zuerst oder Brecher zuerst. Betroffene Dateien: `js/data/buildings.js`, `js/systems/combat.js`, `js/ui/panels.js`. Akzeptanz: Prioritaeten sind im Baukontext lesbar, speicherbar und durch Tests abgedeckt.
+- [x] **Turm-Zielprioritaeten** (`M`): Pro Turm waehlt der Spieler Wracknah, Naechster, Staerkster oder Brecher zuerst; der Laser bietet zusaetzlich Luft zuerst. Betroffene Dateien: `js/systems/building.js`, `js/systems/combat.js`, `js/ui/panels.js`, `js/systems/save.js`, `tests/`. Akzeptanz: Prioritaeten sind im Baukontext lesbar, speicherbar und durch Tests abgedeckt.
+- [x] **Blaupausen fuer geplante Gebaeudelinien** (`M`): Kostenfreie, nicht blockierende Blaupausen lassen sich auch per Ziehen setzen, einzeln oder gesammelt errichten, entfernen und speichern. Betroffene Dateien: `js/world/*`, `js/systems/building.js`, `js/systems/save.js`, `js/input.js`, `js/render/*`, `js/ui/*`, `tests/`. Akzeptanz: Bauvorhaben sind auf der Karte klar erkennbar, kollisionsfrei und nach Laden wieder verfuegbar.
 - [ ] **Kartennadeln** (`S`): Spieler kann wichtige Ressourcen, Truhen, Horden und Brueckenplaetze markieren. Betroffene Dateien: `js/input.js`, `js/render/*`, `js/ui/*`, `js/systems/save.js`. Akzeptanz: Markierungen sind auf der erkundeten Karte sichtbar und bleiben nach Speichern/Laden erhalten.
 
 ### DESIGN UND UX

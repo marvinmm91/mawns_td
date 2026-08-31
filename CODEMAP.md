@@ -39,7 +39,7 @@ Die UI-Dateien sind inzwischen konsolidiert: Bau-, Inventar-, Wrack-, Kontext- u
 ## Welt und Karte
 
 - `js/world/mapGenerator.js`: Tilemap-Erzeugung, groessere Biome, Fluss/Baeche/Furten, Startbereich und biomeabhaengige Ressourcenverteilung.
-- `js/world/tiles.js`: Tile-Helfer, Kacheltypen, Begehbarkeit, Bauplatzregeln.
+- `js/world/tiles.js`: Tile-Helfer, Kacheltypen, Begehbarkeit, Bauplatz- und Blaupausenregeln.
 - `js/world/spatialIndex.js`: 8x8-Kachelindex fuer sichtbare Weltobjekte, Radiusabfragen und ID-Lookups. Bewegte Objekte werden beim Spawn registriert und nur beim Zellwechsel umindexiert; Kartengenerierung sowie Laden bauen den Index vollstaendig neu auf. Bei ausgetauschten Laufzeitlisten erkennt der Index auch gleiche Listengroessen.
 - `js/world/fog.js`: Fog-of-War-Speicher, Sichtkreis, erkundete Kacheln.
 - `js/world/resources.js`: Ressourcenknoten, Abbaufortschritt, Inventarzugang.
@@ -50,9 +50,9 @@ Die UI-Dateien sind inzwischen konsolidiert: Bau-, Inventar-, Wrack-, Kontext- u
 - `js/entities/enemies.js`: Gegnerlisten, Bewegung, Zielwahl, Schaden am Wrack.
 - `js/entities/projectiles.js`: Turmprojektile, Treffer, Lebensdauer.
 - `js/systems/dayNight.js`: Tag, Daemmerung, Nacht, Morgengrauen, Timer, Phasenwechsel.
-- `js/systems/building.js`: Bauplatzpruefung, Platzieren, Reparieren, Abreissen, Kosten.
+- `js/systems/building.js`: Bauplatzpruefung, Platzieren, Blaupausen, Reparieren, Abreissen, Kosten.
 - `js/systems/pathfinding.js`: Grid-Pfade fuer Bodengegner und Blockade-Erkennung.
-- `js/systems/combat.js`: Turmzielwahl, Schaden, AoE, Slow, Luft-/Bodenfilter.
+- `js/systems/combat.js`: Turmzielwahl mit Prioritaeten, Schaden, AoE, Slow, Luft-/Bodenfilter.
 - `js/systems/spawning.js`: Nachtspawns, Spawnpunkte, Sicherheitsradius, Warnrichtungen.
 - `js/systems/drops.js`: Gegnerdrops, Einsammeln, Drop-Verfall optional.
 - `js/systems/treasure.js`: Schatztruhen, stationaere Monsterhorden, Schluesseldrops und Truhenbelohnungen.
@@ -66,14 +66,14 @@ Die UI-Dateien sind inzwischen konsolidiert: Bau-, Inventar-, Wrack-, Kontext- u
 
 - `js/ui/hud.js`: Wrack-HP, Timer, Nachtzaehler, Modulfortschritt, Werkzeugleiste und Ressourcen-Kurzliste.
 - `js/ui/icons.js`: Canvas-Icons fuer Ressourcen, Werkzeuge, Kostenchips, Bauvorschau und Bauwerksdarstellung.
-- `js/ui/panels.js`: Status-, Inventar-, Bau-, Upgrade-, Wrack-, Kontext- und Dialogansichten einschliesslich Morgenbericht und Hilfe.
+- `js/ui/panels.js`: Status-, Inventar-, Bau-, Upgrade-, Wrack-, Kontext- und Dialogansichten einschliesslich Zielprioritaeten, Morgenbericht und Hilfe.
 - `js/ui/designPanel.js`: Vereinfachter Pixel-Editor fuer manuelle Designs, Reset, Import und Export.
 - `js/ui/messages.js`: Kurze Hinweise, Nachtwarnung, Fehlertexte.
 
 ## Rendering
 
 - `js/render/renderMain.js`: Zentrale Render-Reihenfolge.
-- `js/render/renderWorld.js`: Tiles, Ressourcen, Bauwerke, Wrack.
+- `js/render/renderWorld.js`: Tiles, Ressourcen, Blaupausen, Bauwerke, Wrack.
 - `js/render/renderEntities.js`: Spieler, Gegner, Wildlife, Projektile, Drops.
 - `js/render/renderFog.js`: Fog of War und Nachtabdunklung.
 - `js/render/renderEffects.js`: Treffer, Partikel, Warnmarker, Schadensfeedback.
