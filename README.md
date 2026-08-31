@@ -14,11 +14,10 @@ Das Wrack muss repariert und bis zum Start verteidigt werden. Verliert es alle S
 
 ## Dokumente
 
-- `GAME_DESIGN.md`: Ausdetaillierte Spielregeln, korrigierter Tag-/Nacht-Loop, Ressourcen, Gegner, Tuerme und Balancing.
-- `PROGRESSION_BALANCING.md`: Spielspass, Progression, Unlock-Kurve, Ressourcen-Oekonomie und Autobalancing im Detail.
-- `CODEMAP.md`: Dateiaufteilung fuer HTML, CSS und JavaScript.
-- `DEVELOPMENT_PLAN.md`: Umgesetzte Build-Checkliste.
-- `IMPLEMENTATION_PLAN.md`: Historischer Umsetzungsplan.
+- `GAME_DESIGN.md`: Zentrale Spielregeln, Spielerlebnis, Inhalte, Progression und Balancing.
+- `DEVELOPMENT.md`: Umgesetzte Version 1 und verbindlich festgelegte kommende Arbeit.
+- `ROADMAP.md`: Unentschiedene Ideensammlung fuer moegliche spaetere Erweiterungen.
+- `CODEMAP.md`: Aktuelle Dateiaufteilung, Laufzeitfluss und Datenfluss fuer HTML, CSS und JavaScript.
 
 ## Start
 

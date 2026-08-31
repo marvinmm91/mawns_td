@@ -6,6 +6,14 @@ Das Projekt ist eine eigenstaendige HTML-/Canvas-Anwendung ohne Build-System ode
 
 Die UI-Dateien sind inzwischen konsolidiert: Bau-, Inventar-, Wrack-, Kontext- und Statuspanel liegen gemeinsam in `js/ui/panels.js`.
 
+## Dokumentationsstruktur
+
+- `README.md`: Kurzer Einstieg, Steuerung und Testbefehle.
+- `GAME_DESIGN.md`: Verbindliche Spielregeln, Spielerlebnis, Inhalte, Progression und Balancing.
+- `DEVELOPMENT.md`: Umsetzungsstatus und verbindlich festgelegte Entwicklungsarbeit.
+- `ROADMAP.md`: Unentschiedene Ideen und moegliche spaetere Erweiterungen.
+- `CODEMAP.md`: Diese technische Orientierung durch den aktuellen Code.
+
 ## Dateien
 
 - `index.html`: Canvas, HUD-Grundstruktur, Panel-Container und Script-Reihenfolge.
@@ -121,3 +129,4 @@ Jeder Frame wird in dieser Reihenfolge verarbeitet:
 - Bei UI-Texten zuerst `js/ui/*`.
 - Bei Save-/Reload-Problemen zuerst `js/systems/save.js` und danach `js/state.js` pruefen.
 - Bei Pixel-Art-Overrides zuerst `js/systems/pixelArt.js`, danach `js/ui/designPanel.js` und `mods/pixel-overrides.js` pruefen.
+- Bei verbindlich beschlossenen neuen Vorhaben zuerst `DEVELOPMENT.md` und bei neuen Spielregeln `GAME_DESIGN.md` aktualisieren; unentschiedene Vorschlaege gehoeren in `ROADMAP.md`.

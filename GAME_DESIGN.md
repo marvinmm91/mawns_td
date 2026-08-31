@@ -1,286 +1,303 @@
-# Planet-Wrack Game Design
+# PLANET-WRACK GAME DESIGN
 
-Dieses Dokument ist die stabile Designvorgabe fuer die spaetere Umsetzung. Es ersetzt noch keinen Code.
+Dieses Dokument ist die zentrale und verbindliche Designbeschreibung von Planet-Wrack. Es beschreibt Spielidee, Spielerlebnis, Regeln, Inhalte, Progression und Balancing. Der aktuelle Implementierungsstand und verbindliche Entwicklungsaufgaben stehen in `DEVELOPMENT.md`; noch nicht beschlossene Ideen stehen in `ROADMAP.md`.
 
-## 1. High Concept
+## 1. HIGH CONCEPT
 
-- Genre: Top-Down Survival, Tower Defense, Crafting und Erkundung.
-- Perspektive: 2D-Gitteransicht von oben, angelehnt an klassische Pokemon-Routen und alte Browsergames.
-- Plattform: Desktop-Browser, HTML Canvas und JavaScript.
-- Setting: Ein Ueberlebender ist auf einem fremden Planeten abgestuerzt. Das Raumschiffwrack steht in der Kartenmitte und ist Core, Lager, Reparaturpunkt und Siegbedingung zugleich.
-- Grundgefuehl: Tagsueber planvoll expandieren, nachts unter Zeitdruck entscheiden, ob man beim Wrack bleibt oder entfernte Ressourcen riskiert.
+- Genre: Top-Down-Survival, Tower Defense, Crafting und Erkundung.
+- Perspektive: 2D-Gitteransicht von oben im Retro-/Pixel-Art-Stil.
+- Plattform: Desktop-Browser mit HTML Canvas und JavaScript.
+- Setting: Ein Ueberlebender strandet auf einem fremden Planeten. In der Kartenmitte liegt das Wrack seines Raumschiffs.
+- Ziel: Ressourcen sammeln, Verteidigung bauen, das Wrack reparieren und die Startsequenz ueberstehen.
+- Grundgefuehl: Tagsueber planvoll expandieren; nachts unter Druck zwischen Basisverteidigung, Reparatur und riskanter Expedition entscheiden.
 
-## 2. Design-Saeulen
+## 2. DESIGN-SAEULEN
 
-1. Das Wrack ist wichtiger als der Spieler.
-   Der Spieler hat zunaechst keine eigenen Lebenspunkte. Gegner ignorieren ihn und laufen zum Wrack. Dadurch bleibt die Steuerung einfach, aber Entscheidungen bleiben hart.
+1. **Das Wrack ist wichtiger als der Spieler.**
+   Der Spieler hat keine eigenen Lebenspunkte. Gegner ignorieren ihn und greifen das Wrack an.
 
-2. Erkundung ist dauerhaft wertvoll.
-   Fog of War verbirgt Ressourcen, Engpaesse, Spawnrichtungen und seltene Vorkommen. Aufgedeckte Gebiete bleiben sichtbar.
+2. **Erkundung bleibt wertvoll.**
+   Fog of War verbirgt Ressourcen, Engpaesse, Truhen, Monsterhorden und moegliche Gefahren. Erkundete Gebiete bleiben bekannt.
 
-3. Tag und Nacht haben klare Rollen.
-   Der Tag ist Planung, Ausbau und Expansion. Die Nacht ist Angriff, Reparaturdruck und Loot-Chance. Nachts darf weiter gesammelt werden, aber die Basis verteidigt sich dann eher allein.
+3. **Tag und Nacht haben klare Rollen.**
+   Der Tag dient Planung, Sammlung, Bau und Reparatur. Die Nacht erzeugt Angriffsdruck und bietet Beute.
 
-4. Bodengegner und Luftgegner brauchen unterschiedliche Antworten.
-   Mauern lohnen sich gegen Bodenwellen, helfen aber nicht gegen Luft. Spieler muessen frueh erkennen, welche Verteidigungen fehlen.
+4. **Boden und Luft verlangen unterschiedliche Antworten.**
+   Mauern und Bodenfeuer helfen nicht gegen Luftgegner. Flak und Laser schliessen diese Luecke.
 
-5. Autobalancing hilft, soll aber nicht sichtbar tricksen.
-   Das Spiel darf nach harten Naechten etwas nachgeben und nach sehr einfachen Naechten leicht anziehen. Es soll nie so wirken, als wuerde es dem Spieler Siege schenken oder willkuerlich bestrafen.
+5. **Balancing soll helfen, aber nicht sichtbar schummeln.**
+   Nach harten Naechten wird der Druck moderat reduziert, nach wiederholt sehr leichten Naechten moderat erhoeht.
 
-## 3. Core Loop
+## 3. CORE LOOP
 
-Der Tageszyklus laeuft kontinuierlich. Die Phasen sind logisch getrennt, aber der Spieler bleibt immer handlungsfaehig.
+### Tag
 
-### Tagphase
-
-- Keine neuen Gegnerwellen starten.
-- Uebrig gebliebene Gegner aus der Nacht fliehen bei Sonnenaufgang zum Kartenrand. Werden sie auf dem Rueckweg zerstoert, koennen sie reduzierte Drops geben.
-- Der Spieler erkundet Fog-of-War-Gebiete, baut Ressourcen ab, repariert das Wrack und platziert Verteidigungen.
-- Tuerme und Mauern koennen ohne akuten Angriff ruhig geplant werden.
-- Ressourcen sind bei Tag besser sichtbar und schneller zu erkennen.
-- Neue Spawn-Warnungen fuer die kommende Nacht koennen als vage Hinweise erscheinen, zum Beispiel "Bewegung im Nordosten".
+- Keine neuen Angriffswellen.
+- Der Spieler erkundet und deckt neue Kacheln auf.
+- Ressourcen werden mit Axt oder Spitzhacke abgebaut.
+- Mauern, Tuerme und Bruecken werden gebaut.
+- Das Wrack und beschaedigte Bauwerke werden repariert.
+- Truhen und Monsterhorden koennen gezielt aufgesucht werden.
+- Hinweise auf seltene Ressourcen und kommende Gefahren helfen bei der Planung.
 
 ### Daemmerung
 
-- Kurze Uebergangsphase von etwa 10 bis 15 Sekunden.
-- UI zeigt die erwartete Angriffsstufe und ungefaehre Richtungen.
-- Der Spieler bekommt Zeit, letzte Mauern oder Tuerme zu setzen.
-- Musik, Licht und Farbstimmung wechseln sichtbar.
+- Kurze Uebergangsphase von 12 Sekunden.
+- Die erwartete Welle und Spawnrichtungen werden angezeigt.
+- Der Spieler kann letzte Verteidigungen aufbauen und Material verteilen.
+- Licht- und Farbstimmung wechseln sichtbar.
 
-### Nachtphase
+### Nacht
 
-- Gegner spawnen ausserhalb einer Sicherheitszone am Kartenrand oder an aktiven Nestern.
-- Alle Gegner priorisieren das Wrack.
-- Bodengegner nutzen Pfade durch das Gitter. Wenn kein Pfad existiert, greifen sie die naechste Mauer oder Blockade an.
-- Luftgegner ignorieren Mauern und bewegen sich direkter zum Wrack.
-- Der Spieler kann weiter erkunden und sammeln, aber das ist eine bewusste Risikoentscheidung, weil Reparaturen, Loot-Einsammeln und Neubauten an der Basis fehlen.
-- Gegner lassen Schrott, Bauteile und spaeter Spezialkomponenten fallen.
-- Nachts ist die Sicht reduziert: Aufgedeckte Karte bleibt bekannt, aber Details ausserhalb des Spielerradius sind dunkler.
+- Gegner erscheinen in mehreren Pulsen aus geplanten Richtungen.
+- Bodengegner suchen einen Weg zum Wrack oder greifen Blockaden an.
+- Luftgegner ignorieren Mauern und fliegen direkt zum Wrack.
+- Tuerme verteidigen die Basis automatisch.
+- Der Spieler kann weiter sammeln, verliert dadurch aber Zeit fuer Reparatur und Bau.
+- Gegner hinterlassen Schrott, Eisen, Bauteile und weitere Beute.
 
 ### Morgengrauen
 
 - Neue Spawns stoppen.
-- Restgegner ziehen sich zurueck oder werden nach kurzer Flucht entfernt.
-- Drops bleiben liegen, koennen tagsueber eingesammelt werden.
-- Eine Tagesauswertung berechnet Schaden, Kills, verlorene Mauern, gesammelte Drops und die Anpassung der naechsten Welle.
+- Uebrige Gegner ziehen sich zum Kartenrand zurueck.
+- Drops bleiben liegen und koennen tagsueber eingesammelt werden.
+- Ein Morgenbericht zeigt Schaden, Kills, verlorene Mauern und Balancing-Diagnosen.
 
-## 4. Sieg und Niederlage
+## 4. SIEG UND NIEDERLAGE
 
 ### Niederlage
 
 - Das Wrack startet mit 500 Strukturpunkten.
-- Fallen die Strukturpunkte auf 0, ist die Partie verloren.
-- Das Wrack kann tagsueber und nachts repariert werden, solange passende Ressourcen vorhanden sind.
+- Bei 0 HP ist die Partie verloren.
+- Reparatur ist tagsueber und nachts moeglich, solange Material vorhanden ist.
 
 ### Sieg
 
-Die Partie wird nicht nur ueberlebt, sondern abgeschlossen:
+Die Pflichtmodule des Wracks muessen repariert werden:
 
-1. Das Wrack besitzt mehrere Reparaturmodule.
-2. Jedes Modul kostet normale und seltene Ressourcen.
-3. Sobald alle Module repariert sind, startet eine finale Startsequenz.
-4. In der finalen Nacht greifen mehrere gemischte Wellen an.
-5. Uebersteht das Wrack die Startsequenz, hebt das Schiff ab und die Partie ist gewonnen.
+1. Rumpfplatten
+2. Energiezelle
+3. Kommunikationsarray
+4. Navigationskern
+5. Antrieb
 
-Empfohlene Reparaturmodule:
+Danach muss mindestens Nacht 10 erreicht sein und das Wrack mindestens 70 Prozent seiner maximalen HP besitzen. Die Startsequenz dauert 120 Sekunden und erzeugt eine finale gemischte Angriffswelle. Ueberlebt das Wrack bis zum Ablauf, hebt das Schiff ab.
 
-- Energiezelle: benoetigt Eisen, Gold und Bauteile.
-- Navigationskern: benoetigt seltene Kristalle und Schrott.
-- Rumpfplatten: benoetigen Holz, Stein und Eisen.
-- Antrieb: benoetigt Gold, Bauteile und eine Boss-Komponente.
-- Kommunikationsarray: benoetigt Kristalle und Elektronikschrott.
+## 5. WELT UND FOG OF WAR
 
-Fuer eine erste spielbare Version kann der Sieg zunaechst als "ueberlebe Nacht 10" umgesetzt werden. Die Modulreparatur sollte aber von Anfang an im Design vorbereitet werden.
+- Kartengroesse: 144 x 144 Tiles.
+- Tilegroesse: 32 Pixel.
+- Das Wrack ist 4 x 4 Tiles gross und liegt in der Kartenmitte.
+- Der Startbereich ist frei von Hindernissen und enthaelt Holz und Stein.
+- Biome: Wiese, Wald, Feuchtgebiet und Felskanten.
+- Die Welt besitzt einen grossen Fluss, 1 bis 2 Baeche und mehrere Furten.
+- Tiefes Wasser blockiert Bewegung; Furten und Bruecken machen Wasser passierbar.
+- Ressourcen werden abhaengig von Biom und Entfernung verteilt.
+- Eisen liegt in mittlerer Entfernung, Gold und Kristall weiter aussen.
 
-## 5. Karte und Fog of War
+Fog-of-War-Stufen:
 
-- Die Karte ist groesser als der sichtbare Bildschirm.
-- Das Wrack liegt in der Mitte auf einer freien Startflaeche.
-- Startgebiet: kleiner sicherer Bereich mit Holz, Stein und wenigen Bauplaetzen.
-- Mittlere Entfernung: mehr Stein, Erzadern und erste Engpaesse.
-- Weite Entfernung: seltene Ressourcen, Nester, bessere Erzadern und hoeheres Nachtrisiko.
-- Fog of War arbeitet in zwei Stufen:
-  - unbekannt: schwarze oder sehr dunkle Kacheln, keine Details.
-  - erkundet: Kacheltyp und Ressourcen bleiben sichtbar, aber bei Nacht abgedunkelt.
-- Der Spieler deckt dauerhaft einen Radius um sich herum auf.
-- Gegner duerfen auch aus unbekannten Bereichen kommen. Fog of War verhindert also keine Angriffe, sondern begrenzt Information.
+- unbekannt: sehr dunkel, keine Details
+- erkundet: Terrain und bekannte Objekte bleiben sichtbar, aber abgedunkelt
+- sichtbar: volle Darstellung im aktuellen Sichtkreis
 
-## 6. Spieler und Interaktion
+Gegner duerfen aus unbekannten Bereichen kommen. Fog of War begrenzt Information, verhindert aber keine Angriffe.
 
-- Bewegung: WASD und Pfeiltasten.
-- Interaktion: Leertaste mit der Zielkachel vor dem Spieler oder der naechsten interaktiven Kachel.
-- Inventar: Taste E.
-- Baumenue: Taste B.
-- Werkzeugauswahl: Hotbar mit einem aktiven Werkzeug.
-- Der Spieler kollidiert mit Waenden, Ressourcen und Gebaeuden, aber nicht mit Gegnern. So kann er Gegner nicht als kostenlose Blockade missbrauchen.
+## 6. SPIELER UND WERKZEUGE
+
+- Bewegung: WASD oder Pfeiltasten.
+- Aktion: Leertaste mit der Kachel vor dem Spieler.
+- Der Spieler kollidiert mit Terrain, Ressourcen, Wrack und Bauwerken, aber nicht mit Gegnern.
+- Linksklick inspiziert eine Kachel oder baut im Baumodus direkt.
+- Rechtsklick beendet den Baumodus.
 
 Werkzeuge:
 
-- Axt: faellt Baeume, liefert Holz.
-- Spitzhacke: baut Felsen und Erze ab.
-- Reparaturset: repariert das Wrack oder beschaedigte Gebaeude.
-- Bauwerkzeug: platziert geplante Mauern, Tuerme und Upgrades.
+- Axt: Baeume abbauen.
+- Spitzhacke: Felsen und Erze abbauen.
+- Reparaturset: Wrack und Bauwerke reparieren.
+- Bauwerkzeug: Bauwerke platzieren.
+- Abrisswerkzeug: Bauwerke entfernen und teilweise Material zurueckerstatten.
 
-## 7. Ressourcen
+## 7. RESSOURCEN
 
-| Material | Quelle | Hauptnutzen |
+| Ressource | Quelle | Hauptfunktion |
 |---|---|---|
-| Holz | Baeume | Palisaden, Ballisten, einfache Reparaturen |
+| Holz | Baeume | Palisaden, Ballisten, Reparaturen |
 | Stein | Felsen | Steinmauern, Katapulte, Wrackrumpf |
-| Eisen | Erzadern | verstaerkte Mauern, Flak, Reparaturmodule |
-| Gold | seltene Erzadern | Laser, Modulreparaturen, hochwertige Upgrades |
-| Kristall | entfernte seltene Vorkommen | Energie- und Tesla-Technik |
-| Schrott | Gegner-Drops | Reparaturen, Flak, Tesla, Elektronik |
-| Bauteile | seltene Gegner-Drops | Module, fortgeschrittene Tuerme |
+| Eisen | Erzadern | Stahlmauern, Flak, Module |
+| Gold | seltene Erzadern | Laser, Module |
+| Kristall | entfernte Vorkommen | Tesla, Energiezelle, Kommunikationsarray |
+| Schrott | Gegnerdrops | Reparaturen, Flak, Tesla |
+| Bauteile | seltene Gegnerdrops und Horden | Laser, Module |
+| Schluessel | Schluesseltraeger | Schatztruhen |
 
-Ressourcen gehen automatisch ins Inventar. Fuer die erste Version reicht ein globales Inventar ohne Gewichtslimit.
+Es gibt kein Gewichtslimit. Ressourcen werden automatisch ins globale Inventar aufgenommen.
 
-## 8. Bau- und Verteidigungssystem
+## 8. BAU UND VERTEIDIGUNG
 
-Alle Bauwerke sitzen auf Gitterkacheln.
+Alle Bauwerke stehen auf einzelnen Gitterkacheln. Bau ist nicht auf Wrack, Ressourcen, Truhen, Monsterlager oder blockiertem Terrain moeglich.
 
-### Mauern
+### Mauern und Bruecke
 
-- Palisade: billig, schnell gebaut, geringe HP.
-- Steinmauer: teurer, stabiler, blockiert Bodengegner zuverlaessiger.
-- Stahlmauer: spaetes Upgrade, hohe HP, benoetigt Eisen und Schrott.
+| Bauwerk | Rolle | Kostenidee |
+|---|---|---|
+| Palisade | billige, schnelle Bodenblockade | Holz |
+| Steinmauer | stabile Bodenblockade | Stein und Holz |
+| Stahlmauer | spaeter Endgame-Anker | Eisen und Schrott |
+| Bruecke | macht Wasser passierbar | Holz und Stein |
 
-Regel gegen Exploits:
-
-- Wenn Bodengegner keinen Pfad zum Wrack finden, greifen sie die naechste Blockade an.
-- Mauern duerfen das Wrack komplett einschliessen, aber das Spiel beantwortet das durch Wandangriffe, Luftgegner und spaeter Spezialgegner.
+Wenn Bodengegner keinen Weg zum Wrack finden, greifen sie angrenzende Blockaden an. Mauern koennen das Wrack daher nicht dauerhaft folgenlos einschliessen.
 
 ### Tuerme
 
-| Turm | Kostenprofil | Zieltyp | Rolle |
+| Turm | Zieltyp | Rolle | Schwachpunkt |
 |---|---|---|---|
-| Holz-Balliste | Holz + wenig Stein | Boden | billiger Einzelschaden |
-| Stein-Katapult | Stein + Holz | Boden | langsamer Flaechenschaden |
-| Flak-Geschuetz | Eisen + Schrott | Luft | schnelle Luftabwehr |
-| Tesla-Feld | Kristall + Schrott | Boden | Verlangsamung in Reichweite |
-| Laser-Turm | Gold + Bauteile | Boden und Luft | teurer Praezisionsschaden |
+| Balliste | Boden | billiger Einzelschaden | schwach gegen Schwarm und Luft |
+| Katapult | Boden | langsamer Flaechenschaden | keine Luftziele |
+| Flak | Luft | schnelle Luftabwehr | keine Bodenziele |
+| Tesla-Feld | Boden | Slow und leichter Schaden | geringe Toetungsleistung |
+| Laser-Turm | Boden und Luft | teurer Praezisionsschaden | hohe Kosten |
 
-Tuerme benoetigen freie Sicht nicht zwingend. Das haelt die erste Implementierung einfacher. Spaeter kann Sichtlinie optional fuer Ballisten eingefuehrt werden.
+Tuerme besitzen Reichweite, Feuerrate, HP, Zieltypen und bis zu drei Ausbaustufen. Sichtlinien sind nicht erforderlich. Upgrades verbessern vor allem Schaden, Reichweite, Feuerrate oder Haltbarkeit.
 
-## 9. Gegner
+## 9. GEGNER
 
-### Bodengegner
+### Boden
 
-- Krabbler: schneller Standardgegner, wenig HP.
-- Panzereinheit: langsam, viele HP, gut gegen Ballisten.
-- Schwarm: viele kleine Gegner, schwach gegen Katapult.
-- Brecher: greift Mauern effektiver an, wenn blockiert.
+- Krabbler: schneller Standardgegner mit wenig HP.
+- Schwarm: viele kleine Ziele, besonders geeignet fuer Katapult-AoE.
+- Panzereinheit: langsam, viele HP und hoher Druck auf Verteidigung.
+- Brecher: verursacht besonders hohen Schaden an Blockaden.
+- Nesthueter: starke stationaere Horde-Einheit mit wertvoller Beute.
 
-### Luftgegner
+### Luft
 
-- Drohne: schnelle Lufteinheit, wenig HP.
-- Bomber: langsam, ignoriert Mauern, hoher Wrackschaden.
-- Stoersender: reduziert kurzzeitig Turmfeuerrate in kleiner Aura.
+- Drohne: schnell und zerbrechlich.
+- Bomber: langsam, aber hoher Wrackschaden.
+- Stoersender: reduziert die Feuerrate umliegender Tuerme.
 
-### Spezialgegner
+Alle normalen Nachtgegner priorisieren das Wrack. Stationaere Horden bewachen ihre Lager, greifen dort Bauwerke an und koennen einen Schluesseltraeger enthalten.
 
-- Nesthueter: erscheint nahe aktiver Nester, droppt seltene Bauteile.
-- Finaler Angriffstraeger: kommt in der Startsequenz, zwingt zu gemischter Verteidigung.
+## 10. WELLENPROGRESSION
 
-## 10. Wellen und Spawns
+| Nacht | Gegnerbild | Designziel |
+|---:|---|---|
+| 1 | Krabbler aus einer Richtung | Grundprinzip von Mauer und Balliste lernen |
+| 2 | Krabbler und Schwaerme | mehrere Bodenachsen absichern |
+| 3 | Krabbler und erste Drohnen | Luftgefahr ankundigen |
+| 4 | Krabbler, Schwaerme und Panzer | Einzelschaden hinterfragen |
+| 5 | Boden plus Drohnen | Luftabwehr erforderlich machen |
+| 6 | Schwaerme, Panzer und Drohnen | gemischte Verteidigung pruefen |
+| 7 | mehrere Richtungen und Brecher | Verteidigungsring belasten |
+| 8 | Stoersender und Brecher | Spezialrollen einfuehren |
+| 9 | schwere gemischte Nacht | Vorfinale Belastungsprobe |
+| 10+ | gemischte Wellen mit Nesthueter | Startsequenz vorbereiten |
 
-- Nacht 1 bis 2: nur Bodengegner, damit Mauern und Ballisten gelernt werden.
-- Nacht 3: erste Luftdrohnen als Warnung.
-- Nacht 4 bis 5: gemischte Wellen und erste Panzereinheiten.
-- Nacht 6+: Spezialrollen, groessere Gruppen und mehrere Spawnrichtungen.
-- Finale Nacht: abgestimmte Mischung aus Boden, Luft und einem starken Ziel.
+Das Threat-Budget skaliert die Anzahl und Mischung der Gegner. Neue Mechaniken werden an Mindestnaechte gebunden und nicht durch Balancing uebersprungen.
 
-Spawnlogik:
+## 11. WRACKMODULE UND PROGRESSION
 
-- Gegner spawnen ausserhalb eines Radius um das Wrack.
-- Je weiter der Spieler erkundet hat, desto mehr moegliche Spawnrichtungen koennen sichtbar vorgewarnt werden.
-- Unbekannte Spawnrichtungen bleiben moeglich, werden aber in fruehen Naechten reduziert, damit das Spiel fair wirkt.
+| Modul | Freischaltung | Effekt |
+|---|---:|---|
+| Rumpfplatten | sofort | maximale Wrack-HP +100 und sofort +100 HP |
+| Energiezelle | Nacht 3 und Eisen bekannt | Tuerme feuern schneller |
+| Kommunikationsarray | Nacht 4 | genauere Spawnwarnungen |
+| Navigationskern | Nacht 6 und Gold bekannt | Fortschritt zur Startsequenz |
+| Antrieb | Nacht 8 und Bauteile bekannt | schaltet die Startsequenz frei |
 
-## 11. Reparatur und Wrackausbau
+Module kosten normale und seltene Ressourcen. Sie sind frueh im Wrackmenue sichtbar, werden aber erst nach Mindestnacht und Ressourcenkenntnis reparierbar.
 
-Das Wrack ist sowohl HP-Leiste als auch Fortschrittsobjekt.
+## 12. ZUSATZINHALTE
 
-- Sofortreparatur: verbraucht Holz, Stein oder Schrott und stellt Strukturpunkte wieder her.
-- Modulreparatur: dauerhaftes Fortschrittsziel mit groesseren Kosten.
-- Wrack-Upgrades:
-  - Lagererweiterung: spaeteres optionales Inventarlimit.
-  - Scanimpuls: deckt kurz Richtung seltener Ressourcen auf.
-  - Notgeschuetz: schwacher Basisturm direkt am Wrack.
-  - Startsequenz: freigeschaltet nach allen Reparaturmodulen.
+- Schatztruhen erscheinen ausserhalb des Startbereichs und benoetigen Schluessel.
+- Monsterhorden bewachen Lager, greifen Bauwerke in ihrem Gebiet an und koennen Schluessel fallen lassen.
+- Voegel sind dekorativ und besitzen keine Hitbox.
+- Waldhuepfer und Mooskaefer wandern, fliehen vor dem Spieler und geben kleine Belohnungen.
+- Das Pixel-Art-System erlaubt eigene Designs, Zuruecksetzen sowie JSON-/JavaScript-Import und -Export.
 
-## 12. UI
+## 13. UI UND FEEDBACK
 
-Obere Leiste:
+Die Oberflaeche zeigt dauerhaft:
 
-- Wrack-HP: 500/500 mit klarer Farbstufe.
-- Tageszeit: Tag, Daemmerung, Nacht, Morgengrauen.
-- Timer bis Phasenwechsel.
-- Welle/Nacht-Nummer.
-- Reparaturfortschritt der Module.
+- Wrack-HP und HP-Balken
+- aktuelle Phase und Timer
+- Nachtzaehler
+- reparierte Module
+- Werkzeugleiste
+- Kurzinventar
 
-Untere Leiste:
+Panels:
 
-- Aktives Werkzeug.
-- Kurzinventar fuer Holz, Stein, Eisen, Gold, Schrott und Bauteile.
-- Kontextaktion fuer die aktuelle Zielkachel.
+- Status
+- Inventar
+- Bauen und Upgrades
+- Wrack und Module
+- Kachel-/Objektkontext
+- Pixel-Design
 
-Seitliche Panels:
+Feedback erfolgt ueber Morgenberichte, Nachrichten, Schadensanzeigen, Reichweitenvorschau, HP-Balken, Warnrichtungen und Pixel-Effekte.
 
-- Inventar mit Ressourcen und Drops.
-- Baumenue mit Mauern, Tuermen, Kosten und Sperrgruenden.
-- Wrackmenue mit Reparaturen, Modulen und Startsequenz.
+## 14. BALANCING-MODELL
 
-## 13. Balancing
+Jede Nacht besitzt ein Threat-Budget:
 
-### Natuerliche Skalierung
+```text
+Basisbudget + Nachtwachstum + leichte spaete Skalierung
+multipliziert mit einem begrenzten Balance-Drift
+```
 
-- Jede Nacht erhoeht leicht Gegneranzahl, HP, Tempo oder Mischung.
-- Neue Gegnertypen werden stufenweise eingefuehrt, nie alle auf einmal.
-- Seltene Ressourcen liegen weiter weg, damit Expansion relevant bleibt.
+Bewertet werden aktuell vor allem:
 
-### Gummiband-Regeln
+- Wrackschaden und verbleibende HP
+- Luftschaden
+- zerstoerte Mauern beziehungsweise Bauwerke
+- Kills und durchschnittliche Killentfernung
 
-Die Anpassung wird nach jeder Nacht berechnet.
+Nach einer harten Nacht:
 
-- Wenn das Wrack mehr als 30 Prozent seiner aktuellen HP verloren hat, wird die naechste Welle etwas langsamer oder kleiner.
-- Wenn das Wrack keinen oder fast keinen Schaden genommen hat und viele Gegner sehr frueh sterben, bekommt die naechste Welle einen kleinen Bonus.
-- Wenn der Spieler sehr wenige Tuerme besitzt, steigen Schrott-Drops leicht.
-- Wenn Luftgegner viel Schaden verursachen, wird vor der naechsten Nacht sichtbarer auf Luftabwehr hingewiesen und Flak-Kosten koennen minimal sinken.
+- Threat-Budget moderat reduzieren
+- Schrottdrop-Chance erhoehen
+- bei starkem Luftschaden Eisenhinweis geben
+
+Nach wiederholt sehr leichten Naechten:
+
+- Threat-Budget moderat erhoehen
+- gegebenenfalls eine weitere Richtung oder gemischtere Gruppen verwenden
 
 Grenzen:
 
-- Anpassungen bleiben klein, zum Beispiel 5 bis 15 Prozent.
-- Neue Gegnertypen werden nicht uebersprungen.
-- Die finale Nacht ignoriert starke Abschwaechung teilweise, damit der Sieg Gewicht hat.
+- maximal 18 Prozent Entschaerfung pro Nacht
+- maximal 12 Prozent Verstaerkung pro Nacht
+- Balance-Drift zwischen -30 und +30 Prozent
+- finale Startsequenz bleibt an Mindestbedingungen gebunden
 
-Details zu Progression, Belohnungskurve, Wellen-Direktor und Anti-Frust-Regeln stehen in `PROGRESSION_BALANCING.md`. Diese Detailregeln gelten als massgeblich, wenn spaeter konkrete Werte umgesetzt werden.
+Zielbild fuer eine gute Nacht: ungefaehr 8 bis 22 Prozent Wrackschaden, sichtbare Belastung der Verteidigung und genug Beute fuer eine relevante Folgeentscheidung.
 
-## 14. Erste spielbare Zielversion
+## 15. EMPFOHLENE STARTWERTE
 
-Die erste Version soll bewusst kleiner sein:
+| Wert | Empfehlung |
+|---|---:|
+| Wrack-HP | 500 |
+| Tag 1 | 120 Sekunden |
+| Daemmerung | 12 Sekunden |
+| Nacht 1 | 70 Sekunden |
+| Morgengrauen | 8 Sekunden |
+| Spielergeschwindigkeit | 132 Pixel/Sekunde |
+| Sichtkreis Tag | 7 Tiles |
+| Sichtkreis Nacht | 5 Tiles |
+| Basis-Sicherheitsradius | 14 Tiles |
 
-- Eine zufallsgenerierte Tilemap.
-- Spielerbewegung mit Kollision.
-- Fog of War.
-- Sammeln von Holz, Stein und Eisen.
-- Wrack mit 500 HP.
-- Tag-/Nacht-Timer.
-- Bodengegner, die nachts zum Wrack laufen.
-- Palisade, Steinmauer, Balliste.
-- Einfache Drops: Schrott.
-- Reparatur des Wracks.
-- Niederlage bei 0 Wrack-HP.
+Konkrete Kosten und Werte der aktuellen Implementierung stehen in `js/config.js`, `js/data/buildings.js`, `js/data/enemies.js` und `js/data/shipModules.js`.
 
-Danach folgen Luftgegner, weitere Tuerme, Modulreparatur, seltene Ressourcen und Autobalancing.
+## 16. SPIELSPASS-ZIEL
 
-## 15. Spielspass-Ziel
+Jede Nacht soll eine nachvollziehbare kleine Geschichte erzeugen:
 
-Planet-Wrack soll nicht nur daraus bestehen, Ressourcen in Verteidigung umzuwandeln. Jede Nacht soll eine erkennbare Geschichte erzeugen:
+- Die Mauer hat knapp gehalten.
+- Die Luftabwehr war der Schwachpunkt.
+- Eine Expedition hat Reparaturzeit gekostet.
+- Ein neuer Turm hat eine Richtung stabilisiert.
+- Eine seltene Ressource bringt das naechste Modul naeher.
 
-- "Meine Mauer hat knapp gehalten."
-- "Die Luftdrohnen waren mein Schwachpunkt."
-- "Ich bin nachts zu weit rausgegangen und musste teuer reparieren."
-- "Der neue Turm hat eine komplette Richtung stabilisiert."
-- "Noch ein seltenes Erzfeld, dann kann ich das naechste Modul reparieren."
-
-Die beste Spielrunde ist eine Abfolge kleiner Entscheidungen mit sichtbaren Folgen. Der Spieler soll selten komplett ueberrascht verlieren. Er soll meistens verstehen, welche Entscheidung zur Gefahr gefuehrt hat und was er in der naechsten Runde verbessern kann.
+Mehr Inhalte sollen diese Entscheidungen verstaerken, nicht die Kernschleife durch unnoetige Komplexitaet ueberladen.
