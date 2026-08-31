@@ -70,7 +70,20 @@ PW.EnemySystem = {
             return;
           }
         }
-      } else if (this.attackBlockingWall(enemy, def)) return;
+      } else if (mode.structureTargeting === "direct-path") {
+        route = PW.Pathfinding.routeInfoFor(enemy);
+        if (route.directTarget) {
+          if (this.attackBuilding(enemy, def, route.directTarget, PW.state.world.tileSize * 0.9, mode.structureDamageMultiplier)) return;
+          if (route.breakthroughStep) {
+            this.moveToward(enemy, route.breakthroughStep.x, route.breakthroughStep.y, dt);
+            return;
+          }
+        }
+        if (!route.hasPath && route.breakthroughStep) {
+          this.moveToward(enemy, route.breakthroughStep.x, route.breakthroughStep.y, dt);
+          return;
+        }
+      }
     }
 
     let target;
@@ -218,27 +231,6 @@ PW.EnemySystem = {
       if (PW.state.ship.hp <= 0) PW.Progression.lose();
     }
     return true;
-  },
-  attackBlockingWall(enemy, def) {
-    const tx = PW.Utils.worldToTile(enemy.x);
-    const ty = PW.Utils.worldToTile(enemy.y);
-    const dirs = [[0, 0], [1, 0], [-1, 0], [0, 1], [0, -1]];
-    for (const [dx, dy] of dirs) {
-      const building = PW.Tiles.getBuilding(tx + dx, ty + dy);
-      if (!building || !PW.BUILDINGS[building.type].blocksGround) continue;
-      if (enemy.attackCooldown <= 0) {
-        PW.DamageVisuals.building(building, def.wallDamage || def.damage);
-        enemy.attackCooldown = def.attackCooldown;
-        if (PW.state.nightStats) PW.state.nightStats.wallDamage += def.wallDamage || def.damage;
-        this.addAttackEffect(enemy, def, PW.Utils.tileToWorld(building.x), PW.Utils.tileToWorld(building.y), 1.1);
-        if (building.hp <= 0) {
-          PW.BuildingSystem.destroy(building);
-          if (PW.state.nightStats) PW.state.nightStats.wallsDestroyed += 1;
-        }
-      }
-      return true;
-    }
-    return false;
   },
   damage(enemy, amount, sourceType) {
     const multiplier = this.damageMultiplier(enemy, sourceType);

@@ -251,6 +251,8 @@ Vor einer neuen Partie wird zusaetzlich zur Schwierigkeit ein Verteidigungsmodus
 
 Im Classic Mode greifen regulaere Bodengegner keine Verteidigung an, solange ein Weg zum Wrack existiert. Erst eine vollstaendige Blockade laesst sie auf ein erreichbares Durchbruchziel zusteuern. Dieser Classic-Strukturschaden ist erhoeht, gilt nur fuer Mauer-, Palisaden- und Turmziele und niemals fuer das Wrack. Luftgegner sowie stationaere Horden- und Aussenpostenwachen behalten ihre lokalen Regeln.
 
+Im Aggressive Mode greifen regulaere Bodengegner eine Mauer, Palisade oder einen Turm an, wenn sie auf ihrem berechneten direkten Weg zum Wrack liegen. Seitliche oder von der Route nicht beruehrte Verteidigungen bleiben unberuehrt. Vollstaendige Blockaden bleiben aufbrechbar; der normale Strukturschaden wird nicht auf das Wrack uebertragen.
+
 Jede Nacht besitzt ein Threat-Budget:
 
 ```text
