@@ -395,8 +395,9 @@ Object.assign(PW.UI, {
       this.togglePanel("ship", true);
       return;
     }
-    PW.state.inspectedTile = { x, y };
-    PW.state.panel = "context";
+    const isEmptyBuildTile = PW.Tiles.canBuildAt(x, y);
+    PW.state.inspectedTile = isEmptyBuildTile ? null : { x, y };
+    PW.state.panel = isEmptyBuildTile ? "build" : "context";
     this.renderPanel();
   },
   renderContext(body) {

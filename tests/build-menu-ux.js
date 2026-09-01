@@ -18,6 +18,9 @@ const { pathToFileURL } = require("url");
 
   const result = await page.evaluate(() => {
     const state = PW.state;
+    const emptyBuildTile = state.world.tiles.find((tile) => PW.Tiles.canBuildAt(tile.x, tile.y));
+    PW.UI.inspectTile(emptyBuildTile.x, emptyBuildTile.y);
+    const emptyTileOpensBuildMenu = state.panel === "build" && state.dom.panelTitle.textContent === "Bauen" && state.dom.panelBody.querySelectorAll(".build-card").length > 1;
     state.inventory.wood = 10;
     state.inventory.stone = 0;
     state.gameMode = "aggressive";
@@ -59,7 +62,8 @@ const { pathToFileURL } = require("url");
       totalCosts,
       lockedText,
       hoveredId,
-      clearedHover: state.hoveredUpgradeBuildingId
+      clearedHover: state.hoveredUpgradeBuildingId,
+      emptyTileOpensBuildMenu
     };
   });
 
@@ -73,6 +77,9 @@ const { pathToFileURL } = require("url");
   }
   if (result.hoveredId !== "test-ballista-building" || result.clearedHover !== null) {
     throw new Error(`Upgrade-Hervorhebung reagiert nicht korrekt: ${JSON.stringify(result)}`);
+  }
+  if (!result.emptyTileOpensBuildMenu) {
+    throw new Error(`Leere Kachel oeffnet nicht die vollstaendige Bauauswahl: ${JSON.stringify(result)}`);
   }
   console.log("OK build menu UX");
 })().catch((error) => {
