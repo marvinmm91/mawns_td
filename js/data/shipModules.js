@@ -7,7 +7,7 @@ PW.SHIP_MODULES = Object.freeze({
     unlockNight: 0,
     cost: { wood: 80, stone: 55, iron: 16 },
     effect: "Max. Wrack-HP +100 und sofort +100 HP.",
-    description: "Stabilisiert den Rumpf fuer die letzten Naechte."
+    description: "Stabilisiert den Rumpf für die letzten Nächte."
   },
   energy: {
     id: "energy",
@@ -15,7 +15,7 @@ PW.SHIP_MODULES = Object.freeze({
     unlockNight: 3,
     requiresKnown: ["iron"],
     cost: { iron: 34, crystal: 8, scrap: 35 },
-    effect: "Alle Tuerme feuern 10 Prozent schneller.",
+    effect: "Alle Türme feuern 10 Prozent schneller.",
     description: "Versorgt Waffen und Startsysteme."
   },
   comms: {
@@ -41,7 +41,7 @@ PW.SHIP_MODULES = Object.freeze({
     unlockNight: 8,
     requiresKnown: ["parts"],
     cost: { gold: 28, iron: 36, parts: 8 },
-    effect: "Schaltet die Startsequenz frei. Vollstaendige Module aktivieren beim Start einen Schadensschild.",
+    effect: "Schaltet die Startsequenz frei. Vollständige Module aktivieren beim Start einen Schadensschild.",
     description: "Macht aus dem Wrack wieder ein Schiff."
   }
 });

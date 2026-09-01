@@ -41,6 +41,7 @@ PW.Bootstrap = {
       inventoryButton: document.getElementById("inventoryButton"),
       shipButton: document.getElementById("shipButton"),
       designButton: document.getElementById("designButton"),
+      developmentButton: document.getElementById("developmentButton"),
       helpButton: document.getElementById("helpButton"),
       sidePanel: document.getElementById("sidePanel"),
       panelTitle: document.getElementById("panelTitle"),
@@ -52,11 +53,15 @@ PW.Bootstrap = {
       gameDialog: document.getElementById("gameDialog"),
       dialogTitle: document.getElementById("dialogTitle"),
       dialogBody: document.getElementById("dialogBody"),
-      dialogActions: document.getElementById("dialogActions")
+      dialogActions: document.getElementById("dialogActions"),
+      tacticalMap: document.getElementById("tacticalMap"),
+      tacticalMapCanvas: document.getElementById("tacticalMapCanvas"),
+      tacticalMapCloseButton: document.getElementById("tacticalMapCloseButton")
     };
     PW.PixelArt.init();
     PW.MapGenerator.generate();
     PW.Input.init();
+    PW.TacticalMap.init();
     state.canvas.addEventListener("pointerdown", () => state.canvas.focus());
     PW.UI.initPanels();
     window.addEventListener("resize", () => PW.Camera.resize());
@@ -79,6 +84,7 @@ PW.Bootstrap = {
     PW.state.paused = true;
     const hasSave = PW.Save.hasSave();
     const dialogDifficulty = hasSave ? PW.Save.savedDifficulty() : PW.state.difficulty;
+    const dialogGameMode = hasSave ? PW.Save.savedGameMode() : PW.state.gameMode;
     const actions = [];
     if (hasSave) {
       actions.push({ label: "Fortsetzen", action: () => {
@@ -101,9 +107,16 @@ PW.Bootstrap = {
       PW.Messages.add("Tag 1: Sammle Holz und Stein, baue Palisaden und Ballisten.", "ok");
     } });
     PW.UI.showDialog("Planet-Wrack", `
-      <p>Beschuetze das Wrack in der Kartenmitte, sammle Ressourcen, baue Verteidigung und repariere alle Schiffsmodule.</p>
+      <p>Beschütze das Wrack in der Kartenmitte, sammle Ressourcen, baue Verteidigung und repariere alle Schiffsmodule.</p>
       <p>Die Gegner greifen nachts das Wrack an. Du selbst wirst ignoriert, aber jede Sekunde ausserhalb der Basis fehlt beim Reparieren.</p>
       ${fromReload && hasSave ? "<p>Das Spiel wurde nach dem Aktualisieren gesichert. Du kannst fortsetzen oder neu starten.</p>" : ""}
+      <section class="mode-picker${hasSave ? " mode-picker-readonly" : ""}" aria-labelledby="modeTitle">
+        <h3 id="modeTitle">Spielmodus${hasSave ? " (gespeichert)" : ""}</h3>
+        ${hasSave ? "<p class=\"meta\">Beim Fortsetzen ist diese Auswahl reine Information und nicht änderbar.</p>" : ""}
+        <div class="mode-options" role="radiogroup">
+          ${PW.CONFIG.gameModes.profiles.map((profile) => `<button type="button" class="mode-option" data-game-mode="${profile.id}" role="radio" aria-checked="${profile.id === dialogGameMode}"${hasSave ? " disabled" : ""}><strong>${profile.name}</strong><span>${profile.description}</span></button>`).join("")}
+        </div>
+      </section>
       <section class="difficulty-picker${hasSave ? " difficulty-picker-readonly" : ""}" aria-labelledby="difficultyTitle">
         <h3 id="difficultyTitle">Schwierigkeitsgrad${hasSave ? " (gespeichert)" : ""}</h3>
         ${hasSave ? "<p class=\"meta\">Beim Fortsetzen ist diese Auswahl reine Information und nicht änderbar.</p>" : ""}
@@ -111,7 +124,7 @@ PW.Bootstrap = {
           ${PW.CONFIG.difficulty.profiles.map((profile) => `<button type="button" class="difficulty-option" data-difficulty="${profile.id}" role="radio" aria-checked="${profile.id === dialogDifficulty}"${hasSave ? " disabled" : ""}><strong>${profile.name}</strong><span>${profile.description}</span></button>`).join("")}
         </div>
       </section>
-      <p>Steuerung: WASD/Pfeiltasten, Space fuer Aktion, E Inventar, R Wrack, P Pause.</p>
+      <p>Steuerung: WASD/Pfeiltasten, Space für Aktion, E Inventar, R Wrack, M Karte, P Pause.</p>
       <section class="start-changelog" aria-labelledby="beta2ChangelogTitle">
         <h3 id="beta2ChangelogTitle">Beta 2 – Änderungen seit Beta 1</h3>
         <div class="start-changelog-scroll">
@@ -130,6 +143,18 @@ PW.Bootstrap = {
         });
       });
       if (button.dataset.difficulty === dialogDifficulty) button.classList.add("active");
+    });
+    document.querySelectorAll(".mode-option").forEach((button) => {
+      button.addEventListener("click", () => {
+        const mode = PW.GameModes.profile(button.dataset.gameMode);
+        PW.state.gameMode = mode.id;
+        document.querySelectorAll(".mode-option").forEach((option) => {
+          const selected = option.dataset.gameMode === mode.id;
+          option.classList.toggle("active", selected);
+          option.setAttribute("aria-checked", String(selected));
+        });
+      });
+      if (button.dataset.gameMode === dialogGameMode) button.classList.add("active");
     });
   }
 };

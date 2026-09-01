@@ -185,13 +185,13 @@ Object.assign(PW.UI, {
     stage.className = "design-stage";
     const canvas = document.createElement("canvas");
     canvas.className = "design-canvas";
-    canvas.setAttribute("aria-label", "Pixel-Zeichenflaeche");
+    canvas.setAttribute("aria-label", "Pixel-Zeichenfläche");
     stage.appendChild(canvas);
 
     const editActions = document.createElement("div");
     editActions.className = "design-actions";
     const template = document.createElement("button");
-    template.textContent = "Vorlage uebernehmen";
+    template.textContent = "Vorlage übernehmen";
     template.addEventListener("click", () => {
       state.working = PW.PixelArt.defaultPixels(state.assetId);
       this.drawDesignEditor(canvas);
@@ -206,11 +206,11 @@ Object.assign(PW.UI, {
       this.renderDesign(body);
     });
     const reset = document.createElement("button");
-    reset.textContent = "Zuruecksetzen";
+    reset.textContent = "Zurücksetzen";
     reset.addEventListener("click", () => {
       PW.PixelArt.resetAsset(state.assetId);
       state.working = this.designWorkingFromAsset(state.assetId);
-      PW.Messages.add("Design zurueckgesetzt.", "ok");
+      PW.Messages.add("Design zurückgesetzt.", "ok");
       PW.UI.renderHud();
       PW.Render.draw();
       this.renderDesign(body);

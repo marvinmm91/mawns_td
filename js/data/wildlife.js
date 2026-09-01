@@ -10,7 +10,7 @@ PW.WILDLIFE = Object.freeze({
   critters: {
     forestHopper: {
       id: "forestHopper",
-      name: "Waldhuepfer",
+      name: "Waldhüpfer",
       description: "Scheu, flink und friedlich.",
       hp: 18,
       radius: 8,
@@ -27,7 +27,7 @@ PW.WILDLIFE = Object.freeze({
     },
     mossBeetle: {
       id: "mossBeetle",
-      name: "Mooskaefer",
+      name: "Mooskäfer",
       description: "Robuster Waldbewohner mit steinigem Panzer.",
       hp: 26,
       radius: 9,

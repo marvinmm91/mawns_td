@@ -55,7 +55,7 @@ PW.TreasureSystem = {
     if (!chest) return false;
     const keys = PW.state.inventory.key || 0;
     if (keys < 1) {
-      PW.Messages.add("Diese Truhe braucht einen Schluessel.");
+      PW.Messages.add("Diese Truhe braucht einen Schlüssel.");
       PW.UI.inspectTile(x, y);
       return true;
     }
@@ -64,7 +64,7 @@ PW.TreasureSystem = {
     Object.entries(chest.rewards).forEach(([id, amount]) => PW.Utils.addInventory(id, amount, source));
     chest.opened = true;
     PW.Utils.addEffect("treasureOpen", PW.Utils.tileToWorld(chest.x), PW.Utils.tileToWorld(chest.y), "#f3d36b", 0.75, 1.4);
-    PW.Messages.add(`Schatztruhe geoeffnet: ${PW.Utils.costText(chest.rewards)}.`, "ok");
+    PW.Messages.add(`Schatztruhe geöffnet: ${PW.Utils.costText(chest.rewards)}.`, "ok");
     PW.UI.refreshInventoryDependentPanel();
     return true;
   },

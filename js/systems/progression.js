@@ -4,6 +4,10 @@ PW.Progression = {
   refreshUnlocks() {
     const state = PW.state;
     Object.values(PW.BUILDINGS).forEach((def) => {
+      if (!PW.GameModes.allowsBuilding(def.id)) {
+        state.unlockedBuildings.delete(def.id);
+        return;
+      }
       if (def.category === "tower") {
         state.unlockedBuildings.add(def.id);
         return;
@@ -15,6 +19,7 @@ PW.Progression = {
     if (state.phase.night >= 3) state.unlockedBuildings.add("flak");
     if (state.phase.night >= 4) state.unlockedBuildings.add("catapult");
     if (state.phase.night >= 8 && state.knownResources.has("gold")) state.unlockedBuildings.add("laser");
+    if (!PW.GameModes.allowsBuilding(state.selectedBuild)) state.selectedBuild = "palisade";
   },
   repairShip() {
     const state = PW.state;
@@ -53,11 +58,11 @@ PW.Progression = {
       return;
     }
     if (mod.requiresKnown && !mod.requiresKnown.some((res) => state.knownResources.has(res))) {
-      PW.Messages.add(`${mod.name}: benoetigte Ressource noch unbekannt.`);
+      PW.Messages.add(`${mod.name}: benötigte Ressource noch unbekannt.`);
       return;
     }
     if (!PW.Utils.canAfford(mod.cost)) {
-      PW.Messages.add(`Zu wenig Material fuer ${mod.name}.`);
+      PW.Messages.add(`Zu wenig Material für ${mod.name}.`);
       return;
     }
     PW.Utils.pay(mod.cost);

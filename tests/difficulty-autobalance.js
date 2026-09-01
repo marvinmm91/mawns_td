@@ -14,7 +14,7 @@ const { pathToFileURL } = require("url");
   page.on("pageerror", (error) => errors.push(error.message));
   await page.goto(pathToFileURL(path.join(__dirname, "..", "index.html")).href);
 
-  const choices = page.getByRole("radio");
+  const choices = page.locator('[role="radio"][data-difficulty]');
   if (await choices.count() !== 5) throw new Error("Startdialog bietet nicht genau fuenf Schwierigkeitsstufen.");
   await page.getByRole("radio", { name: /Stufe 5 - Ansturm/ }).click();
   await page.getByRole("button", { name: "Neue Partie" }).click();
@@ -64,7 +64,7 @@ const { pathToFileURL } = require("url");
   if (Math.abs(result.standardBudget - result.legacyBudget) > 0.000001) {
     throw new Error(`Standardbudget hat sich veraendert: ${JSON.stringify(result)}`);
   }
-  if (result.forecast.label !== "Planmaessig" || result.forecast.description !== "Planmaessiger") {
+  if (result.forecast.label !== "Planmäßig" || result.forecast.description !== "Planmäßiger") {
     throw new Error(`Bedrohungsprognose ist fehlerhaft: ${JSON.stringify(result.forecast)}`);
   }
   if (!result.loaded || result.loadedDifficulty !== "hard") throw new Error(`Schwierigkeit bleibt nicht gespeichert: ${JSON.stringify(result)}`);

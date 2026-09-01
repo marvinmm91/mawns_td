@@ -108,6 +108,7 @@ PW.createInitialState = function createInitialState() {
     },
     inventory,
     difficulty: cfg.difficulty.default,
+    gameMode: cfg.gameModes.default,
     knownResources: new Set(["wood", "stone"]),
     unlockedBuildings: new Set(["palisade", "ballista", "catapult", "flak", "tesla", "laser"]),
     selectedBuild: "palisade",
@@ -131,6 +132,9 @@ PW.createInitialState = function createInitialState() {
     messages: [],
     panel: "status",
     inspectedTile: null,
+    hoveredUpgradeBuildingId: null,
+    tacticalMapOpen: false,
+    tacticalMapLastRender: -Infinity,
     reportOpen: false,
     balance: {
       drift: 0,
@@ -139,6 +143,13 @@ PW.createInitialState = function createInitialState() {
       lastThreatBudget: cfg.balance.baseThreatBudget,
       dropBonus: 0,
       nextHints: []
+    },
+    development: {
+      waveMultiplier: 1,
+      enemyHpMultiplier: 1,
+      enemyDamageMultiplier: 1,
+      enemySpeedMultiplier: 1,
+      timeScale: 1
     },
     nightStats: null,
     lastReport: null,

@@ -3,8 +3,8 @@
 PW.Combat = {
   targetPriorityDefinitions: Object.freeze({
     ship: { label: "Wracknah" },
-    nearest: { label: "Naechster" },
-    strongest: { label: "Staerkster" },
+    nearest: { label: "Nächster" },
+    strongest: { label: "Stärkster" },
     breaker: { label: "Brecher zuerst" },
     air: { label: "Luft zuerst" }
   }),
@@ -20,16 +20,24 @@ PW.Combat = {
       if (building.cooldown > 0) continue;
       const target = this.findTarget(building, def);
       if (!target) continue;
-      PW.ProjectileSystem.spawn(building, target, this.scaledTowerDef(building, def));
-      building.cooldown = 1 / Math.max(0.1, def.rate * (1 + (building.level - 1) * 0.18));
+      const scaled = this.scaledTowerDef(building, def);
+      PW.ProjectileSystem.spawn(building, target, scaled);
+      building.cooldown = 1 / Math.max(0.1, scaled.rate);
     }
+  },
+  towerStats(def, level = 1) {
+    const upgradeLevel = Math.max(1, level);
+    return {
+      damage: def.damage * (1 + (upgradeLevel - 1) * 0.35),
+      rate: def.rate * (1 + (upgradeLevel - 1) * 0.18),
+      range: def.range * (1 + (upgradeLevel - 1) * 0.08),
+      splash: (def.splash || 0) * (1 + (upgradeLevel - 1) * 0.08)
+    };
   },
   scaledTowerDef(building, def) {
     return {
       ...def,
-      damage: def.damage * (1 + (building.level - 1) * 0.35),
-      range: def.range * (1 + (building.level - 1) * 0.08),
-      splash: (def.splash || 0) * (1 + (building.level - 1) * 0.08)
+      ...this.towerStats(def, building.level)
     };
   },
   targetPriorityOptions(building, def) {

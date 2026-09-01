@@ -34,7 +34,9 @@ Das Wrack muss repariert und bis zum Start verteidigt werden. Verliert es alle S
 - 1-5: Werkzeug wechseln.
 - E: Inventar.
 - R: Wrackmenue.
+- Entwicklung: Globale Testfaktoren, Nachtstart und Simulationsgeschwindigkeit.
 - H: Hilfe.
+- M: Live-Karte mit Nadeln, Spieler und aktiven Gegnern.
 - P: Pause.
 - F6: Speichern.
 - F9: Laden.
@@ -45,3 +47,6 @@ Das Wrack muss repariert und bis zum Start verteidigt werden. Verliert es alle S
 - `node tests/endurance.js`
 - `node tests/floating-feedback.js`
 - `node tests/tower-role-economy.js`
+- `node tests/defense-modes-regression.js`
+- `node tests/classic-route-guard.js`
+- `node tests/enemy-persistence.js`

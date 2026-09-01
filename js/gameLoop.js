@@ -65,11 +65,17 @@ PW.GameLoop = {
     const profiling = Boolean(state.debug && state.debug.enabled);
     const rawDt = (time - state.lastTime) / 1000;
     state.lastTime = time;
-    const dt = Math.min(0.05, Math.max(0, rawDt));
+    const timeScale = PW.Development.factor("timeScale");
+    const scaledDt = Math.min(0.15, Math.max(0, rawDt * timeScale));
     let updateMs = 0;
     if (state.running && !state.paused && !state.reportOpen) {
       const updateStartedAt = profiling ? performance.now() : 0;
-      this.update(dt);
+      let remaining = scaledDt;
+      while (remaining > 0.0001) {
+        const step = Math.min(0.05, remaining);
+        this.update(step);
+        remaining -= step;
+      }
       if (profiling) updateMs = performance.now() - updateStartedAt;
     }
     const renderStartedAt = profiling ? performance.now() : 0;

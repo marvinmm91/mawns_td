@@ -5,7 +5,7 @@ PW.MapPins = {
     resource: { label: "Ressource", color: "#66c6a6" },
     chest: { label: "Schatztruhe", color: "#f3d36b" },
     camp: { label: "Monsterhorde", color: "#e35d57" },
-    bridge: { label: "Brueckenplatz", color: "#83e3da" }
+    bridge: { label: "Brückenplatz", color: "#83e3da" }
   },
   key(x, y) {
     return PW.Utils.tileKey(x, y);
@@ -19,7 +19,7 @@ PW.MapPins = {
     if (PW.Tiles.getChest(x, y)) return { kind: "chest", label: "Schatztruhe" };
     if (PW.Tiles.getCamp(x, y)) return { kind: "camp", label: "Monsterhorde" };
     if (PW.Tiles.isWaterTile(x, y) && !PW.Tiles.isBridge(PW.Tiles.getBuilding(x, y))) {
-      return { kind: "bridge", label: "Brueckenplatz" };
+      return { kind: "bridge", label: "Brückenplatz" };
     }
     return null;
   },

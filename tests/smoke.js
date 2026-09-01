@@ -58,8 +58,8 @@ const { pathToFileURL } = require("url");
   await page.locator(".build-card", { hasText: "Balliste" }).getByRole("button").click();
   const buildMenu = await page.evaluate(() => {
     const cards = Array.from(document.querySelectorAll(".build-card"));
-    const wanted = ["Steinmauer", "Stahlmauer", "Balliste", "Katapult", "Flak", "Tesla-Feld", "Laser-Turm"];
-    return wanted.map((name) => {
+    const wanted = ["Palisade", "Balliste", "Katapult", "Flak", "Tesla-Feld", "Laser-Turm"];
+    const rows = wanted.map((name) => {
       const card = cards.find((item) => item.textContent.includes(name));
       return {
         name,
@@ -69,9 +69,11 @@ const { pathToFileURL } = require("url");
         hasCostFill: Boolean(card && Array.from(card.querySelectorAll(".cost-chip")).every((chip) => chip.style.getPropertyValue("--fill")))
       };
     });
+    rows.hiddenClassicWalls = !cards.some((card) => /Steinmauer|Stahlmauer/.test(card.textContent));
+    return rows;
   });
   const badBuildRows = buildMenu.filter((row) => !row.hasIcon || !row.hasHp || !row.hasCostIcon || !row.hasCostFill);
-  if (badBuildRows.length) throw new Error(`Baumenue ohne Symbol/HP/Kostenbalken: ${JSON.stringify(badBuildRows)}`);
+  if (badBuildRows.length || !buildMenu.hiddenClassicWalls) throw new Error(`Baumenue ohne Symbol/HP/Kostenbalken oder mit Classic-Mauern: ${JSON.stringify(buildMenu)}`);
   const mouseBuild = await page.evaluate(() => {
     Object.assign(PW.state.inventory, { wood: 999, stone: 999 });
     PW.state.selectedBuild = "palisade";

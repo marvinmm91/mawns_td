@@ -24,16 +24,23 @@ PW.Autobalance = {
     PW.state.balance.lastThreatBudget = budget;
     return budget;
   },
+  effectiveThreatBudgetForNight(night) {
+    const budget = this.threatBudgetForNight(night) * PW.GameModes.profile().waveMultiplier * PW.Development.factor("waveMultiplier");
+    PW.state.balance.lastThreatBudget = budget;
+    return budget;
+  },
   forecastForNight(night) {
-    const budget = this.calculateThreatBudget(night);
+    const directorBudget = this.calculateThreatBudget(night);
     const profile = this.difficultyProfile();
-    const relativePressure = budget / Math.max(1, this.baseThreatForNight(night) * profile.threatMultiplier);
+    const gameMode = PW.GameModes.profile();
+    const budget = directorBudget * gameMode.waveMultiplier * PW.Development.factor("waveMultiplier");
+    const relativePressure = directorBudget / Math.max(1, this.baseThreatForNight(night) * profile.threatMultiplier);
     const forecast = relativePressure < 0.82 ? { label: "Niedrig", description: "Niedriger" } :
       relativePressure < 0.95 ? { label: "Gering", description: "Geringer" } :
-      relativePressure < 1.05 ? { label: "Planmaessig", description: "Planmaessiger" } :
-      relativePressure < 1.18 ? { label: "Erhoeht", description: "Erhoehter" } :
+      relativePressure < 1.05 ? { label: "Planmäßig", description: "Planmäßiger" } :
+      relativePressure < 1.18 ? { label: "Erhöht", description: "Erhöhter" } :
       { label: "Hoch", description: "Hoher" };
-    return { night, budget, relativePressure, ...forecast, profile };
+    return { night, budget, directorBudget, relativePressure, ...forecast, profile, gameMode };
   },
   evaluateNight() {
     const state = PW.state;
@@ -90,18 +97,20 @@ PW.Autobalance = {
       dropBonus: state.balance.dropBonus,
       diagnosis,
       difficulty: this.difficultyProfile().shortName,
+      gameMode: PW.GameModes.profile().shortName,
+      modeWaveMultiplier: PW.GameModes.profile().waveMultiplier,
       nextForecast: this.forecastForNight(state.phase.night + 1)
     };
   },
   diagnose(stats, damageRatio, hpRatio, avgKillDistance) {
     const cfg = this.balanceConfig();
     const lines = [];
-    if (stats.shipDamageTaken === 0) lines.push("Perfekte Nacht: Das Wrack blieb unbeschaedigt.");
+    if (stats.shipDamageTaken === 0) lines.push("Perfekte Nacht: Das Wrack blieb unbeschädigt.");
     else lines.push(`Wrackschaden: ${stats.shipDamageTaken} HP.`);
     if (stats.airDamage > stats.shipDamageTaken * 0.45) lines.push(`Luftgegner verursachten ${Math.round(stats.airDamage / Math.max(1, stats.shipDamageTaken) * 100)} Prozent des Schadens.`);
-    if (stats.wallsDestroyed > 0) lines.push(`${stats.wallsDestroyed} Mauern wurden zerstoert.`);
-    if (damageRatio > cfg.hardDamageRatio || hpRatio < cfg.lowHpRatio) lines.push("Naechste Nacht wird leicht entschaerft und Schrottdrops steigen.");
-    else if (damageRatio < cfg.easyDamageRatio && avgKillDistance > PW.state.world.tileSize * 9) lines.push("Verteidigung war sehr stark. Der naechste Angriff kann breiter werden.");
+    if (stats.wallsDestroyed > 0) lines.push(`${stats.wallsDestroyed} Mauern wurden zerstört.`);
+    if (damageRatio > cfg.hardDamageRatio || hpRatio < cfg.lowHpRatio) lines.push("Nächste Nacht wird leicht entschärft und Schrottdrops steigen.");
+    else if (damageRatio < cfg.easyDamageRatio && avgKillDistance > PW.state.world.tileSize * 9) lines.push("Verteidigung war sehr stark. Der nächste Angriff kann breiter werden.");
     else lines.push("Schwierigkeit bleibt nahe am aktuellen Druck.");
     if (!PW.hasAntiAir() && PW.state.phase.night >= 3) lines.push("Luftabwehr fehlt: Flak oder Laser vorbereiten.");
     if (PW.state.world.buildings.filter((b) => PW.BUILDINGS[b.type].category === "wall").length < 8 && PW.state.phase.night >= 2) lines.push("Mehr Mauern geben Ballisten Zeit zum Feuern.");

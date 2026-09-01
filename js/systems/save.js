@@ -29,6 +29,7 @@ PW.Save = {
       phase: state.phase,
       inventory: state.inventory,
       difficulty: state.difficulty,
+      gameMode: state.gameMode,
       knownResources: Array.from(state.knownResources),
       unlockedBuildings: Array.from(state.unlockedBuildings),
       selectedBuild: state.selectedBuild,
@@ -41,6 +42,7 @@ PW.Save = {
       wave: state.wave,
       nightStats: state.nightStats,
       balance: state.balance,
+      development: state.development,
       lastReport: state.lastReport
     };
     localStorage.setItem(PW.CONFIG.saveKey, JSON.stringify(data));
@@ -72,6 +74,8 @@ PW.Save = {
       if (!PW.CONFIG.difficulty.profiles.some((profile) => profile.id === PW.state.difficulty)) {
         PW.state.difficulty = PW.CONFIG.difficulty.default;
       }
+      PW.state.gameMode = PW.GameModes.normalize(PW.state.gameMode);
+      PW.state.development = { ...PW.Development.defaults(), ...(data.development || {}) };
       PW.state.world.tileSize = PW.state.world.tileSize || PW.CONFIG.tileSize;
       PW.state.world.birds = PW.state.world.birds || [];
       PW.state.world.wildlife = PW.state.world.wildlife || [];
@@ -88,6 +92,12 @@ PW.Save = {
       if (!PW.state.treasure.campTarget) PW.state.treasure.campTarget = Math.max(PW.CONFIG.treasure.campCount[0], PW.state.world.monsterCamps.filter((camp) => !camp.cleared).length);
       PW.state.inventory.key = PW.state.inventory.key || 0;
       PW.state.wave = data.wave || PW.state.wave;
+      if (PW.state.wave.active && !PW.state.wave.id) {
+        PW.state.wave.id = `legacy-wave-${PW.state.phase.night}`;
+        PW.state.enemies.forEach((enemy) => {
+          if (!enemy.campId && !enemy.outpostId && !enemy.waveId) enemy.waveId = PW.state.wave.id;
+        });
+      }
       PW.state.nightStats = data.nightStats || PW.state.nightStats || {
         night: PW.state.phase.night,
         shipStartHp: PW.state.ship.hp,
@@ -113,6 +123,7 @@ PW.Save = {
         if (def && def.category === "tower") building.targetPriority = PW.Combat.targetPriority(building, def);
         PW.state.world.buildingMap.set(PW.Utils.tileKey(building.x, building.y), building);
       });
+      PW.state.enemies.forEach((enemy) => { enemy.retreating = false; });
       PW.state.world.blueprintMap = new Map();
       PW.state.world.blueprints = PW.state.world.blueprints.filter((blueprint) => {
         const def = PW.BUILDINGS[blueprint.type];
@@ -150,6 +161,15 @@ PW.Save = {
       return PW.CONFIG.difficulty.profiles.some((profile) => profile.id === data.difficulty) ? data.difficulty : fallback;
     } catch (error) {
       return fallback;
+    }
+  },
+  savedGameMode() {
+    const raw = localStorage.getItem(PW.CONFIG.saveKey);
+    if (!raw) return PW.CONFIG.gameModes.default;
+    try {
+      return PW.GameModes.normalize(JSON.parse(raw).gameMode);
+    } catch (error) {
+      return PW.CONFIG.gameModes.default;
     }
   },
   clear() {

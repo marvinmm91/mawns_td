@@ -35,10 +35,12 @@ Dieses Dokument ist die zentrale und verbindliche Designbeschreibung von Planet-
 - Keine neuen Angriffswellen.
 - Der Spieler erkundet und deckt neue Kacheln auf.
 - Ressourcen werden mit Axt oder Spitzhacke abgebaut.
+- Der Ertrag eines Ressourcenknotens wird ohne Mengenbonus auf seine Abbautreffer verteilt; der Rest kommt beim letzten Treffer.
 - Mauern, Tuerme und Bruecken werden gebaut.
 - Das Wrack und beschaedigte Bauwerke werden repariert.
 - Truhen und Monsterhorden koennen gezielt aufgesucht werden.
 - Hinweise auf seltene Ressourcen und kommende Gefahren helfen bei der Planung.
+- M oeffnet eine Live-Karte mit erkundetem Terrain, Wrack, Spieler, gesetzten Nadeln und roten Punkten fuer aktive Gegner.
 
 ### Daemmerung
 
@@ -128,11 +130,13 @@ Werkzeuge:
 | Eisen | Erzadern | Stahlmauern, Flak, Module |
 | Gold | seltene Erzadern | Laser, Module |
 | Kristall | entfernte Vorkommen | Tesla, Energiezelle, Kommunikationsarray |
-| Schrott | Gegnerdrops | Reparaturen, Flak, Tesla |
+| Schrott | Startbestand und Gegnerdrops | Reparaturen, Flak, Tesla |
 | Bauteile | seltene Gegnerdrops und Horden | Laser, Module |
 | Schluessel | Schluesseltraeger | Schatztruhen |
 
 Es gibt kein Gewichtslimit. Ressourcen werden automatisch ins globale Inventar aufgenommen.
+
+Jeder besiegte Gegner kann Holz, Stein, Schrott, Eisen, Gold, Kristall oder Bauteile hinterlassen. Die Grundmenge richtet sich nach seinen Basis-HP: leichte Gegner geben 1-2 Einheiten, schwere 2-3 und Elitegegner 3-4. Schwarmkreaturen haben wegen ihrer Gruppengroesse nur eine reduzierte Drop-Chance. Schrott sowie Holz und Stein sind haeufig; Eisen ist ungewoehnlich, Bauteile und Kristall selten, Gold am seltensten. Schluessel bleiben ausschliesslich an Horden gebunden. Mehrfach gerollte gleiche Rohstoffe werden zu einem Pickup zusammengefasst.
 
 Die Wirtschaft bleibt dauerhaft spielbar: Baeume wachsen langsam auf freien Waldkacheln ausserhalb des Wrack-Sicherheitsbereichs nach. Waldhuepfer und Mooskaefer erscheinen bis zu ihrem Kartenmaximum erneut und liefern weiter Holz beziehungsweise Stein. Seltene Materialien bleiben ueber Truhen, Horden und seltene Drops spaeter Gegner erreichbar.
 
@@ -189,7 +193,7 @@ Alle normalen Nachtgegner priorisieren das Wrack. Stationaere Horden bewachen ih
 |---:|---|---|
 | 1 | Krabbler aus einer Richtung | Grundprinzip von Mauer und Balliste lernen |
 | 2 | Krabbler und Schwaerme | mehrere Bodenachsen absichern |
-| 3 | Krabbler und erste Drohnen | Luftgefahr ankundigen |
+| 3 | Krabbler und erste Drohnen | Luftgefahr ankundigen; eine vorbereitete Flak pruefen |
 | 4 | Krabbler, Schwaerme und Panzer | Einzelschaden hinterfragen |
 | 5 | Boden plus Drohnen | Luftabwehr erforderlich machen |
 | 6 | Schwaerme, Panzer und Drohnen | gemischte Verteidigung pruefen |
@@ -245,11 +249,25 @@ Feedback erfolgt ueber Morgenberichte, Nachrichten, Schadensanzeigen, Reichweite
 
 ## 14. BALANCING-MODELL
 
+### Verteidigungsmodi
+
+Vor einer neuen Partie wird zusaetzlich zur Schwierigkeit ein Verteidigungsmodus gewaehlt. Classic ist der Kompatibilitaetsstandard fuer bestehende Spielstaende. Die Modusauswahl wird gespeichert und im Status angezeigt. Die konkreten Angriffs- und Wellenregeln werden getrennt von den Schwierigkeitsprofilen definiert, damit der Modus Zielverhalten und die Schwierigkeit den Director-Druck steuert.
+
+Im Classic Mode verhindert die Baupruefung schon beim Platzieren, dass eine blockierende Struktur den letzten Bodenweg zum Wrack schliesst. Mauern und Verteidigungstuerme blockieren dabei beide Bodeneinheiten; die Pruefung bewertet auch ihre Blaupausen. Sie prueft die moeglichen Spawnraender, bereits laufende regulaere Bodengegner und vorgemerkte Blaupausen gemeinsam. Labyrinthe, Engstellen und Umwege bleiben moeglich; vollstaendige Einsperrungen nicht. Im seltenen Notfall eines alten Spielstands oder einer unvorhergesehenen Blockade greifen regulaere Bodengegner ausschliesslich das passende Durchbruchziel mit zehnfachem Strukturschaden an, bis wieder ein Weg offen ist. Luftgegner sowie stationaere Horden- und Aussenpostenwachen behalten ihre lokalen Regeln.
+
+Im Aggressive Mode greifen regulaere Bodengegner eine Mauer, Palisade oder einen Turm an, wenn sie auf ihrem berechneten direkten Weg zum Wrack liegen. Seitliche oder von der Route nicht beruehrte Verteidigungen bleiben unberuehrt. Vollstaendige Blockaden bleiben aufbrechbar; der normale Strukturschaden wird nicht auf das Wrack uebertragen.
+
+Classic erhaelt 372 Prozent des vom Director berechneten Wellenbudgets und bietet beim Neubau nur die Palisade an; Stein- und Stahlmauern bleiben fuer alte Spielstaende erhalten, sind dort aber nicht erneut baubar. Alle gegnerischen Treffer auf Wrack und Bauwerke verursachen im Classic Mode 40 Prozent ihres Grundschadens; der zehnfache Durchbruchschaden bleibt dabei relativ erhalten. Aggressive erhaelt unveraendert 92 Prozent Wellenbudget, 100 Prozent Gegnerschaden und alle drei Mauertypen, weil die aktive Verteidigung entlang der Direktroute bereits dauerhaft belastet wird. Der Status und Morgenbericht zeigen den Modusfaktor; die Bedrohungsprognose zeigt stets das daraus resultierende effektive Budget.
+
+Das Ende einer Nacht stoppt nur neue Spawnpulse. Bereits gespawnte Gegner bleiben in beiden Modi aktiv und greifen bis zu ihrem Tod weiter an.
+
+Eine regulaere Nacht beginnt mit einem sofortigen Spawnimpuls und endet erst, wenn ihr gesamtes Budget ausgespielt und alle zugehoerigen Wellengegner besiegt sind. Der Nachtzähler ist deshalb kein Ablauf-Timer; nur die finale Startsequenz bleibt zeitbasiert.
+
 Jede Nacht besitzt ein Threat-Budget:
 
 ```text
 Basisbudget + Nachtwachstum + leichte spaete Skalierung
-multipliziert mit Schwierigkeitsprofil und begrenztem Balance-Drift
+multipliziert mit Schwierigkeitsprofil, begrenztem Balance-Drift und Moduswellenfaktor
 ```
 
 Bewertet werden aktuell vor allem:

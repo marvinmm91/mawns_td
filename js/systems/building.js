@@ -8,12 +8,17 @@ PW.BuildingSystem = {
     const state = PW.state;
     const def = PW.BUILDINGS[type];
     if (!def) return false;
-    if (!state.unlockedBuildings.has(type)) {
-      PW.Messages.add(`${def.name} ist noch nicht verfuegbar.`);
+    if (!PW.GameModes.allowsBuilding(type)) {
+      PW.Messages.add(`${def.name} ist im Classic Mode nicht verfügbar.`);
       return false;
     }
-    if (!this.canPlaceBuilding(type, x, y)) {
-      PW.Messages.add("Hier kann nicht gebaut werden.");
+    if (!state.unlockedBuildings.has(type)) {
+      PW.Messages.add(`${def.name} ist noch nicht verfügbar.`);
+      return false;
+    }
+    const placement = this.placementStatus(type, x, y);
+    if (!placement.ok) {
+      PW.Messages.add(placement.reason === "route" ? "Dieser Bau würde den letzten Weg zum Wrack versperren." : "Hier kann nicht gebaut werden.");
       return false;
     }
     if (!PW.Utils.canAfford(def.cost)) {
@@ -55,7 +60,7 @@ PW.BuildingSystem = {
   placeBlueprint(type, x, y, quiet = false) {
     const state = PW.state;
     const def = PW.BUILDINGS[type];
-    if (!def || !state.unlockedBuildings.has(type) || !this.canPlaceBlueprint(type, x, y)) return false;
+    if (!def || !PW.GameModes.allowsBuilding(type) || !state.unlockedBuildings.has(type) || !this.canPlaceBlueprint(type, x, y)) return false;
     const blueprint = {
       id: `blueprint-${Date.now()}-${state.world.blueprints.length}`,
       type,
@@ -99,9 +104,17 @@ PW.BuildingSystem = {
     return built;
   },
   canPlaceBuilding(type, x, y) {
+    return this.placementStatus(type, x, y).ok;
+  },
+  placementStatus(type, x, y) {
     const def = PW.BUILDINGS[type];
-    if (!def) return false;
-    return def.placeOnWater ? PW.Tiles.canBuildBridgeAt(x, y) : PW.Tiles.canBuildAt(x, y);
+    if (!def || !PW.GameModes.allowsBuilding(type)) return { ok: false, reason: "mode" };
+    const canBuild = def.placeOnWater ? PW.Tiles.canBuildBridgeAt(x, y) : PW.Tiles.canBuildAt(x, y);
+    if (!canBuild) return { ok: false, reason: "tile" };
+    if (def.blocksGround && PW.GameModes.profile().structureTargeting === "blockade" && !PW.Pathfinding.canPreserveClassicRoutes(type, x, y)) {
+      return { ok: false, reason: "route" };
+    }
+    return { ok: true, reason: null };
   },
   nudgePlayerAwayFromBuildTile(tileX, tileY) {
     const state = PW.state;

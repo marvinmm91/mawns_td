@@ -56,6 +56,10 @@ PW.CONFIG = Object.freeze({
     night: 5,
     dawn: 6
   },
+  effects: {
+    maxActive: 260,
+    cullPadding: 160
+  },
   phases: {
     day: 120,
     dusk: 12,
@@ -80,16 +84,16 @@ PW.CONFIG = Object.freeze({
     iron: 0,
     gold: 0,
     crystal: 0,
-    scrap: 0,
+    scrap: 16,
     parts: 0,
     key: 0
   },
   tools: [
-    { id: "axe", key: "1", label: "Axt", hint: "Baeume" },
+    { id: "axe", key: "1", label: "Axt", hint: "Bäume" },
     { id: "pickaxe", key: "2", label: "Hacke", hint: "Stein/Erz" },
     { id: "repair", key: "3", label: "Reparatur", hint: "Wrack/Bauten" },
     { id: "build", key: "4", label: "Bauen", hint: "Bauplan" },
-    { id: "demolish", key: "5", label: "Abriss", hint: "Rueckbau" }
+    { id: "demolish", key: "5", label: "Abriss", hint: "Rückbau" }
   ],
   balance: {
     baseThreatBudget: 13,
@@ -143,11 +147,41 @@ PW.CONFIG = Object.freeze({
         id: "onslaught",
         name: "Stufe 5 - Ansturm",
         shortName: "Ansturm",
-        description: "Hoher Grunddruck fuer erfahrene Verteidigungsplaner.",
+        description: "Hoher Grunddruck für erfahrene Verteidigungsplaner.",
         threatMultiplier: 1.27,
         balance: { easyDamageRatio: 0.08, idealDamageMin: 0.12, idealDamageMax: 0.27, hardDamageRatio: 0.40, lowHpRatio: 0.29, maxPositiveDrift: 0.38, maxNegativeDrift: -0.22, maxNightBoost: 0.16, maxNightRelief: -0.12, maxDropBonus: 0.14 }
       }
     ]
+  },
+  gameModes: {
+    default: "classic",
+    profiles: [
+      {
+        id: "classic",
+        name: "Classic",
+        shortName: "Classic",
+        description: "Freie Wege werden beim Bauen gesichert; nur echte Notfallblockaden werden schnell aufgebrochen.",
+        structureTargeting: "blockade",
+        waveMultiplier: 3.72,
+        structureDamageMultiplier: 1,
+        enemyDamageMultiplier: 0.4,
+        breakthroughDamageMultiplier: 10,
+        disabledBuildings: ["stoneWall", "steelWall"]
+      },
+      {
+        id: "aggressive",
+        name: "Aggressive",
+        shortName: "Aggressiv",
+        description: "Direkte Wegverteidigungen werden aktiv angegriffen; Wellen sind dafür etwas kleiner.",
+        structureTargeting: "direct-path",
+        waveMultiplier: 0.92,
+        structureDamageMultiplier: 1,
+        enemyDamageMultiplier: 1
+      }
+    ]
+  },
+  pathfinding: {
+    directStructureCost: 1.65
   },
   debug: {
     enabled: false,

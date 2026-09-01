@@ -66,6 +66,7 @@ PW.BUILDINGS = Object.freeze({
     rate: 0.82,
     projectileSpeed: 420,
     targets: ["ground"],
+    blocksGround: true,
     description: "Günstiger Präzisionsschaden gegen normale Ziele und Brecher."
   },
   catapult: {
@@ -84,6 +85,7 @@ PW.BUILDINGS = Object.freeze({
     rate: 0.46,
     projectileSpeed: 300,
     targets: ["ground"],
+    blocksGround: true,
     description: "Flächenschaden gegen dichte Schwärme; gegen Einzelziele ineffizient."
   },
   flak: {
@@ -99,6 +101,7 @@ PW.BUILDINGS = Object.freeze({
     rate: 2.25,
     projectileSpeed: 560,
     targets: ["air"],
+    blocksGround: true,
     description: "Kosteneffiziente Abwehr schneller Luftziele."
   },
   tesla: {
@@ -116,6 +119,7 @@ PW.BUILDINGS = Object.freeze({
     slowTime: 1.4,
     projectileSpeed: 640,
     targets: ["ground"],
+    blocksGround: true,
     description: "Bremst schnelle Bodenziele stark und verschafft anderen Türmen Zeit."
   },
   laser: {
@@ -131,6 +135,7 @@ PW.BUILDINGS = Object.freeze({
     rate: 0.82,
     projectileSpeed: 720,
     targets: ["ground", "air"],
+    blocksGround: true,
     description: "Teurer Fernkonter gegen Panzer, Bomber und starke Einzelziele."
   }
 });

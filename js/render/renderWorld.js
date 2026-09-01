@@ -198,6 +198,14 @@ PW.RenderWorld = {
       const accent = def.category === "tower" ? this.towerColor(building.type) : building.type === "bridge" ? "#83e3da" : "#d8d1ad";
       this.drawStateCorners(ctx, sx + ts / 2, sy + ts / 2, accent, 13);
       this.drawStructureDamage(ctx, sx, sy, ts, ts, building.hp / building.maxHp, building.damageFlash, building.type);
+      if (building.id === state.hoveredUpgradeBuildingId) {
+        ctx.save();
+        ctx.strokeStyle = "#f3d36b";
+        ctx.lineWidth = 2;
+        ctx.setLineDash([4, 3]);
+        ctx.strokeRect(sx + 1.5, sy + 1.5, ts - 3, ts - 3);
+        ctx.restore();
+      }
       if (building.level > 1) {
         ctx.fillStyle = "#f0b84d";
         for (let i = 0; i < building.level; i++) ctx.fillRect(sx + 4 + i * 6, sy + 4, 4, 4);

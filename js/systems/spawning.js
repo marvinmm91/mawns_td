@@ -2,23 +2,28 @@
 
 PW.Spawning = {
   directions: ["n", "s", "e", "w", "ne", "nw", "se", "sw"],
-  startNight(finalMode = false) {
+  startNight(finalMode = false, budgetMultiplier = 1) {
     const state = PW.state;
     const night = state.phase.night;
     const waveDef = this.waveForNight(night);
-    const budget = PW.Autobalance.threatBudgetForNight(night) * (finalMode ? 0.58 : 1);
+    const multiplier = Math.max(0.1, Number(budgetMultiplier) || 1);
+    const budget = PW.Autobalance.effectiveThreatBudgetForNight(night) * (finalMode ? 0.58 : 1) * multiplier;
     state.wave = {
       active: true,
       finalMode,
+      id: `wave-${night}-${Math.round(state.elapsed * 1000)}`,
+      budgetMultiplier: multiplier,
       budgetRemaining: budget,
       pulseTimer: 1.4,
       pulseIndex: 0,
       plannedDirections: this.pickDirections(waveDef.directions + (finalMode ? 1 : 0)),
       spawnedThisNight: 0,
+      gameMode: PW.GameModes.profile().id,
       waveDef
     };
     state.phase.warningDirections = state.wave.plannedDirections;
     PW.Messages.add(`${waveDef.note} Angriff aus ${state.wave.plannedDirections.map(PW.Utils.directionName).join(", ")}.`, "danger");
+    this.spawnPulse();
   },
   waveForNight(night) {
     return PW.WAVES.find((wave) => wave.night === Math.min(night, 10)) || PW.WAVES[PW.WAVES.length - 1];
@@ -32,6 +37,23 @@ PW.Spawning = {
       result.push(pool.splice(index, 1)[0]);
     }
     return result;
+  },
+  groundEntryTiles() {
+    const { width, height } = PW.state.world;
+    const margin = 3;
+    const padding = 8;
+    const entries = new Map();
+    const add = (x, y) => entries.set(PW.Utils.tileKey(x, y), { x, y });
+    for (let x = padding; x <= width - padding - 1; x++) {
+      add(x, margin);
+      add(x, height - margin - 1);
+    }
+    for (let y = padding; y <= height - padding - 1; y++) {
+      add(margin, y);
+      add(width - margin - 1, y);
+    }
+    [[margin, margin], [width - margin - 1, margin], [margin, height - margin - 1], [width - margin - 1, height - margin - 1]].forEach(([x, y]) => add(x, y));
+    return [...entries.values()];
   },
   update(dt) {
     const state = PW.state;
@@ -54,20 +76,31 @@ PW.Spawning = {
       guard++;
       const remainingBudget = Math.min(wave.budgetRemaining, budgetTarget - spent);
       const type = this.pickEnemyType(wave.waveDef, remainingBudget);
-      if (!type) break;
+      if (!type) {
+        wave.budgetRemaining = 0;
+        break;
+      }
       const def = PW.ENEMIES[type];
       const count = this.packSizeFor(type, remainingBudget);
-      if (count < 1) break;
+      if (count < 1) {
+        wave.budgetRemaining = 0;
+        break;
+      }
       const dir = state.rng.pick(wave.plannedDirections);
       const anchor = this.spawnPosition(dir);
       for (let index = 0; index < count; index += 1) {
         const pos = index === 0 ? anchor : this.packPosition(anchor, def);
-        PW.EnemySystem.spawn(type, pos.x, pos.y);
+        PW.EnemySystem.spawn(type, pos.x, pos.y, { waveId: wave.id });
         spent += def.budget;
         wave.budgetRemaining -= def.budget;
         wave.spawnedThisNight += 1;
       }
     }
+  },
+  isNightComplete() {
+    const wave = PW.state.wave;
+    if (!wave || !wave.active || wave.finalMode || wave.budgetRemaining > 0) return false;
+    return !PW.state.enemies.some((enemy) => enemy.waveId === wave.id && enemy.hp > 0 && !enemy.remove);
   },
   packSizeFor(type, budget) {
     const def = PW.ENEMIES[type];

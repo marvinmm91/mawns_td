@@ -4,7 +4,19 @@ PW.RenderEffects = {
   update(dt) {
     const state = PW.state;
     state.effects.forEach((effect) => { effect.life -= dt; });
-    state.effects = state.effects.filter((effect) => effect.life > 0);
+    state.effects = state.effects.filter((effect) => effect.life > 0 && !this.isOutsideCamera(effect));
+  },
+  isOutsideCamera(effect) {
+    const state = PW.state;
+    const padding = PW.CONFIG.effects.cullPadding;
+    const left = state.camera.x - padding;
+    const top = state.camera.y - padding;
+    const right = state.camera.x + state.camera.w + padding;
+    const bottom = state.camera.y + state.camera.h + padding;
+    const points = effect.type === "laserBeam"
+      ? [{ x: effect.x1, y: effect.y1 }, { x: effect.x2, y: effect.y2 }]
+      : [{ x: effect.x, y: effect.y }];
+    return points.every((point) => point.x < left || point.x > right || point.y < top || point.y > bottom);
   },
   draw(ctx) {
     for (const effect of PW.state.effects) {

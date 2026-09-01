@@ -34,6 +34,7 @@ const { pathToFileURL } = require("url");
     }
 
     Object.assign(PW.state.inventory, { wood: 5000, stone: 5000, iron: 5000, gold: 5000, crystal: 5000, scrap: 5000, parts: 5000 });
+    PW.state.gameMode = "aggressive";
     ["palisade", "stoneWall", "steelWall", "ballista", "catapult", "flak", "tesla", "laser"].forEach((id) => PW.state.unlockedBuildings.add(id));
 
     const ship = PW.state.ship;

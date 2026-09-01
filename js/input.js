@@ -6,6 +6,12 @@ PW.Input = {
       const state = PW.state;
       const key = event.key.toLowerCase();
       if (state.dom.gameDialog && state.dom.gameDialog.classList.contains("cheat-dialog")) return;
+      if (key === "m" && state.dom.gameDialog && !state.dom.gameDialog.classList.contains("hidden")) return;
+      if (key === "m" || key === "escape") event.preventDefault();
+      if (state.tacticalMapOpen && key !== "m" && key !== "escape") {
+        event.preventDefault();
+        return;
+      }
       if (["arrowup", "arrowdown", "arrowleft", "arrowright", " ", "w", "a", "s", "d"].includes(key)) {
         event.preventDefault();
       }
@@ -148,6 +154,14 @@ PW.Input = {
     if (key === "p") {
       state.paused = !state.paused;
       PW.UI.updatePause();
+      return;
+    }
+    if (key === "m") {
+      PW.TacticalMap.toggle();
+      return;
+    }
+    if (key === "escape" && state.tacticalMapOpen) {
+      PW.TacticalMap.close();
       return;
     }
     if (key === "e") PW.UI.togglePanel("inventory");

@@ -8,7 +8,7 @@ PW.RESOURCES = Object.freeze({
   crystal: { id: "crystal", name: "Kristall", icon: "K", color: "#83e3da", tool: "pickaxe" },
   scrap: { id: "scrap", name: "Schrott", icon: "C", color: "#c59d76", tool: null },
   parts: { id: "parts", name: "Bauteile", icon: "B", color: "#e6d7a3", tool: null },
-  key: { id: "key", name: "Schluessel", icon: "Y", color: "#f3d36b", tool: null }
+  key: { id: "key", name: "Schlüssel", icon: "Y", color: "#f3d36b", tool: null }
 });
 
 PW.RESOURCE_NODES = Object.freeze({

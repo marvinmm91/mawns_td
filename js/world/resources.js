@@ -48,8 +48,16 @@ PW.ResourceSystem = {
     }
     node.hp -= 1;
     PW.Utils.addEffect("hit", PW.Utils.tileToWorld(x), PW.Utils.tileToWorld(y), def.color, 0.28, 1.1);
+    const yielded = node.yielded || 0;
+    const extracted = Math.floor(node.amount * (node.maxHp - node.hp) / Math.max(1, node.maxHp));
+    const payout = Math.max(0, extracted - yielded);
+    if (payout) {
+      node.yielded = yielded + payout;
+      PW.Utils.addInventory(def.resource, payout, { x: PW.Utils.tileToWorld(x), y: PW.Utils.tileToWorld(y) });
+    }
     if (node.hp <= 0) {
-      PW.Utils.addInventory(def.resource, node.amount, { x: PW.Utils.tileToWorld(x), y: PW.Utils.tileToWorld(y) });
+      const remainder = Math.max(0, node.amount - (node.yielded || 0));
+      if (remainder) PW.Utils.addInventory(def.resource, remainder, { x: PW.Utils.tileToWorld(x), y: PW.Utils.tileToWorld(y) });
       this.remove(node);
     }
     return true;
@@ -97,10 +105,10 @@ PW.ResourceSystem = {
     const dx = x - cx;
     const dy = y - cy;
     if (Math.abs(dx) > Math.abs(dy) * 1.6) return dx > 0 ? "Osten" : "Westen";
-    if (Math.abs(dy) > Math.abs(dx) * 1.6) return dy > 0 ? "Sueden" : "Norden";
-    if (dx > 0 && dy > 0) return "Suedost";
+    if (Math.abs(dy) > Math.abs(dx) * 1.6) return dy > 0 ? "Süden" : "Norden";
+    if (dx > 0 && dy > 0) return "Südost";
     if (dx > 0 && dy < 0) return "Nordost";
-    if (dx < 0 && dy > 0) return "Suedwest";
+    if (dx < 0 && dy > 0) return "Südwest";
     return "Nordwest";
   }
 };

@@ -24,6 +24,7 @@ PW.Render = {
     PW.RenderEntities.drawPlayer(ctx);
     this.drawOverlay(ctx);
     this.drawPerformanceOverlay(ctx);
+    if (PW.TacticalMap) PW.TacticalMap.render();
   },
   drawOverlay(ctx) {
     const state = PW.state;
@@ -92,7 +93,7 @@ PW.Render = {
       `Update ${profile.updateMs.toFixed(2)} ms`,
       `Render ${profile.renderMs.toFixed(2)} ms`,
       `Arbeit ${profile.workMs.toFixed(2)} ms`,
-      `Gegner ${state.enemies.length}  Tuerme ${state.world.buildings.length}`
+      `Gegner ${state.enemies.length}  Türme ${state.world.buildings.length}`
     ];
     ctx.save();
     ctx.fillStyle = "rgba(10, 14, 13, .84)";
