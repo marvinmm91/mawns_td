@@ -68,9 +68,10 @@
       [key(center.x + 3, center.y + 2), tower("ballista", center.x + 3, center.y + 2)]
     ]));
     const outer = replaceWall(ring(5, { x: center.x, y: center.y - 5 }), new Map([
-      [key(center.x - 4, center.y - 5), tower("catapult", center.x - 4, center.y - 5)],
+      [key(center.x - 4, center.y - 5), tower("ballista", center.x - 4, center.y - 5)],
+      [key(center.x - 3, center.y - 5), tower("flak", center.x - 3, center.y - 5)],
+      [key(center.x - 2, center.y - 5), tower("catapult", center.x - 2, center.y - 5)],
       [key(center.x + 4, center.y + 5), tower("ballista", center.x + 4, center.y + 5)],
-      [key(center.x + 5, center.y - 3), tower("flak", center.x + 5, center.y - 3)],
       [key(center.x - 5, center.y + 3), tower("tesla", center.x - 5, center.y + 3)],
       [key(center.x + 2, center.y - 5), tower("laser", center.x + 2, center.y - 5)]
     ]));
@@ -91,7 +92,10 @@
   }
 
   const currentBuild = () => sim.queue[sim.buildIndex];
-  const missing = (entry) => Object.entries(PW.BUILDINGS[entry.type].cost).map(([id, amount]) => ({ id, amount: amount * Number(dom.sliders.reserve.value) - PW.state.inventory[id] })).filter((item) => item.amount > 0).sort((a, b) => b.amount - a.amount);
+  const missing = (entry) => Object.entries(PW.BUILDINGS[entry.type].cost).map(([id, amount]) => {
+    const reserve = (id === "scrap" || id === "parts" || id === "key") ? 1 : Number(dom.sliders.reserve.value);
+    return { id, amount: amount * reserve - PW.state.inventory[id] };
+  }).filter((item) => item.amount > 0).sort((a, b) => b.amount - a.amount);
 
   function findPath(start, goalTiles) {
     const goals = new Set(goalTiles.map((tile) => key(tile.x, tile.y)));

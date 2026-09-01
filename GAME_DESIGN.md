@@ -128,7 +128,7 @@ Werkzeuge:
 | Eisen | Erzadern | Stahlmauern, Flak, Module |
 | Gold | seltene Erzadern | Laser, Module |
 | Kristall | entfernte Vorkommen | Tesla, Energiezelle, Kommunikationsarray |
-| Schrott | Gegnerdrops | Reparaturen, Flak, Tesla |
+| Schrott | Startbestand und Gegnerdrops | Reparaturen, Flak, Tesla |
 | Bauteile | seltene Gegnerdrops und Horden | Laser, Module |
 | Schluessel | Schluesseltraeger | Schatztruhen |
 
@@ -189,7 +189,7 @@ Alle normalen Nachtgegner priorisieren das Wrack. Stationaere Horden bewachen ih
 |---:|---|---|
 | 1 | Krabbler aus einer Richtung | Grundprinzip von Mauer und Balliste lernen |
 | 2 | Krabbler und Schwaerme | mehrere Bodenachsen absichern |
-| 3 | Krabbler und erste Drohnen | Luftgefahr ankundigen |
+| 3 | Krabbler und erste Drohnen | Luftgefahr ankundigen; eine vorbereitete Flak pruefen |
 | 4 | Krabbler, Schwaerme und Panzer | Einzelschaden hinterfragen |
 | 5 | Boden plus Drohnen | Luftabwehr erforderlich machen |
 | 6 | Schwaerme, Panzer und Drohnen | gemischte Verteidigung pruefen |

@@ -80,7 +80,7 @@ PW.CONFIG = Object.freeze({
     iron: 0,
     gold: 0,
     crystal: 0,
-    scrap: 0,
+    scrap: 16,
     parts: 0,
     key: 0
   },
