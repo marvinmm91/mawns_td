@@ -76,25 +76,28 @@ Object.assign(PW.UI, {
     factors.innerHTML = "<h3>Schwierigkeit</h3>";
     controls.forEach((control) => {
       const value = PW.Development.factor(control.id);
-      const row = document.createElement("label");
+      const row = document.createElement("div");
       row.className = "development-control";
       row.title = control.hint;
       const label = document.createElement("span");
       label.textContent = control.label;
       const output = document.createElement("output");
       output.textContent = `${value.toFixed(2)}x`;
-      const input = document.createElement("input");
-      input.type = "range";
-      input.min = "0.5";
-      input.max = "3";
-      input.step = "0.05";
-      input.value = String(value);
-      input.title = control.hint;
-      input.addEventListener("input", () => {
-        PW.Development.setFactor(control.id, input.value);
-        output.textContent = `${PW.Development.factor(control.id).toFixed(2)}x`;
+      const buttons = document.createElement("div");
+      buttons.className = "development-factor-buttons";
+      [-0.05, 0.05].forEach((amount) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.textContent = amount < 0 ? "-" : "+";
+        button.title = `${amount < 0 ? "Verringert" : "Erhoeht"} ${control.label} um 0,05.`;
+        button.setAttribute("aria-label", button.title);
+        button.addEventListener("click", () => {
+          PW.Development.adjustFactor(control.id, amount);
+          output.textContent = `${PW.Development.factor(control.id).toFixed(2)}x`;
+        });
+        buttons.appendChild(button);
       });
-      row.append(label, output, input);
+      row.append(label, output, buttons);
       factors.appendChild(row);
     });
     body.appendChild(factors);

@@ -21,10 +21,15 @@ PW.Development = {
   },
   setFactor(id, value) {
     if (!(id in this.defaults())) return false;
-    const next = Math.max(0.5, Math.min(3, Number(value) || 1));
+    const next = Number(value);
+    if (!Number.isFinite(next)) return false;
     this.state()[id] = next;
     PW.Save.save(false);
     return true;
+  },
+  adjustFactor(id, amount) {
+    const next = Math.round((this.factor(id) + amount) * 20) / 20;
+    return this.setFactor(id, next);
   },
   startNextNight() {
     const state = PW.state;
