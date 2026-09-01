@@ -48,3 +48,7 @@ Das Wrack muss repariert und bis zum Start verteidigt werden. Verliert es alle S
 - `node tests/defense-modes-regression.js`
 - `node tests/classic-route-guard.js`
 - `node tests/enemy-persistence.js`
+
+## Benchmark-Sandbox
+
+`benchmark.html` startet eine reduzierte Beobachtungssandbox fuer Seeds, Schwierigkeit und Spielmodus. Der Sammel- und Baubot nutzt die aktuellen Turm-, Gegner-, Kosten- und Wellendaten; Darstellung und Bot bleiben vom Spielstand getrennt.

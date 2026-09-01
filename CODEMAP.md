@@ -17,10 +17,13 @@ Die UI-Dateien sind inzwischen konsolidiert: Bau-, Inventar-, Wrack-, Kontext- u
 ## Dateien
 
 - `index.html`: Canvas, HUD-Grundstruktur, Panel-Container und Script-Reihenfolge.
+- `benchmark.html`: Reduzierte, eigenstaendige Beobachtungssandbox fuer Seed-, Modus- und Schwierigkeitsexperimente.
 - `css/styles.css`: Grundlayout, Canvas-Rahmen, HUD, Panels, Buttons, Hotbar, Tag-/Nacht-Stimmung.
+- `css/benchmark.css`: Kompaktes Layout fuer die Benchmark-Sandbox.
 - `js/config.js`: Globale Balancing-Werte, Schwierigkeitsprofile, Spielmodi, Tilegroessen, Phasenlaengen, Startwerte, Debug-Schalter.
 - `js/state.js`: Zentraler Spielzustand, Laufzeitlisten, Inputstatus, Kamera, Timer, Inventar, Schwierigkeitsprofil, Spielmodus und Wrackdaten.
 - `js/bootstrap.js`: Initialisierung, Event Listener, Start des Game Loops.
+- `js/benchmark.js`: Deterministische Admin-Simulation mit Sammel-/Baubot, Zeitbeschleunigung und Live-Kennzahlen auf Basis der Produktdaten.
 - `js/gameLoop.js`: Feste Update-Reihenfolge, Delta-Time-Begrenzung, Pause/Resume, zentraler Renderaufruf und schaltbare Laufzeitmessung.
 - `js/input.js`: Tastaturstatus, Hotkeys, DPI-skalierte Mausposition, Mausbau, temporaere Blaupausen-/Loeschmodi, Kachel-Inspektion und Panel-Toggles.
 - `js/camera.js`: Kamera folgt Spieler, Welt-zu-Screen-Umrechnung, sichtbarer Bereich.

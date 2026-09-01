@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Planet-Wrack Benchmark</title>
+  <link rel="stylesheet" href="css/benchmark.css">
+</head>
+<body>
+  <main class="benchmark-app">
+    <header class="benchmark-header"><div><strong>Planet-Wrack Benchmark</strong><span>Beobachtungssandbox</span></div><div id="simStatus">Bereit</div></header>
+    <section class="benchmark-toolbar" aria-label="Simulation steuern">
+      <button id="pauseButton" type="button" title="Simulation pausieren oder fortsetzen">Pause</button>
+      <button class="speed-button active" type="button" data-speed="1">1x</button>
+      <button class="speed-button" type="button" data-speed="2">2x</button>
+      <button class="speed-button" type="button" data-speed="3">3x</button>
+      <button class="speed-button" type="button" data-speed="5">5x</button>
+      <button id="resetButton" type="button" title="Simulation mit gleichem Seed neu starten">Neu starten</button>
+      <label>Seed <input id="seedInput" type="number" value="24001" min="1" step="1"></label>
+      <label>Modus <select id="modeSelect"><option value="classic">Classic</option><option value="aggressive">Aggressive</option></select></label>
+      <label>Schwierigkeit <select id="difficultySelect"><option value="relaxed">1 Entspannt</option><option value="calm">2 Ruhig</option><option value="standard" selected>3 Standard</option><option value="hard">4 Anspruchsvoll</option><option value="onslaught">5 Ansturm</option></select></label>
+    </section>
+    <section class="benchmark-layout">
+      <div class="sim-surface"><canvas id="simCanvas" width="960" height="620" aria-label="Simulation"></canvas></div>
+      <aside class="benchmark-side">
+        <section><h2>Simulation</h2><dl id="simMetrics" class="metric-grid"></dl></section>
+        <section><h2>Bot-Plan</h2><p>Der Bot sammelt pro Turm den doppelten Bauwert und errichtet danach die nächste Verteidigung.</p><ol id="buildPlan" class="build-plan"></ol></section>
+        <section><h2>Rollenvergleich</h2><div id="roleTable" class="role-table"></div></section>
+      </aside>
+    </section>
+  </main>
+  <script src="js/config.js"></script>
+  <script src="js/data/resources.js"></script>
+  <script src="js/data/buildings.js"></script>
+  <script src="js/data/enemies.js"></script>
+  <script src="js/data/waves.js"></script>
+  <script src="js/random.js"></script>
+  <script src="js/benchmark.js"></script>
+</body>
+</html>
