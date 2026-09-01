@@ -21,10 +21,17 @@
       <label>Schwierigkeit <select id="difficultySelect"><option value="relaxed">1 Entspannt</option><option value="calm">2 Ruhig</option><option value="standard" selected>3 Standard</option><option value="hard">4 Anspruchsvoll</option><option value="onslaught">5 Ansturm</option></select></label>
     </section>
     <section class="benchmark-layout">
-      <div class="sim-surface"><canvas id="simCanvas" width="960" height="620" aria-label="Simulation"></canvas></div>
+      <div class="sim-surface"><canvas id="simCanvas" width="960" height="608" aria-label="Simulation"></canvas></div>
       <aside class="benchmark-side">
         <section><h2>Simulation</h2><dl id="simMetrics" class="metric-grid"></dl></section>
-        <section><h2>Bot-Plan</h2><p>Der Bot sammelt pro Turm den doppelten Bauwert und errichtet danach die nächste Verteidigung.</p><ol id="buildPlan" class="build-plan"></ol></section>
+        <section><h2>Basiswerte</h2><div class="slider-list">
+          <label>Classic Gegner <output id="classicCountValue">2.00x</output><input id="classicCount" type="range" min="1" max="4" value="2" step="0.05"></label>
+          <label>Classic HP <output id="classicHpValue">1.00x</output><input id="classicHp" type="range" min="0.5" max="3" value="1" step="0.05"></label>
+          <label>Aggressive Gegner <output id="aggressiveCountValue">1.00x</output><input id="aggressiveCount" type="range" min="0.5" max="3" value="1" step="0.05"></label>
+          <label>Aggressive HP <output id="aggressiveHpValue">1.00x</output><input id="aggressiveHp" type="range" min="0.5" max="3" value="1" step="0.05"></label>
+          <label>Bot-Reserve <output id="reserveValue">2.00x</output><input id="reserve" type="range" min="1" max="3" value="2" step="0.1"></label>
+        </div></section>
+        <section><h2>Bot-Plan</h2><p>Der Bot bewegt sich zu echten Ressourcenknoten, sammelt eine einstellbare Reserve und errichtet Palisaden sowie Verteidigungen nacheinander.</p><ol id="buildPlan" class="build-plan"></ol></section>
         <section><h2>Rollenvergleich</h2><div id="roleTable" class="role-table"></div></section>
       </aside>
     </section>
