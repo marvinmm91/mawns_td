@@ -42,7 +42,30 @@ PW.Utils = {
     if (source && amount > 0) this.addResourceFeedback(id, amount, source.x, source.y);
   },
   addEffect(type, x, y, color, life = 0.45, size = 1, extra = null) {
-    PW.state.effects.push({ type, x, y, color, life, maxLife: life, size, ...(extra || {}) });
+    const effect = { type, x, y, color, life, maxLife: life, size, ...(extra || {}) };
+    PW.state.effects.push(effect);
+    this.limitEffects();
+    return effect;
+  },
+  effectPriority(effect) {
+    return ["treasureOpen", "campClear", "outpostClaim", "outpostAlert"].includes(effect.type) ? 2 : effect.type === "floatingText" ? 1 : 0;
+  },
+  limitEffects() {
+    const effects = PW.state.effects;
+    const limit = PW.CONFIG.effects.maxActive;
+    while (effects.length > limit) {
+      let discardIndex = 0;
+      for (let index = 1; index < effects.length; index++) {
+        const candidate = effects[index];
+        const discarded = effects[discardIndex];
+        const candidatePriority = this.effectPriority(candidate);
+        const discardedPriority = this.effectPriority(discarded);
+        const candidateLife = candidate.life / Math.max(0.001, candidate.maxLife);
+        const discardedLife = discarded.life / Math.max(0.001, discarded.maxLife);
+        if (candidatePriority < discardedPriority || (candidatePriority === discardedPriority && candidateLife < discardedLife)) discardIndex = index;
+      }
+      effects.splice(discardIndex, 1);
+    }
   },
   addFloatingText(text, x, y, color, options = {}) {
     const state = PW.state;
@@ -74,6 +97,7 @@ PW.Utils = {
       offsetY: (options.offsetY || 0) - row * 11
     };
     state.effects.push(effect);
+    this.limitEffects();
     return effect;
   },
   addDamageFeedback(enemy, amount) {

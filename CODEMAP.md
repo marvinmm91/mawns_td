@@ -18,14 +18,14 @@ Die UI-Dateien sind inzwischen konsolidiert: Bau-, Inventar-, Wrack-, Kontext- u
 
 - `index.html`: Canvas, HUD-Grundstruktur, Panel-Container und Script-Reihenfolge.
 - `css/styles.css`: Grundlayout, Canvas-Rahmen, HUD, Panels, Buttons, Hotbar, Tag-/Nacht-Stimmung.
-- `js/config.js`: Globale Balancing-Werte, Schwierigkeitsprofile, Spielmodi, Tilegroessen, Phasenlaengen, Startwerte, Debug-Schalter.
+- `js/config.js`: Globale Balancing-Werte, Schwierigkeitsprofile, Spielmodi, Tilegroessen, Phasenlaengen, Startwerte, Effektgrenzen und Debug-Schalter.
 - `js/state.js`: Zentraler Spielzustand, Laufzeitlisten, Inputstatus, Kamera, Timer, Inventar, Schwierigkeitsprofil, Spielmodus und Wrackdaten.
 - `js/bootstrap.js`: Initialisierung, Event Listener, Start des Game Loops.
 - `js/gameLoop.js`: Feste Update-Reihenfolge, Delta-Time-Begrenzung, Pause/Resume, zentraler Renderaufruf und schaltbare Laufzeitmessung.
 - `js/input.js`: Tastaturstatus, Hotkeys, DPI-skalierte Mausposition, Mausbau, temporaere Blaupausen-/Loeschmodi, Kachel-Inspektion und Panel-Toggles.
 - `js/camera.js`: Kamera folgt Spieler, Welt-zu-Screen-Umrechnung, sichtbarer Bereich.
 - `js/random.js`: Seedbarer Zufall fuer Map und Wellen.
-- `js/utils.js`: Kosten, Inventar, Formatierung, Distanzrechnung, Effekte, gebuendelte Floating-Texte und kleine Helfer.
+- `js/utils.js`: Kosten, Inventar, Formatierung, Distanzrechnung, priorisierte und begrenzte Effekte, gebuendelte Floating-Texte und kleine Helfer.
 
 ## Datenmodule
 
@@ -42,7 +42,7 @@ Die UI-Dateien sind inzwischen konsolidiert: Bau-, Inventar-, Wrack-, Kontext- u
 - `js/world/tiles.js`: Tile-Helfer, Kacheltypen, Begehbarkeit, Bauplatz- und Blaupausenregeln.
 - `js/world/spatialIndex.js`: 8x8-Kachelindex fuer sichtbare Weltobjekte, Radiusabfragen und ID-Lookups. Bewegte Objekte werden beim Spawn registriert und nur beim Zellwechsel umindexiert; Kartengenerierung sowie Laden bauen den Index vollstaendig neu auf. Bei ausgetauschten Laufzeitlisten erkennt der Index auch gleiche Listengroessen.
 - `js/world/fog.js`: Fog-of-War-Speicher, Sichtkreis, erkundete Kacheln.
-- `js/world/resources.js`: Ressourcenknoten, Abbaufortschritt, Inventarzugang und langsames, konfigurierbares Baumwachstum.
+- `js/world/resources.js`: Ressourcenknoten, anteilige Ertraege pro Abbautreffer, Inventarzugang und langsames, konfigurierbares Baumwachstum.
 
 ## Akteure und Systeme
 
@@ -74,6 +74,7 @@ Die zusammengefasste Modusregression liegt in `tests/defense-modes-regression.js
 - `js/ui/icons.js`: Canvas-Icons fuer Ressourcen, Werkzeuge, Kostenchips, Bauvorschau und Bauwerksdarstellung.
 - `js/ui/panels.js`: Status-, Inventar-, Bau-, Upgrade-, Wrack-, Entwicklungs-, Kontext- und Dialogansichten einschliesslich Zielprioritaeten, Morgenbericht und Hilfe.
 - `js/ui/designPanel.js`: Vereinfachter Pixel-Editor fuer manuelle Designs, Reset, Import und Export.
+- `js/ui/tacticalMap.js`: Live-Karte mit erkundetem Terrain, Spieler, Wrack, Nadeln und Gegnerpunkten; oeffnen und schliessen mit M.
 - `js/ui/messages.js`: Kurze Hinweise, Nachtwarnung, Fehlertexte.
 
 ## Rendering
@@ -82,7 +83,7 @@ Die zusammengefasste Modusregression liegt in `tests/defense-modes-regression.js
 - `js/render/renderWorld.js`: Tiles, Ressourcen, Aussenposten, Blaupausen, Bauwerke, Wrack und dauerhafte Schadensspuren.
 - `js/render/renderEntities.js`: Spieler, Gegner, Wildlife, Projektile, Drops.
 - `js/render/renderFog.js`: Fog of War und Nachtabdunklung.
-- `js/render/renderEffects.js`: Treffer, Partikel, Warnmarker, Schadensfeedback und ortsgebundene Ressourcen-/Schadenszahlen.
+- `js/render/renderEffects.js`: Treffer, Partikel, Warnmarker, Schadensfeedback und ortsgebundene Ressourcen-/Schadenszahlen; entfernt abgelaufene und weit ausserhalb der Kamera liegende Effekte.
 
 ## Laufzeitfluss
 

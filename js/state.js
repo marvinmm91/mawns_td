@@ -133,6 +133,8 @@ PW.createInitialState = function createInitialState() {
     panel: "status",
     inspectedTile: null,
     hoveredUpgradeBuildingId: null,
+    tacticalMapOpen: false,
+    tacticalMapLastRender: -Infinity,
     reportOpen: false,
     balance: {
       drift: 0,

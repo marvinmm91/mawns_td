@@ -53,11 +53,15 @@ PW.Bootstrap = {
       gameDialog: document.getElementById("gameDialog"),
       dialogTitle: document.getElementById("dialogTitle"),
       dialogBody: document.getElementById("dialogBody"),
-      dialogActions: document.getElementById("dialogActions")
+      dialogActions: document.getElementById("dialogActions"),
+      tacticalMap: document.getElementById("tacticalMap"),
+      tacticalMapCanvas: document.getElementById("tacticalMapCanvas"),
+      tacticalMapCloseButton: document.getElementById("tacticalMapCloseButton")
     };
     PW.PixelArt.init();
     PW.MapGenerator.generate();
     PW.Input.init();
+    PW.TacticalMap.init();
     state.canvas.addEventListener("pointerdown", () => state.canvas.focus());
     PW.UI.initPanels();
     window.addEventListener("resize", () => PW.Camera.resize());
@@ -120,7 +124,7 @@ PW.Bootstrap = {
           ${PW.CONFIG.difficulty.profiles.map((profile) => `<button type="button" class="difficulty-option" data-difficulty="${profile.id}" role="radio" aria-checked="${profile.id === dialogDifficulty}"${hasSave ? " disabled" : ""}><strong>${profile.name}</strong><span>${profile.description}</span></button>`).join("")}
         </div>
       </section>
-      <p>Steuerung: WASD/Pfeiltasten, Space für Aktion, E Inventar, R Wrack, P Pause.</p>
+      <p>Steuerung: WASD/Pfeiltasten, Space für Aktion, E Inventar, R Wrack, M Karte, P Pause.</p>
       <section class="start-changelog" aria-labelledby="beta2ChangelogTitle">
         <h3 id="beta2ChangelogTitle">Beta 2 – Änderungen seit Beta 1</h3>
         <div class="start-changelog-scroll">

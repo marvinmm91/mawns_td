@@ -36,6 +36,7 @@ Das Wrack muss repariert und bis zum Start verteidigt werden. Verliert es alle S
 - R: Wrackmenue.
 - Entwicklung: Globale Testfaktoren, Nachtstart und Simulationsgeschwindigkeit.
 - H: Hilfe.
+- M: Live-Karte mit Nadeln, Spieler und aktiven Gegnern.
 - P: Pause.
 - F6: Speichern.
 - F9: Laden.

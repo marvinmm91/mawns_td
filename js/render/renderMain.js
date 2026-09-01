@@ -24,6 +24,7 @@ PW.Render = {
     PW.RenderEntities.drawPlayer(ctx);
     this.drawOverlay(ctx);
     this.drawPerformanceOverlay(ctx);
+    if (PW.TacticalMap) PW.TacticalMap.render();
   },
   drawOverlay(ctx) {
     const state = PW.state;

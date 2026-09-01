@@ -90,6 +90,7 @@ PW.MapGenerator = {
       maxHp: hp,
       hpRange: this.resourceHpRange(type),
       amount,
+      yielded: 0,
       variant: rng.int(0, 4),
       scale,
       offsetX: rng.float(-3.5, 3.5),
@@ -116,6 +117,7 @@ PW.MapGenerator = {
   normalizeResourceHp(node) {
     const def = PW.RESOURCE_NODES[node.type];
     if (!def) return;
+    node.yielded = Math.max(0, Math.min(node.amount || 0, Number(node.yielded) || 0));
     const hpRange = this.resourceHpRange(node.type);
     const minHp = hpRange[0];
     const maxHp = hpRange[1];

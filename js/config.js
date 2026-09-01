@@ -56,6 +56,10 @@ PW.CONFIG = Object.freeze({
     night: 5,
     dawn: 6
   },
+  effects: {
+    maxActive: 260,
+    cullPadding: 160
+  },
   phases: {
     day: 120,
     dusk: 12,

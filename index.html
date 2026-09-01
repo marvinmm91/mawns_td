@@ -78,6 +78,23 @@
         <div id="dialogActions" class="dialog-actions"></div>
       </div>
     </section>
+
+    <section id="tacticalMap" class="tactical-map hidden" role="dialog" aria-modal="false" aria-label="Taktische Karte">
+      <div class="tactical-map-card">
+        <div class="tactical-map-head">
+          <div>
+            <h2>Karte</h2>
+            <div class="tactical-map-legend" aria-label="Kartenlegende">
+              <span><i class="map-dot player-dot"></i>Spieler</span>
+              <span><i class="map-dot enemy-dot"></i>Gegner</span>
+              <span><i class="map-dot pin-dot"></i>Nadeln</span>
+            </div>
+          </div>
+          <button id="tacticalMapCloseButton" class="icon-button" type="button" aria-label="Karte schließen" title="Karte schließen">×</button>
+        </div>
+        <canvas id="tacticalMapCanvas" aria-label="Live-Karte der Welt"></canvas>
+      </div>
+    </section>
   </main>
 
   <script src="js/config.js"></script>
@@ -123,6 +140,7 @@
   <script src="js/ui/hud.js"></script>
   <script src="js/ui/panels.js"></script>
   <script src="js/ui/designPanel.js"></script>
+  <script src="js/ui/tacticalMap.js"></script>
   <script src="js/render/renderWorld.js"></script>
   <script src="js/render/renderEntities.js"></script>
   <script src="js/render/renderFog.js"></script>

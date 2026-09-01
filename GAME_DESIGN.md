@@ -35,10 +35,12 @@ Dieses Dokument ist die zentrale und verbindliche Designbeschreibung von Planet-
 - Keine neuen Angriffswellen.
 - Der Spieler erkundet und deckt neue Kacheln auf.
 - Ressourcen werden mit Axt oder Spitzhacke abgebaut.
+- Der Ertrag eines Ressourcenknotens wird ohne Mengenbonus auf seine Abbautreffer verteilt; der Rest kommt beim letzten Treffer.
 - Mauern, Tuerme und Bruecken werden gebaut.
 - Das Wrack und beschaedigte Bauwerke werden repariert.
 - Truhen und Monsterhorden koennen gezielt aufgesucht werden.
 - Hinweise auf seltene Ressourcen und kommende Gefahren helfen bei der Planung.
+- M oeffnet eine Live-Karte mit erkundetem Terrain, Wrack, Spieler, gesetzten Nadeln und roten Punkten fuer aktive Gegner.
 
 ### Daemmerung
 
