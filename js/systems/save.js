@@ -42,6 +42,7 @@ PW.Save = {
       wave: state.wave,
       nightStats: state.nightStats,
       balance: state.balance,
+      development: state.development,
       lastReport: state.lastReport
     };
     localStorage.setItem(PW.CONFIG.saveKey, JSON.stringify(data));
@@ -74,6 +75,7 @@ PW.Save = {
         PW.state.difficulty = PW.CONFIG.difficulty.default;
       }
       PW.state.gameMode = PW.GameModes.normalize(PW.state.gameMode);
+      PW.state.development = { ...PW.Development.defaults(), ...(data.development || {}) };
       PW.state.world.tileSize = PW.state.world.tileSize || PW.CONFIG.tileSize;
       PW.state.world.birds = PW.state.world.birds || [];
       PW.state.world.wildlife = PW.state.world.wildlife || [];

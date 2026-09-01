@@ -41,6 +41,7 @@ PW.Bootstrap = {
       inventoryButton: document.getElementById("inventoryButton"),
       shipButton: document.getElementById("shipButton"),
       designButton: document.getElementById("designButton"),
+      developmentButton: document.getElementById("developmentButton"),
       helpButton: document.getElementById("helpButton"),
       sidePanel: document.getElementById("sidePanel"),
       panelTitle: document.getElementById("panelTitle"),

@@ -17,13 +17,10 @@ Die UI-Dateien sind inzwischen konsolidiert: Bau-, Inventar-, Wrack-, Kontext- u
 ## Dateien
 
 - `index.html`: Canvas, HUD-Grundstruktur, Panel-Container und Script-Reihenfolge.
-- `benchmark.html`: Reduzierte, eigenstaendige Beobachtungssandbox fuer Seed-, Modus- und Schwierigkeitsexperimente mit Basiswert-Reglern.
 - `css/styles.css`: Grundlayout, Canvas-Rahmen, HUD, Panels, Buttons, Hotbar, Tag-/Nacht-Stimmung.
-- `css/benchmark.css`: Kompaktes Layout fuer die Benchmark-Sandbox.
 - `js/config.js`: Globale Balancing-Werte, Schwierigkeitsprofile, Spielmodi, Tilegroessen, Phasenlaengen, Startwerte, Debug-Schalter.
 - `js/state.js`: Zentraler Spielzustand, Laufzeitlisten, Inputstatus, Kamera, Timer, Inventar, Schwierigkeitsprofil, Spielmodus und Wrackdaten.
 - `js/bootstrap.js`: Initialisierung, Event Listener, Start des Game Loops.
-- `js/benchmark.js`: Deterministische Admin-Simulation auf einer mit dem Produktionsgenerator erzeugten Karte; mit Wegsuche, endlichem Ressourcenabbau, Gegnerdrops, Classic-Labyrinth, Zeitbeschleunigung und Live-Kennzahlen.
 - `js/gameLoop.js`: Feste Update-Reihenfolge, Delta-Time-Begrenzung, Pause/Resume, zentraler Renderaufruf und schaltbare Laufzeitmessung.
 - `js/input.js`: Tastaturstatus, Hotkeys, DPI-skalierte Mausposition, Mausbau, temporaere Blaupausen-/Loeschmodi, Kachel-Inspektion und Panel-Toggles.
 - `js/camera.js`: Kamera folgt Spieler, Welt-zu-Screen-Umrechnung, sichtbarer Bereich.
@@ -53,6 +50,7 @@ Die UI-Dateien sind inzwischen konsolidiert: Bau-, Inventar-, Wrack-, Kontext- u
 - `js/entities/enemies.js`: Gegnerlisten, Bewegung, Classic-Notfall-Durchbruchangriffe, Zielwahl, rollenspezifische Schadensmodifikatoren und Schaden am Wrack. Bereits gespawnte Gegner bleiben nach der Nacht aktiv.
 - `js/entities/projectiles.js`: Turmprojektile, Treffer, Lebensdauer und gegnerspezifische Slow-Resistenz.
 - `js/systems/dayNight.js`: Tag, Daemmerung, Nacht, Morgengrauen, Timer, Phasenwechsel.
+- `js/systems/development.js`: Entwicklungsfaktoren fuer Wellen, Gegnerwerte und Simulationsgeschwindigkeit sowie manueller Nachtstart.
 - `js/systems/gameModes.js`: Aufloesung und Validierung der zentralen Spielmodusprofile.
 - `js/systems/damageVisuals.js`: Zentraler Treffereffekt und kurzzeitige Schadensblitze fuer Wrack und Bauwerke.
 - `js/systems/building.js`: Bauplatzpruefung, Classic-Wegsperre, Platzieren, Blaupausen, Reparieren, Abreissen, Kosten.
@@ -74,7 +72,7 @@ Die zusammengefasste Modusregression liegt in `tests/defense-modes-regression.js
 
 - `js/ui/hud.js`: Wrack-HP, Timer, Nachtzaehler, Modulfortschritt, Werkzeugleiste und Ressourcen-Kurzliste.
 - `js/ui/icons.js`: Canvas-Icons fuer Ressourcen, Werkzeuge, Kostenchips, Bauvorschau und Bauwerksdarstellung.
-- `js/ui/panels.js`: Status-, Inventar-, Bau-, Upgrade-, Wrack-, Kontext- und Dialogansichten einschliesslich Zielprioritaeten, Morgenbericht und Hilfe.
+- `js/ui/panels.js`: Status-, Inventar-, Bau-, Upgrade-, Wrack-, Entwicklungs-, Kontext- und Dialogansichten einschliesslich Zielprioritaeten, Morgenbericht und Hilfe.
 - `js/ui/designPanel.js`: Vereinfachter Pixel-Editor fuer manuelle Designs, Reset, Import und Export.
 - `js/ui/messages.js`: Kurze Hinweise, Nachtwarnung, Fehlertexte.
 

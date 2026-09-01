@@ -4,7 +4,7 @@ PW.EnemySystem = {
   spawn(type, x, y, options = {}) {
     const def = PW.ENEMIES[type];
     const night = Math.max(1, PW.state.phase.night);
-    const hpScale = 1 + Math.max(0, night - 1) * 0.07 + PW.state.balance.drift * 0.25;
+    const hpScale = (1 + Math.max(0, night - 1) * 0.07 + PW.state.balance.drift * 0.25) * PW.Development.factor("enemyHpMultiplier");
     const enemy = {
       id: `enemy-${Date.now()}-${PW.state.enemies.length}-${Math.random()}`,
       type,
@@ -12,7 +12,7 @@ PW.EnemySystem = {
       y,
       hp: Math.round(def.hp * hpScale),
       maxHp: Math.round(def.hp * hpScale),
-      speed: def.speed * (1 + Math.max(0, night - 1) * 0.012),
+      speed: def.speed * (1 + Math.max(0, night - 1) * 0.012) * PW.Development.factor("enemySpeedMultiplier"),
       attackCooldown: PW.state.rng.float(0, def.attackCooldown),
       slowTimer: 0,
       slowFactor: 1,
@@ -176,7 +176,7 @@ PW.EnemySystem = {
     const by = PW.Utils.tileToWorld(building.y);
     if (PW.Utils.distance(enemy.x, enemy.y, bx, by) > rangePx) return false;
     if (enemy.attackCooldown <= 0) {
-      const damage = (def.wallDamage || def.damage) * damageMultiplier;
+      const damage = (def.wallDamage || def.damage) * damageMultiplier * PW.Development.factor("enemyDamageMultiplier");
       PW.DamageVisuals.building(building, damage);
       enemy.attackCooldown = def.attackCooldown;
       if (PW.state.nightStats) PW.state.nightStats.wallDamage += damage;
@@ -220,7 +220,7 @@ PW.EnemySystem = {
     const range = (PW.state.ship.size * PW.state.world.tileSize) / 2 + 18;
     if (dist > range) return false;
     if (enemy.attackCooldown <= 0) {
-      const damage = Math.ceil(def.damage * (PW.state.ship.launchActive ? 0.35 : 1));
+      const damage = Math.ceil(def.damage * (PW.state.ship.launchActive ? 0.35 : 1) * PW.Development.factor("enemyDamageMultiplier"));
       PW.DamageVisuals.ship(damage);
         if (PW.state.nightStats) {
           PW.state.nightStats.shipDamageTaken += damage;

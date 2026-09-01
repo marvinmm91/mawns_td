@@ -25,7 +25,7 @@ PW.Autobalance = {
     return budget;
   },
   effectiveThreatBudgetForNight(night) {
-    const budget = this.threatBudgetForNight(night) * PW.GameModes.profile().waveMultiplier;
+    const budget = this.threatBudgetForNight(night) * PW.GameModes.profile().waveMultiplier * PW.Development.factor("waveMultiplier");
     PW.state.balance.lastThreatBudget = budget;
     return budget;
   },
@@ -33,7 +33,7 @@ PW.Autobalance = {
     const directorBudget = this.calculateThreatBudget(night);
     const profile = this.difficultyProfile();
     const gameMode = PW.GameModes.profile();
-    const budget = directorBudget * gameMode.waveMultiplier;
+    const budget = directorBudget * gameMode.waveMultiplier * PW.Development.factor("waveMultiplier");
     const relativePressure = directorBudget / Math.max(1, this.baseThreatForNight(night) * profile.threatMultiplier);
     const forecast = relativePressure < 0.82 ? { label: "Niedrig", description: "Niedriger" } :
       relativePressure < 0.95 ? { label: "Gering", description: "Geringer" } :

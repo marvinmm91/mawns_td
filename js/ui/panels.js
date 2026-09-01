@@ -6,6 +6,7 @@ Object.assign(PW.UI, {
     dom.inventoryButton.addEventListener("click", () => this.togglePanel("inventory"));
     dom.shipButton.addEventListener("click", () => this.togglePanel("ship"));
     dom.designButton.addEventListener("click", () => this.togglePanel("design"));
+    dom.developmentButton.addEventListener("click", () => this.togglePanel("development"));
     dom.helpButton.addEventListener("click", () => this.showHelp());
     dom.panelCloseButton.addEventListener("click", () => this.showStatusPanel());
     dom.reportCloseButton.addEventListener("click", () => this.hideMorningReport());
@@ -54,9 +55,77 @@ Object.assign(PW.UI, {
     } else if (state.panel === "design") {
       title.textContent = "Optik";
       this.renderDesign(body);
+    } else if (state.panel === "development") {
+      title.textContent = "Entwicklung";
+      this.renderDevelopment(body);
     } else if (state.panel === "context") {
       this.renderContext(body);
     }
+  },
+  renderDevelopment(body) {
+    const state = PW.state;
+    const controls = [
+      { id: "waveMultiplier", label: "Wellenmenge", hint: "Erhoeht oder senkt das gesamte Gegnerbudget jeder kommenden Nacht. Mehr Budget bedeutet mehr Gegner und groessere Gruppen." },
+      { id: "enemyHpMultiplier", label: "Gegnerleben", hint: "Multipliziert die Lebenspunkte aller neu gespawnten Gegner. Bereits vorhandene Gegner bleiben unveraendert." },
+      { id: "enemyDamageMultiplier", label: "Gegnerschaden", hint: "Multipliziert den Schaden, den Gegner am Wrack und an Bauwerken verursachen." },
+      { id: "enemySpeedMultiplier", label: "Gegnertempo", hint: "Multipliziert die Bewegungsgeschwindigkeit aller neu gespawnten Gegner." }
+    ];
+    body.innerHTML = "";
+    const factors = document.createElement("section");
+    factors.className = "development-section";
+    factors.innerHTML = "<h3>Schwierigkeit</h3>";
+    controls.forEach((control) => {
+      const value = PW.Development.factor(control.id);
+      const row = document.createElement("label");
+      row.className = "development-control";
+      row.title = control.hint;
+      const label = document.createElement("span");
+      label.textContent = control.label;
+      const output = document.createElement("output");
+      output.textContent = `${value.toFixed(2)}x`;
+      const input = document.createElement("input");
+      input.type = "range";
+      input.min = "0.5";
+      input.max = "3";
+      input.step = "0.05";
+      input.value = String(value);
+      input.title = control.hint;
+      input.addEventListener("input", () => {
+        PW.Development.setFactor(control.id, input.value);
+        output.textContent = `${PW.Development.factor(control.id).toFixed(2)}x`;
+      });
+      row.append(label, output, input);
+      factors.appendChild(row);
+    });
+    body.appendChild(factors);
+
+    const simulation = document.createElement("section");
+    simulation.className = "development-section";
+    simulation.innerHTML = "<h3>Simulation</h3>";
+    const speeds = document.createElement("div");
+    speeds.className = "development-speeds";
+    [1, 2, 3].forEach((speed) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.textContent = `${speed}x`;
+      button.title = speed === 1 ? "Normale Spielgeschwindigkeit." : `Beschleunigt den gesamten Spielablauf auf ${speed}fache Geschwindigkeit.`;
+      button.classList.toggle("active", PW.Development.factor("timeScale") === speed);
+      button.addEventListener("click", () => {
+        PW.Development.setFactor("timeScale", speed);
+        this.renderDevelopment(body);
+      });
+      speeds.appendChild(button);
+    });
+    const night = document.createElement("button");
+    night.type = "button";
+    night.textContent = "Naechste Nacht starten";
+    night.title = "Beendet die aktuelle friedliche Phase und startet sofort die naechste normale Nachtwelle. Waerend einer aktiven Nacht ist der Knopf nicht verfuegbar.";
+    night.disabled = state.paused || state.gameOver || state.victory || state.ship.launchActive || state.phase.current === "night" || state.wave.active;
+    night.addEventListener("click", () => {
+      if (PW.Development.startNextNight()) this.renderDevelopment(body);
+    });
+    simulation.append(speeds, night);
+    body.appendChild(simulation);
   },
   renderStatus(body) {
     const state = PW.state;

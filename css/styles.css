@@ -747,6 +747,56 @@ button:disabled {
   margin-top: 8px;
 }
 
+.development-section {
+  display: grid;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid #3f4239;
+}
+
+.development-section:first-child {
+  padding-top: 0;
+}
+
+.development-section:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.development-section h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.development-control {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 5px 8px;
+  color: var(--muted);
+}
+
+.development-control output {
+  color: var(--accent-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.development-control input {
+  grid-column: 1 / -1;
+  width: 100%;
+  accent-color: var(--accent);
+}
+
+.development-speeds {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.development-speeds button.active {
+  border-color: var(--accent);
+  background: #3a3325;
+}
+
 .design-actions {
   display: flex;
   flex-wrap: wrap;

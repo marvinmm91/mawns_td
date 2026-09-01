@@ -141,6 +141,13 @@ PW.createInitialState = function createInitialState() {
       dropBonus: 0,
       nextHints: []
     },
+    development: {
+      waveMultiplier: 1,
+      enemyHpMultiplier: 1,
+      enemyDamageMultiplier: 1,
+      enemySpeedMultiplier: 1,
+      timeScale: 1
+    },
     nightStats: null,
     lastReport: null,
     wave: {

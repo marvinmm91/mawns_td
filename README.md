@@ -34,6 +34,7 @@ Das Wrack muss repariert und bis zum Start verteidigt werden. Verliert es alle S
 - 1-5: Werkzeug wechseln.
 - E: Inventar.
 - R: Wrackmenue.
+- Entwicklung: Globale Testfaktoren, Nachtstart und Simulationsgeschwindigkeit.
 - H: Hilfe.
 - P: Pause.
 - F6: Speichern.
@@ -48,7 +49,3 @@ Das Wrack muss repariert und bis zum Start verteidigt werden. Verliert es alle S
 - `node tests/defense-modes-regression.js`
 - `node tests/classic-route-guard.js`
 - `node tests/enemy-persistence.js`
-
-## Benchmark-Sandbox
-
-`benchmark.html` startet eine Beobachtungssandbox fuer Seeds, Schwierigkeit und Spielmodus. Sie verwendet denselben Kartengenerator, dieselben Kachelarten, Wasserwege und endlichen Ressourcenknoten wie das Spiel. Der Bot berechnet begehbare Wege, baut Ressourcen vollstaendig ab, sammelt Gegnerdrops ein und errichtet im Classic-Modus von innen nach aussen ein Palisadenlabyrinth mit einem freien Pfad. Tuerme ersetzen dabei gezielt einzelne Palisadenkacheln der Mauer. Getrennte Regler steuern Gegneranzahl, HP und Ressourcenreserve; Darstellung und Kampfaufloesung bleiben absichtlich reduziert.
