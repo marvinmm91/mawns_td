@@ -63,9 +63,18 @@
     const center = { x: ship().x + Math.floor(ship().size / 2), y: ship().y + Math.floor(ship().size / 2) };
     const tower = (type, x, y) => ({ type, x, y });
     if (dom.mode.value !== "classic") return [tower("ballista", center.x + 2, center.y + 2), tower("catapult", center.x - 4, center.y - 4), tower("ballista", center.x + 4, center.y + 4), tower("flak", center.x + 4, center.y - 4), tower("tesla", center.x - 4, center.y + 4), tower("laser", center.x + 6, center.y)];
-    const inner = ring(3, { x: center.x - 3, y: center.y + 2 }).map((tile) => ({ type: "palisade", ...tile }));
-    const outer = ring(5, { x: center.x, y: center.y - 5 }).map((tile) => ({ type: "palisade", ...tile }));
-    return [...inner, tower("ballista", center.x + 2, center.y + 2), ...outer.slice(0, 18), tower("catapult", center.x - 4, center.y - 4), ...outer.slice(18), tower("ballista", center.x + 4, center.y + 4), tower("flak", center.x + 4, center.y - 4), tower("tesla", center.x - 4, center.y + 4), tower("laser", center.x + 6, center.y)];
+    const replaceWall = (tiles, replacements) => tiles.map((tile) => replacements.get(key(tile.x, tile.y)) || { type: "palisade", ...tile });
+    const inner = replaceWall(ring(3, { x: center.x - 3, y: center.y + 2 }), new Map([
+      [key(center.x + 3, center.y + 2), tower("ballista", center.x + 3, center.y + 2)]
+    ]));
+    const outer = replaceWall(ring(5, { x: center.x, y: center.y - 5 }), new Map([
+      [key(center.x - 4, center.y - 5), tower("catapult", center.x - 4, center.y - 5)],
+      [key(center.x + 4, center.y + 5), tower("ballista", center.x + 4, center.y + 5)],
+      [key(center.x + 5, center.y - 3), tower("flak", center.x + 5, center.y - 3)],
+      [key(center.x - 5, center.y + 3), tower("tesla", center.x - 5, center.y + 3)],
+      [key(center.x + 2, center.y - 5), tower("laser", center.x + 2, center.y - 5)]
+    ]));
+    return [...inner, ...outer];
   }
 
   function reset() {
