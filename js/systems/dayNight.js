@@ -4,6 +4,10 @@ PW.DayNight = {
   update(dt) {
     const state = PW.state;
     if (state.gameOver || state.victory) return;
+    if (state.phase.current === "night" && !state.ship.launchActive) {
+      if (PW.Spawning.isNightComplete()) this.beginDawn();
+      return;
+    }
     state.phase.timer -= dt;
     if (state.ship.launchActive) PW.Progression.updateLaunch(dt);
     if (state.victory) return;
@@ -29,7 +33,7 @@ PW.DayNight = {
     PW.Fog.update();
     PW.UI.renderHud();
   },
-  beginNight(finalMode = false) {
+  beginNight(finalMode = false, budgetMultiplier = 1) {
     const state = PW.state;
     state.phase.night += 1;
     this.setPhase("night");
@@ -44,7 +48,7 @@ PW.DayNight = {
       killDistanceSum: 0,
       startedAt: state.elapsed
     };
-    PW.Spawning.startNight(finalMode);
+    PW.Spawning.startNight(finalMode, budgetMultiplier);
     PW.Progression.refreshUnlocks();
     PW.Save.save(false);
   },

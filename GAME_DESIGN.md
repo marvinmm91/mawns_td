@@ -257,6 +257,8 @@ Classic erhaelt 124 Prozent des vom Director berechneten Wellenbudgets und biete
 
 Das Ende einer Nacht stoppt nur neue Spawnpulse. Bereits gespawnte Gegner bleiben in beiden Modi aktiv und greifen bis zu ihrem Tod weiter an.
 
+Eine regulaere Nacht beginnt mit einem sofortigen Spawnimpuls und endet erst, wenn ihr gesamtes Budget ausgespielt und alle zugehoerigen Wellengegner besiegt sind. Der Nachtzähler ist deshalb kein Ablauf-Timer; nur die finale Startsequenz bleibt zeitbasiert.
+
 Jede Nacht besitzt ein Threat-Budget:
 
 ```text

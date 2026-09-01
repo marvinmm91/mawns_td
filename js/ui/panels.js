@@ -69,7 +69,7 @@ Object.assign(PW.UI, {
     stats.className = "stat-grid";
     stats.innerHTML = `
       <div class="stat-box"><span>Phase</span><strong>${phaseNames[state.phase.current]}</strong></div>
-      <div class="stat-box"><span>Timer</span><strong>${PW.Utils.formatTime(state.phase.timer)}</strong></div>
+      <div class="stat-box"><span>${state.phase.current === "night" && !state.ship.launchActive ? "Nacht" : "Timer"}</span><strong>${state.phase.current === "night" && !state.ship.launchActive ? "Welle aktiv" : PW.Utils.formatTime(state.ship.launchActive ? state.ship.launchTimer : state.phase.timer)}</strong></div>
       <div class="stat-box"><span>Gegner</span><strong>${state.enemies.length}</strong></div>
       <div class="stat-box"><span>Bauwerke</span><strong>${state.world.buildings.length}</strong></div>
       <div class="stat-box"><span>Truhen</span><strong>${(state.world.treasureChests || []).filter((chest) => !chest.opened).length}</strong></div>
@@ -799,7 +799,7 @@ Object.assign(PW.UI, {
   submitCheatCode() {
     const input = PW.state.dom.dialogBody.querySelector("#cheatCode");
     const code = input ? input.value.trim().toLowerCase() : "";
-    if (code !== "lumberjack" && code !== "theflash") {
+    if (code !== "lumberjack" && code !== "theflash" && code !== "hardassteel") {
       PW.Messages.add("Ungültiger Cheat-Code.", "danger");
       this.hideDialog();
       return;
@@ -813,9 +813,14 @@ Object.assign(PW.UI, {
       PW.UI.renderHud();
       PW.UI.refreshInventoryDependentPanel();
       PW.Messages.add("Cheat aktiviert: 500 von jeder Ressource erhalten.", "ok");
-    } else {
+    } else if (code === "theflash") {
       PW.state.player.speed = PW.CONFIG.playerSpeed * 3;
       PW.Messages.add("Cheat aktiviert: Deine Bewegungsgeschwindigkeit ist verdreifacht.", "ok");
+    } else if (PW.state.phase.current === "night" || PW.state.ship.launchActive) {
+      PW.Messages.add("Hardassteel kann nicht waehrend einer laufenden Nacht aktiviert werden.", "danger");
+    } else {
+      PW.DayNight.beginNight(false, 5);
+      PW.Messages.add("Hardassteel aktiviert: Sofortige Nacht mit fuenffachem Wellenbudget.", "danger");
     }
     this.hideDialog();
   },

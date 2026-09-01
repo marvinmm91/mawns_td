@@ -13,7 +13,7 @@ Object.assign(PW.UI, {
     dom.shipHpFill.style.background = hpRatio < 0.3 ? "#e35d57" : hpRatio < 0.6 ? "#d7c951" : "linear-gradient(90deg, #5fc772, #d7c951)";
     const phaseNames = { day: "Tag", dusk: "Daemmerung", night: state.ship.launchActive ? "Start" : "Nacht", dawn: "Morgen" };
     dom.phaseName.textContent = phaseNames[state.phase.current];
-    dom.phaseTimer.textContent = state.ship.launchActive ? PW.Utils.formatTime(state.ship.launchTimer) : PW.Utils.formatTime(state.phase.timer);
+    dom.phaseTimer.textContent = state.ship.launchActive ? PW.Utils.formatTime(state.ship.launchTimer) : state.phase.current === "night" ? "Welle aktiv" : PW.Utils.formatTime(state.phase.timer);
     dom.nightText.textContent = String(state.phase.night);
     dom.moduleText.textContent = `${PW.Progression.repairedModuleCount()}/${Object.keys(PW.SHIP_MODULES).length}`;
     const toolKey = state.player.selectedTool;

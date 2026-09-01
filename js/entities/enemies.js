@@ -18,6 +18,7 @@ PW.EnemySystem = {
       slowFactor: 1,
       retreating: false,
       reachedShip: false,
+      waveId: options.waveId || null,
       campId: options.campId || null,
       campX: options.campX || null,
       campY: options.campY || null,

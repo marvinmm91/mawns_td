@@ -90,6 +90,12 @@ PW.Save = {
       if (!PW.state.treasure.campTarget) PW.state.treasure.campTarget = Math.max(PW.CONFIG.treasure.campCount[0], PW.state.world.monsterCamps.filter((camp) => !camp.cleared).length);
       PW.state.inventory.key = PW.state.inventory.key || 0;
       PW.state.wave = data.wave || PW.state.wave;
+      if (PW.state.wave.active && !PW.state.wave.id) {
+        PW.state.wave.id = `legacy-wave-${PW.state.phase.night}`;
+        PW.state.enemies.forEach((enemy) => {
+          if (!enemy.campId && !enemy.outpostId && !enemy.waveId) enemy.waveId = PW.state.wave.id;
+        });
+      }
       PW.state.nightStats = data.nightStats || PW.state.nightStats || {
         night: PW.state.phase.night,
         shipStartHp: PW.state.ship.hp,
