@@ -21,7 +21,7 @@
       <label>Schwierigkeit <select id="difficultySelect"><option value="relaxed">1 Entspannt</option><option value="calm">2 Ruhig</option><option value="standard" selected>3 Standard</option><option value="hard">4 Anspruchsvoll</option><option value="onslaught">5 Ansturm</option></select></label>
     </section>
     <section class="benchmark-layout">
-      <div class="sim-surface"><canvas id="simCanvas" width="960" height="608" aria-label="Simulation"></canvas></div>
+      <div class="sim-surface"><canvas id="simCanvas" width="720" height="720" aria-label="Simulation"></canvas></div>
       <aside class="benchmark-side">
         <section><h2>Simulation</h2><dl id="simMetrics" class="metric-grid"></dl></section>
         <section><h2>Basiswerte</h2><div class="slider-list">
@@ -40,8 +40,16 @@
   <script src="js/data/resources.js"></script>
   <script src="js/data/buildings.js"></script>
   <script src="js/data/enemies.js"></script>
+  <script src="js/data/shipModules.js"></script>
   <script src="js/data/waves.js"></script>
   <script src="js/random.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/world/tiles.js"></script>
+  <script src="js/world/spatialIndex.js"></script>
+  <script src="js/world/fog.js"></script>
+  <script src="js/world/resources.js"></script>
+  <script src="js/world/mapGenerator.js"></script>
   <script src="js/benchmark.js"></script>
 </body>
 </html>

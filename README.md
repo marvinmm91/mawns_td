@@ -51,4 +51,4 @@ Das Wrack muss repariert und bis zum Start verteidigt werden. Verliert es alle S
 
 ## Benchmark-Sandbox
 
-`benchmark.html` startet eine reduzierte Beobachtungssandbox fuer Seeds, Schwierigkeit und Spielmodus. Sie bietet getrennte Regler fuer Gegneranzahl und HP beider Modi sowie die Ressourcenreserve des Bots. Der Bot laeuft zu sichtbaren Ressourcenknoten, sammelt dort und errichtet im Classic-Modus ein Palisadenlabyrinth mit weiteren Tuermen. Die Sandbox nutzt Turm-, Gegner-, Kosten- und Wellendaten des Spiels, bleibt aber bewusst vom echten Spielstand und dessen vollstaendlicher Kampf-KI getrennt.
+`benchmark.html` startet eine Beobachtungssandbox fuer Seeds, Schwierigkeit und Spielmodus. Sie verwendet denselben Kartengenerator, dieselben Kachelarten, Wasserwege und endlichen Ressourcenknoten wie das Spiel. Der Bot berechnet begehbare Wege, baut Ressourcen vollstaendig ab, sammelt Gegnerdrops ein und errichtet im Classic-Modus von innen nach aussen ein Palisadenlabyrinth mit einem freien Pfad und eingestreuten Tuermen. Getrennte Regler steuern Gegneranzahl, HP und Ressourcenreserve; Darstellung und Kampfaufloesung bleiben absichtlich reduziert.

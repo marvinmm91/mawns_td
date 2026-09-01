@@ -23,7 +23,7 @@ Die UI-Dateien sind inzwischen konsolidiert: Bau-, Inventar-, Wrack-, Kontext- u
 - `js/config.js`: Globale Balancing-Werte, Schwierigkeitsprofile, Spielmodi, Tilegroessen, Phasenlaengen, Startwerte, Debug-Schalter.
 - `js/state.js`: Zentraler Spielzustand, Laufzeitlisten, Inputstatus, Kamera, Timer, Inventar, Schwierigkeitsprofil, Spielmodus und Wrackdaten.
 - `js/bootstrap.js`: Initialisierung, Event Listener, Start des Game Loops.
-- `js/benchmark.js`: Deterministische Admin-Simulation mit sichtbaren Ressourcenknoten, laufendem Sammel-/Baubot, Classic-Labyrinth, Zeitbeschleunigung und Live-Kennzahlen auf Basis der Produktdaten.
+- `js/benchmark.js`: Deterministische Admin-Simulation auf einer mit dem Produktionsgenerator erzeugten Karte; mit Wegsuche, endlichem Ressourcenabbau, Gegnerdrops, Classic-Labyrinth, Zeitbeschleunigung und Live-Kennzahlen.
 - `js/gameLoop.js`: Feste Update-Reihenfolge, Delta-Time-Begrenzung, Pause/Resume, zentraler Renderaufruf und schaltbare Laufzeitmessung.
 - `js/input.js`: Tastaturstatus, Hotkeys, DPI-skalierte Mausposition, Mausbau, temporaere Blaupausen-/Loeschmodi, Kachel-Inspektion und Panel-Toggles.
 - `js/camera.js`: Kamera folgt Spieler, Welt-zu-Screen-Umrechnung, sichtbarer Bereich.
