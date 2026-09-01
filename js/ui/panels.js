@@ -231,7 +231,7 @@ Object.assign(PW.UI, {
       this.renderCostChips(costs, def.cost);
       const stateText = document.createElement("div");
       stateText.className = "meta";
-      stateText.textContent = unlocked ? (affordable ? "Bereit." : "Material fehlt.") : "Noch nicht freigeschaltet.";
+      stateText.textContent = unlocked ? (affordable ? "Bereit." : "Material fehlt.") : this.buildingUnlockText(def);
       card.append(titleRow, description, costs, stateText);
       if (def.category === "tower") card.appendChild(this.towerStatsLine(def, 1));
       const button = document.createElement("button");
@@ -259,6 +259,20 @@ Object.assign(PW.UI, {
     summary.textContent = blueprints.length ? `${blueprints.length} Blaupausen vorgemerkt.` : "Keine Blaupausen vorgemerkt.";
     card.appendChild(summary);
     if (blueprints.length) {
+      const totalCost = blueprints.reduce((total, blueprint) => {
+        const cost = PW.BUILDINGS[blueprint.type]?.cost || {};
+        Object.entries(cost).forEach(([resourceId, amount]) => {
+          total[resourceId] = (total[resourceId] || 0) + amount;
+        });
+        return total;
+      }, {});
+      const totalTitle = document.createElement("div");
+      totalTitle.className = "meta";
+      totalTitle.textContent = "Gesamtbedarf für alle Blaupausen";
+      const totalCosts = document.createElement("div");
+      totalCosts.className = "costs";
+      this.renderCostChips(totalCosts, totalCost);
+      card.append(totalTitle, totalCosts);
       const buildAll = document.createElement("button");
       buildAll.textContent = "Alle errichten";
       buildAll.addEventListener("click", () => PW.BuildingSystem.buildAllBlueprints());
@@ -277,7 +291,7 @@ Object.assign(PW.UI, {
       chip.style.setProperty("--fill", `${Math.round(progress * 100)}%`);
       chip.appendChild(PW.Icons.resourceCanvas(id, 20));
       const text = document.createElement("span");
-      text.textContent = missing ? `${missing} fehlt (${have}/${required})` : `${have}/${required}`;
+      text.textContent = missing ? `${PW.RESOURCES[id].name} (${have}/${required})` : `${have}/${required}`;
       chip.appendChild(text);
       container.appendChild(chip);
     });
@@ -296,6 +310,12 @@ Object.assign(PW.UI, {
       button.textContent = `${def.name} (${building.x}/${building.y}) Stufe ${building.level}`;
       button.disabled = building.level >= 3 || !PW.Utils.canAfford(PW.BuildingSystem.upgradeCost(building));
       button.addEventListener("click", () => PW.BuildingSystem.upgrade(building.id));
+      button.addEventListener("mouseenter", () => {
+        PW.state.hoveredUpgradeBuildingId = building.id;
+      });
+      button.addEventListener("mouseleave", () => {
+        if (PW.state.hoveredUpgradeBuildingId === building.id) PW.state.hoveredUpgradeBuildingId = null;
+      });
       row.appendChild(button);
       if (def.category === "tower") {
         const nextLevel = Math.min(3, building.level + 1);
@@ -313,6 +333,16 @@ Object.assign(PW.UI, {
     line.className = "tower-stats";
     line.textContent = nextLevel ? `${statText(stats)} -> ${statText(PW.Combat.towerStats(def, nextLevel))}` : statText(stats);
     return line;
+  },
+  buildingUnlockText(def) {
+    const requirements = [];
+    if (PW.state.phase.night < (def.unlockNight || 0)) requirements.push(`ab Nacht ${def.unlockNight}`);
+    const unknownResources = (def.requiresKnown || []).filter((id) => !PW.state.knownResources.has(id));
+    if (unknownResources.length) {
+      const resourceNames = unknownResources.map((id) => PW.RESOURCES[id].name);
+      requirements.push(`${resourceNames.join(" oder ")} entdecken`);
+    }
+    return requirements.length ? `Freischaltung: ${requirements.join("; ")}.` : "Noch nicht freigeschaltet.";
   },
   renderShip(body) {
     const state = PW.state;

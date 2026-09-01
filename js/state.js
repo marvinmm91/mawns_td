@@ -132,6 +132,7 @@ PW.createInitialState = function createInitialState() {
     messages: [],
     panel: "status",
     inspectedTile: null,
+    hoveredUpgradeBuildingId: null,
     reportOpen: false,
     balance: {
       drift: 0,
