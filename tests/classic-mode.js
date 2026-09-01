@@ -71,7 +71,7 @@ const { pathToFileURL } = require("url");
     }
     const blocked = {
       hp: blockedWall.hp,
-      expectedDamage: def.wallDamage * PW.GameModes.profile("classic").breakthroughDamageMultiplier,
+      expectedDamage: def.wallDamage * PW.GameModes.profile("classic").breakthroughDamageMultiplier * PW.GameModes.profile("classic").enemyDamageMultiplier,
       shipHp: PW.state.ship.hp
     };
 

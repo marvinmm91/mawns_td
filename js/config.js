@@ -162,8 +162,9 @@ PW.CONFIG = Object.freeze({
         shortName: "Classic",
         description: "Freie Wege werden beim Bauen gesichert; nur echte Notfallblockaden werden schnell aufgebrochen.",
         structureTargeting: "blockade",
-        waveMultiplier: 1.24,
+        waveMultiplier: 3.72,
         structureDamageMultiplier: 1,
+        enemyDamageMultiplier: 0.4,
         breakthroughDamageMultiplier: 10,
         disabledBuildings: ["stoneWall", "steelWall"]
       },
@@ -174,7 +175,8 @@ PW.CONFIG = Object.freeze({
         description: "Direkte Wegverteidigungen werden aktiv angegriffen; Wellen sind dafür etwas kleiner.",
         structureTargeting: "direct-path",
         waveMultiplier: 0.92,
-        structureDamageMultiplier: 1
+        structureDamageMultiplier: 1,
+        enemyDamageMultiplier: 1
       }
     ]
   },

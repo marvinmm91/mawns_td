@@ -176,7 +176,8 @@ PW.EnemySystem = {
     const by = PW.Utils.tileToWorld(building.y);
     if (PW.Utils.distance(enemy.x, enemy.y, bx, by) > rangePx) return false;
     if (enemy.attackCooldown <= 0) {
-      const damage = (def.wallDamage || def.damage) * damageMultiplier * PW.Development.factor("enemyDamageMultiplier");
+      const modeDamage = PW.GameModes.profile().enemyDamageMultiplier ?? 1;
+      const damage = (def.wallDamage || def.damage) * damageMultiplier * modeDamage * PW.Development.factor("enemyDamageMultiplier");
       PW.DamageVisuals.building(building, damage);
       enemy.attackCooldown = def.attackCooldown;
       if (PW.state.nightStats) PW.state.nightStats.wallDamage += damage;
@@ -220,7 +221,8 @@ PW.EnemySystem = {
     const range = (PW.state.ship.size * PW.state.world.tileSize) / 2 + 18;
     if (dist > range) return false;
     if (enemy.attackCooldown <= 0) {
-      const damage = Math.ceil(def.damage * (PW.state.ship.launchActive ? 0.35 : 1) * PW.Development.factor("enemyDamageMultiplier"));
+      const modeDamage = PW.GameModes.profile().enemyDamageMultiplier ?? 1;
+      const damage = Math.ceil(def.damage * (PW.state.ship.launchActive ? 0.35 : 1) * modeDamage * PW.Development.factor("enemyDamageMultiplier"));
       PW.DamageVisuals.ship(damage);
         if (PW.state.nightStats) {
           PW.state.nightStats.shipDamageTaken += damage;
