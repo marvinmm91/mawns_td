@@ -65,8 +65,8 @@ Object.assign(PW.UI, {
   renderDevelopment(body) {
     const state = PW.state;
     const controls = [
-      { id: "waveMultiplier", label: "Wellenmenge", hint: "Erhoeht oder senkt das gesamte Gegnerbudget jeder kommenden Nacht. Mehr Budget bedeutet mehr Gegner und groessere Gruppen." },
-      { id: "enemyHpMultiplier", label: "Gegnerleben", hint: "Multipliziert die Lebenspunkte aller neu gespawnten Gegner. Bereits vorhandene Gegner bleiben unveraendert." },
+      { id: "waveMultiplier", label: "Wellenmenge", hint: "Erhöht oder senkt das gesamte Gegnerbudget jeder kommenden Nacht. Mehr Budget bedeutet mehr Gegner und größere Gruppen." },
+      { id: "enemyHpMultiplier", label: "Gegnerleben", hint: "Multipliziert die Lebenspunkte aller neu gespawnten Gegner. Bereits vorhandene Gegner bleiben unverändert." },
       { id: "enemyDamageMultiplier", label: "Gegnerschaden", hint: "Multipliziert den Schaden, den Gegner am Wrack und an Bauwerken verursachen." },
       { id: "enemySpeedMultiplier", label: "Gegnertempo", hint: "Multipliziert die Bewegungsgeschwindigkeit aller neu gespawnten Gegner." }
     ];
@@ -89,7 +89,7 @@ Object.assign(PW.UI, {
         const button = document.createElement("button");
         button.type = "button";
         button.textContent = amount < 0 ? "-" : "+";
-        button.title = `${amount < 0 ? "Verringert" : "Erhoeht"} ${control.label} um 0,05.`;
+        button.title = `${amount < 0 ? "Verringert" : "Erhöht"} ${control.label} um 0,05.`;
         button.setAttribute("aria-label", button.title);
         button.addEventListener("click", () => {
           PW.Development.adjustFactor(control.id, amount);
@@ -121,8 +121,8 @@ Object.assign(PW.UI, {
     });
     const night = document.createElement("button");
     night.type = "button";
-    night.textContent = "Naechste Nacht starten";
-    night.title = "Beendet die aktuelle friedliche Phase und startet sofort die naechste normale Nachtwelle. Waerend einer aktiven Nacht ist der Knopf nicht verfuegbar.";
+    night.textContent = "Nächste Nacht starten";
+    night.title = "Beendet die aktuelle friedliche Phase und startet sofort die nächste normale Nachtwelle. Während einer aktiven Nacht ist der Knopf nicht verfügbar.";
     night.disabled = state.paused || state.gameOver || state.victory || state.ship.launchActive || state.phase.current === "night" || state.wave.active;
     night.addEventListener("click", () => {
       if (PW.Development.startNextNight()) this.renderDevelopment(body);
@@ -136,7 +136,7 @@ Object.assign(PW.UI, {
     const forecast = PW.Autobalance.forecastForNight(forecastNight);
     const gameMode = PW.GameModes.profile();
     body.innerHTML = "";
-    const phaseNames = { day: "Tag", dusk: "Daemmerung", night: state.ship.launchActive ? "Startsequenz" : "Nacht", dawn: "Morgen" };
+    const phaseNames = { day: "Tag", dusk: "Dämmerung", night: state.ship.launchActive ? "Startsequenz" : "Nacht", dawn: "Morgen" };
     const stats = document.createElement("div");
     stats.className = "stat-grid";
     stats.innerHTML = `
@@ -146,7 +146,7 @@ Object.assign(PW.UI, {
       <div class="stat-box"><span>Bauwerke</span><strong>${state.world.buildings.length}</strong></div>
       <div class="stat-box"><span>Truhen</span><strong>${(state.world.treasureChests || []).filter((chest) => !chest.opened).length}</strong></div>
       <div class="stat-box"><span>Horden</span><strong>${(state.world.monsterCamps || []).filter((camp) => !camp.cleared).length}</strong></div>
-      <div class="stat-box"><span>${state.wave.active ? "Restbudget" : "Naechste Welle"}</span><strong>${Math.ceil(state.wave.active ? state.wave.budgetRemaining : forecast.budget)}</strong></div>
+      <div class="stat-box"><span>${state.wave.active ? "Restbudget" : "Nächste Welle"}</span><strong>${Math.ceil(state.wave.active ? state.wave.budgetRemaining : forecast.budget)}</strong></div>
       <div class="stat-box"><span>Balance</span><strong>${Math.round(state.balance.drift * 100)}%</strong></div>
       <div class="stat-box"><span>Schwierigkeit</span><strong>${forecast.profile.shortName}</strong></div>
       <div class="stat-box"><span>Spielmodus</span><strong>${gameMode.shortName}</strong></div>
@@ -190,7 +190,7 @@ Object.assign(PW.UI, {
     });
     const actions = document.createElement("div");
     actions.className = "build-card";
-    actions.innerHTML = `<h3>Speicherstand</h3><div class="meta">F6 speichert, F9 laedt. Autosave laeuft alle ${PW.CONFIG.autosaveEvery} Sekunden.</div>`;
+    actions.innerHTML = `<h3>Speicherstand</h3><div class="meta">F6 speichert, F9 lädt. Autosave läuft alle ${PW.CONFIG.autosaveEvery} Sekunden.</div>`;
     const save = document.createElement("button");
     save.textContent = "Speichern";
     save.addEventListener("click", () => PW.Save.save(true));
@@ -233,8 +233,9 @@ Object.assign(PW.UI, {
       stateText.className = "meta";
       stateText.textContent = unlocked ? (affordable ? "Bereit." : "Material fehlt.") : "Noch nicht freigeschaltet.";
       card.append(titleRow, description, costs, stateText);
+      if (def.category === "tower") card.appendChild(this.towerStatsLine(def, 1));
       const button = document.createElement("button");
-      button.textContent = PW.state.selectedBuild === def.id ? "Ausgewaehlt" : "Auswaehlen";
+      button.textContent = PW.state.selectedBuild === def.id ? "Ausgewählt" : "Auswählen";
       button.disabled = !unlocked;
       button.addEventListener("click", () => {
         PW.state.selectedBuild = def.id;
@@ -251,7 +252,7 @@ Object.assign(PW.UI, {
     const state = PW.state;
     const card = document.createElement("div");
     card.className = "build-card";
-    card.innerHTML = "<h3>Blaupausen</h3><div class=\"meta\">Strg gedrueckt halten und ziehen: kostenfreie, nicht blockierende Bauvorhaben planen. Alt gedrueckt halten und ziehen: vorhandene Blaupausen entfernen.</div>";
+    card.innerHTML = "<h3>Blaupausen</h3><div class=\"meta\">Strg gedrückt halten und ziehen: kostenfreie, nicht blockierende Bauvorhaben planen. Alt gedrückt halten und ziehen: vorhandene Blaupausen entfernen.</div>";
     const blueprints = state.world.blueprints || [];
     const summary = document.createElement("div");
     summary.className = "meta";
@@ -289,13 +290,29 @@ Object.assign(PW.UI, {
     wrap.innerHTML = "<h3>Upgrades</h3><div class=\"meta\">Bauwerke können bis Stufe 3 verbessert werden.</div>";
     towers.slice(0, 16).forEach((building) => {
       const def = PW.BUILDINGS[building.type];
+      const row = document.createElement("div");
+      row.className = "upgrade-row";
       const button = document.createElement("button");
       button.textContent = `${def.name} (${building.x}/${building.y}) Stufe ${building.level}`;
       button.disabled = building.level >= 3 || !PW.Utils.canAfford(PW.BuildingSystem.upgradeCost(building));
       button.addEventListener("click", () => PW.BuildingSystem.upgrade(building.id));
-      wrap.appendChild(button);
+      row.appendChild(button);
+      if (def.category === "tower") {
+        const nextLevel = Math.min(3, building.level + 1);
+        row.appendChild(this.towerStatsLine(def, building.level, nextLevel === building.level ? null : nextLevel));
+      }
+      wrap.appendChild(row);
     });
     body.appendChild(wrap);
+  },
+  towerStatsLine(def, level, nextLevel = null) {
+    const format = (value) => Number(value).toLocaleString("de-DE", { maximumFractionDigits: 1 });
+    const stats = PW.Combat.towerStats(def, level);
+    const statText = (values) => `Schaden ${Math.round(values.damage)} | ${Math.round(values.rate * 60)} Schuss/min | ${format(values.damage * values.rate)} DPS`;
+    const line = document.createElement("div");
+    line.className = "tower-stats";
+    line.textContent = nextLevel ? `${statText(stats)} -> ${statText(PW.Combat.towerStats(def, nextLevel))}` : statText(stats);
+    return line;
   },
   renderShip(body) {
     const state = PW.state;
@@ -334,7 +351,7 @@ Object.assign(PW.UI, {
 
     const launch = document.createElement("div");
     launch.className = "build-card";
-    launch.innerHTML = `<h3>Startsequenz</h3><div class="meta">Alle Module, Nacht 10 und mindestens 70 Prozent Wrack-HP benoetigt.</div>`;
+    launch.innerHTML = `<h3>Startsequenz</h3><div class="meta">Alle Module, Nacht 10 und mindestens 70 Prozent Wrack-HP benötigt.</div>`;
     const launchButton = document.createElement("button");
     launchButton.textContent = "Startsequenz beginnen";
     launchButton.disabled = !PW.Progression.canStartLaunch();
@@ -473,15 +490,18 @@ Object.assign(PW.UI, {
     card.appendChild(this.infoLine("Position", `${building.x}/${building.y}`));
     card.appendChild(this.infoLine("Stufe", String(building.level)));
     if (def.category === "tower") {
+      const stats = PW.Combat.towerStats(def, building.level);
       card.appendChild(this.infoLine("Einsatz", def.description));
-      card.appendChild(this.infoLine("Schaden", `${Math.round(def.damage * (1 + (building.level - 1) * 0.35))}`));
-      card.appendChild(this.infoLine("Reichweite", `${def.range} Felder`));
+      card.appendChild(this.infoLine("Schaden", `${Math.round(stats.damage)}`));
+      card.appendChild(this.infoLine("Schussrate", `${Math.round(stats.rate * 60)} / min`));
+      card.appendChild(this.infoLine("DPS", Number(stats.damage * stats.rate).toLocaleString("de-DE", { maximumFractionDigits: 1 })));
+      card.appendChild(this.infoLine("Reichweite", `${stats.range.toFixed(1)} Felder`));
       card.appendChild(this.infoLine("Ziele", def.targets.includes("air") && def.targets.includes("ground") ? "Boden + Luft" : def.targets.includes("air") ? "Luft" : "Boden"));
       const priority = document.createElement("label");
       priority.className = "target-priority";
-      priority.append(document.createTextNode("Zielprioritaet"));
+      priority.append(document.createTextNode("Zielpriorität"));
       const select = document.createElement("select");
-      select.setAttribute("aria-label", "Zielprioritaet");
+      select.setAttribute("aria-label", "Zielpriorität");
       PW.Combat.targetPriorityOptions(building, def).forEach((option) => {
         const entry = document.createElement("option");
         entry.value = option.id;
@@ -591,7 +611,7 @@ Object.assign(PW.UI, {
     hp.textContent = `${Math.ceil(critter.hp)}/${critter.maxHp} HP`;
     titleRow.append(heading, hp);
     card.appendChild(titleRow);
-    card.appendChild(this.infoLine("Verhalten", "friedlich, flieht bei Naehe"));
+    card.appendChild(this.infoLine("Verhalten", "friedlich, flieht bei Nähe"));
     card.appendChild(this.infoLine("Hitbox", `${def.radius}px`));
     card.appendChild(this.infoLine("Belohnung", PW.WildlifeSystem.rewardText(def)));
     body.appendChild(card);
@@ -609,12 +629,12 @@ Object.assign(PW.UI, {
     PW.Icons.drawChest(preview.getContext("2d"), 0, 0, 32, chest.variant || 0);
     heading.append(preview, document.createTextNode("Schatztruhe"));
     const keys = document.createElement("strong");
-    keys.textContent = `${PW.state.inventory.key || 0} Schluessel`;
+    keys.textContent = `${PW.state.inventory.key || 0} Schlüssel`;
     titleRow.append(heading, keys);
     card.appendChild(titleRow);
     card.appendChild(this.infoLine("Inhalt", PW.Utils.costText(chest.rewards)));
     const button = document.createElement("button");
-    button.textContent = "Mit Schluessel oeffnen";
+    button.textContent = "Mit Schlüssel öffnen";
     button.disabled = (PW.state.inventory.key || 0) < 1;
     button.addEventListener("click", () => {
       PW.TreasureSystem.openChestAt(chest.x, chest.y);
@@ -643,11 +663,11 @@ Object.assign(PW.UI, {
     card.appendChild(titleRow);
     card.appendChild(this.infoLine("Position", `${camp.tileX}/${camp.tileY}`));
     card.appendChild(this.infoLine("Radius", `${Math.round((camp.aggroPx || 0) / PW.state.world.tileSize)} Felder`));
-    card.appendChild(this.infoLine("Schluessel", camp.keyDropped ? "fallen gelassen" : carriers ? "bei einem Gegner" : "keiner sichtbar"));
+    card.appendChild(this.infoLine("Schlüssel", camp.keyDropped ? "fallen gelassen" : carriers ? "bei einem Gegner" : "keiner sichtbar"));
     card.appendChild(this.infoLine("Gegner", Object.entries(types).map(([name, amount]) => `${amount}x ${name}`).join(", ") || "besiegt"));
     const hint = document.createElement("div");
     hint.className = "meta";
-    hint.textContent = "Baue Tuerme im roten Radius, um die Horde zu bekaempfen. Die Horde greift Bauwerke in ihrem Gebiet an.";
+    hint.textContent = "Baue Türme im roten Radius, um die Horde zu bekämpfen. Die Horde greift Bauwerke in ihrem Gebiet an.";
     card.appendChild(hint);
     body.appendChild(card);
   },
@@ -697,12 +717,12 @@ Object.assign(PW.UI, {
     const body = PW.state.dom.reportBody;
     body.innerHTML = "";
     [
-      `Nacht ${report.night} ueberstanden.`,
+      `Nacht ${report.night} überstanden.`,
       `Wrack: ${Math.ceil(report.hp)}/${report.maxHp} HP.`,
-      `Kills: ${report.kills}. Zerstoerte Mauern: ${report.wallsDestroyed}.`,
+      `Kills: ${report.kills}. Zerstörte Mauern: ${report.wallsDestroyed}.`,
       `Schwierigkeit: ${report.difficulty || PW.Autobalance.difficultyProfile().shortName}. Balance-Drift: ${Math.round(report.drift * 100)} Prozent. Drop-Hilfe: ${Math.round(report.dropBonus * 100)} Prozent.`,
       `Spielmodus: ${report.gameMode || PW.GameModes.profile().shortName}. Moduswellen: ${Math.round((report.modeWaveMultiplier || PW.GameModes.profile().waveMultiplier) * 100)} Prozent.`,
-      report.nextForecast ? `Naechste Nacht: ${report.nextForecast.description || report.nextForecast.label} Druck, Budget ${Math.ceil(report.nextForecast.budget)}.` : ""
+      report.nextForecast ? `Nächste Nacht: ${report.nextForecast.description || report.nextForecast.label} Druck, Budget ${Math.ceil(report.nextForecast.budget)}.` : ""
     ].concat(report.diagnosis).forEach((line) => {
       const row = document.createElement("div");
       row.className = "report-row";
@@ -722,11 +742,11 @@ Object.assign(PW.UI, {
     return Object.entries(cost).map(([id, amount]) => `${PW.RESOURCES[id] ? PW.RESOURCES[id].name : id} ${amount}`).join(", ");
   },
   helpDrops(def) {
-    return Object.entries(def.drops || {}).map(([id, values]) => {
-      const [chance, min, max] = values;
-      const amount = min === max ? String(min) : `${min}–${max}`;
-      return `${PW.RESOURCES[id] ? PW.RESOURCES[id].name : id} (${Math.round(chance * 100)} %, ${amount})`;
-    }).join(", ") || "Keine";
+    const profile = PW.DropSystem.lootProfileFor(def);
+    const [min, max] = profile.amounts;
+    const amount = min === max ? String(min) : `${min}–${max}`;
+    const chance = profile.chance < 1 ? ` (${Math.round(profile.chance * 100)} % Chance)` : "";
+    return `${amount} zufällige Rohstoffe${chance}; Schrott, Holz und Stein häufig, Gold sehr selten`;
   },
   helpTargetNames(targets) {
     return targets.map((target) => target === "air" ? "Luft" : "Boden").join(" + ");
@@ -889,15 +909,15 @@ Object.assign(PW.UI, {
       PW.state.player.speed = PW.CONFIG.playerSpeed * 3;
       PW.Messages.add("Cheat aktiviert: Deine Bewegungsgeschwindigkeit ist verdreifacht.", "ok");
     } else if (PW.state.phase.current === "night" || PW.state.ship.launchActive) {
-      PW.Messages.add("Hardassteel kann nicht waehrend einer laufenden Nacht aktiviert werden.", "danger");
+      PW.Messages.add("Hardassteel kann nicht während einer laufenden Nacht aktiviert werden.", "danger");
     } else {
       PW.DayNight.beginNight(false, 5);
-      PW.Messages.add("Hardassteel aktiviert: Sofortige Nacht mit fuenffachem Wellenbudget.", "danger");
+      PW.Messages.add("Hardassteel aktiviert: Sofortige Nacht mit fünffachem Wellenbudget.", "danger");
     }
     this.hideDialog();
   },
   confirmReset() {
-    this.showDialog("Neustart", "<p>Der aktuelle Speicherstand wird geloescht und die Partie startet neu.</p>", [
+    this.showDialog("Neustart", "<p>Der aktuelle Speicherstand wird gelöscht und die Partie startet neu.</p>", [
       { label: "Abbrechen", action: () => this.hideDialog() },
       { label: "Neustarten", action: () => PW.Save.reset() }
     ]);
@@ -905,7 +925,7 @@ Object.assign(PW.UI, {
   showEndDialog(won) {
     this.showDialog(won ? "Abgehoben" : "Wrack verloren", won ?
       "<p>Das Schiff hebt ab. Du hast den Planeten verlassen.</p>" :
-      "<p>Das Wrack wurde zerstoert. Die Verteidigung ist zusammengebrochen.</p>", [
+      "<p>Das Wrack wurde zerstört. Die Verteidigung ist zusammengebrochen.</p>", [
       { label: "Neue Partie", action: () => PW.Save.reset() }
     ]);
   },

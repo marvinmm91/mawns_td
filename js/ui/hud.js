@@ -11,7 +11,7 @@ Object.assign(PW.UI, {
     const hpRatio = PW.Utils.clamp(state.ship.hp / state.ship.maxHp, 0, 1);
     dom.shipHpFill.style.width = `${hpRatio * 100}%`;
     dom.shipHpFill.style.background = hpRatio < 0.3 ? "#e35d57" : hpRatio < 0.6 ? "#d7c951" : "linear-gradient(90deg, #5fc772, #d7c951)";
-    const phaseNames = { day: "Tag", dusk: "Daemmerung", night: state.ship.launchActive ? "Start" : "Nacht", dawn: "Morgen" };
+    const phaseNames = { day: "Tag", dusk: "Dämmerung", night: state.ship.launchActive ? "Start" : "Nacht", dawn: "Morgen" };
     dom.phaseName.textContent = phaseNames[state.phase.current];
     dom.phaseTimer.textContent = state.ship.launchActive ? PW.Utils.formatTime(state.ship.launchTimer) : state.phase.current === "night" ? "Welle aktiv" : PW.Utils.formatTime(state.phase.timer);
     dom.nightText.textContent = String(state.phase.night);

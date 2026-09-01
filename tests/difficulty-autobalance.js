@@ -64,7 +64,7 @@ const { pathToFileURL } = require("url");
   if (Math.abs(result.standardBudget - result.legacyBudget) > 0.000001) {
     throw new Error(`Standardbudget hat sich veraendert: ${JSON.stringify(result)}`);
   }
-  if (result.forecast.label !== "Planmaessig" || result.forecast.description !== "Planmaessiger") {
+  if (result.forecast.label !== "Planmäßig" || result.forecast.description !== "Planmäßiger") {
     throw new Error(`Bedrohungsprognose ist fehlerhaft: ${JSON.stringify(result.forecast)}`);
   }
   if (!result.loaded || result.loadedDifficulty !== "hard") throw new Error(`Schwierigkeit bleibt nicht gespeichert: ${JSON.stringify(result)}`);

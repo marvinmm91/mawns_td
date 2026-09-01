@@ -134,6 +134,8 @@ Werkzeuge:
 
 Es gibt kein Gewichtslimit. Ressourcen werden automatisch ins globale Inventar aufgenommen.
 
+Jeder besiegte Gegner kann Holz, Stein, Schrott, Eisen, Gold, Kristall oder Bauteile hinterlassen. Die Grundmenge richtet sich nach seinen Basis-HP: leichte Gegner geben 1-2 Einheiten, schwere 2-3 und Elitegegner 3-4. Schwarmkreaturen haben wegen ihrer Gruppengroesse nur eine reduzierte Drop-Chance. Schrott sowie Holz und Stein sind haeufig; Eisen ist ungewoehnlich, Bauteile und Kristall selten, Gold am seltensten. Schluessel bleiben ausschliesslich an Horden gebunden. Mehrfach gerollte gleiche Rohstoffe werden zu einem Pickup zusammengefasst.
+
 Die Wirtschaft bleibt dauerhaft spielbar: Baeume wachsen langsam auf freien Waldkacheln ausserhalb des Wrack-Sicherheitsbereichs nach. Waldhuepfer und Mooskaefer erscheinen bis zu ihrem Kartenmaximum erneut und liefern weiter Holz beziehungsweise Stein. Seltene Materialien bleiben ueber Truhen, Horden und seltene Drops spaeter Gegner erreichbar.
 
 ## 8. BAU UND VERTEIDIGUNG

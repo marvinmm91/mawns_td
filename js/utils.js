@@ -111,7 +111,7 @@ PW.Utils = {
     return tile * PW.CONFIG.tileSize + PW.CONFIG.tileSize / 2;
   },
   directionName(dir) {
-    const names = { n: "Norden", s: "Sueden", e: "Osten", w: "Westen", ne: "Nordost", nw: "Nordwest", se: "Suedost", sw: "Suedwest" };
+    const names = { n: "Norden", s: "Süden", e: "Osten", w: "Westen", ne: "Nordost", nw: "Nordwest", se: "Südost", sw: "Südwest" };
     return names[dir] || dir;
   },
   weightedPick(entries, rng) {

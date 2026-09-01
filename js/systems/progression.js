@@ -58,11 +58,11 @@ PW.Progression = {
       return;
     }
     if (mod.requiresKnown && !mod.requiresKnown.some((res) => state.knownResources.has(res))) {
-      PW.Messages.add(`${mod.name}: benoetigte Ressource noch unbekannt.`);
+      PW.Messages.add(`${mod.name}: benötigte Ressource noch unbekannt.`);
       return;
     }
     if (!PW.Utils.canAfford(mod.cost)) {
-      PW.Messages.add(`Zu wenig Material fuer ${mod.name}.`);
+      PW.Messages.add(`Zu wenig Material für ${mod.name}.`);
       return;
     }
     PW.Utils.pay(mod.cost);

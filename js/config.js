@@ -85,11 +85,11 @@ PW.CONFIG = Object.freeze({
     key: 0
   },
   tools: [
-    { id: "axe", key: "1", label: "Axt", hint: "Baeume" },
+    { id: "axe", key: "1", label: "Axt", hint: "Bäume" },
     { id: "pickaxe", key: "2", label: "Hacke", hint: "Stein/Erz" },
     { id: "repair", key: "3", label: "Reparatur", hint: "Wrack/Bauten" },
     { id: "build", key: "4", label: "Bauen", hint: "Bauplan" },
-    { id: "demolish", key: "5", label: "Abriss", hint: "Rueckbau" }
+    { id: "demolish", key: "5", label: "Abriss", hint: "Rückbau" }
   ],
   balance: {
     baseThreatBudget: 13,
@@ -143,7 +143,7 @@ PW.CONFIG = Object.freeze({
         id: "onslaught",
         name: "Stufe 5 - Ansturm",
         shortName: "Ansturm",
-        description: "Hoher Grunddruck fuer erfahrene Verteidigungsplaner.",
+        description: "Hoher Grunddruck für erfahrene Verteidigungsplaner.",
         threatMultiplier: 1.27,
         balance: { easyDamageRatio: 0.08, idealDamageMin: 0.12, idealDamageMax: 0.27, hardDamageRatio: 0.40, lowHpRatio: 0.29, maxPositiveDrift: 0.38, maxNegativeDrift: -0.22, maxNightBoost: 0.16, maxNightRelief: -0.12, maxDropBonus: 0.14 }
       }
@@ -167,7 +167,7 @@ PW.CONFIG = Object.freeze({
         id: "aggressive",
         name: "Aggressive",
         shortName: "Aggressiv",
-        description: "Direkte Wegverteidigungen werden aktiv angegriffen; Wellen sind dafuer etwas kleiner.",
+        description: "Direkte Wegverteidigungen werden aktiv angegriffen; Wellen sind dafür etwas kleiner.",
         structureTargeting: "direct-path",
         waveMultiplier: 0.92,
         structureDamageMultiplier: 1

@@ -13,8 +13,7 @@ PW.ENEMIES = Object.freeze({
     damage: 8,
     attackCooldown: 1.2,
     wallDamage: 12,
-    color: "#bd6654",
-    drops: { scrap: [0.35, 1, 2] }
+    color: "#bd6654"
   },
   swarm: {
     id: "swarm",
@@ -32,8 +31,7 @@ PW.ENEMIES = Object.freeze({
     wallDamage: 7,
     damageTaken: { catapult: 1.45, tesla: 1.1 },
     slowResistance: 0,
-    color: "#d08b51",
-    drops: { scrap: [0.22, 1, 1] }
+    color: "#d08b51"
   },
   armored: {
     id: "armored",
@@ -49,8 +47,7 @@ PW.ENEMIES = Object.freeze({
     wallDamage: 20,
     damageTaken: { ballista: 0.62, catapult: 0.86, tesla: 0.8, laser: 1.18 },
     slowResistance: 0.55,
-    color: "#8a5d68",
-    drops: { scrap: [1, 2, 4], parts: [0.08, 1, 1] }
+    color: "#8a5d68"
   },
   breaker: {
     id: "breaker",
@@ -66,8 +63,7 @@ PW.ENEMIES = Object.freeze({
     wallDamage: 46,
     damageTaken: { ballista: 0.9, catapult: 0.88, tesla: 0.85, laser: 1.05 },
     slowResistance: 0.35,
-    color: "#9e493e",
-    drops: { scrap: [1, 3, 5], parts: [0.14, 1, 1] }
+    color: "#9e493e"
   },
   drone: {
     id: "drone",
@@ -81,8 +77,7 @@ PW.ENEMIES = Object.freeze({
     damage: 11,
     attackCooldown: 1.15,
     damageTaken: { flak: 1.35, laser: 0.9 },
-    color: "#7d83d6",
-    drops: { scrap: [0.55, 1, 2], iron: [0.08, 1, 1] }
+    color: "#7d83d6"
   },
   bomber: {
     id: "bomber",
@@ -96,8 +91,7 @@ PW.ENEMIES = Object.freeze({
     damage: 28,
     attackCooldown: 1.8,
     damageTaken: { flak: 0.9, laser: 1.15 },
-    color: "#6157b8",
-    drops: { scrap: [1, 2, 4], iron: [0.22, 1, 2], parts: [0.18, 1, 1] }
+    color: "#6157b8"
   },
   disruptor: {
     id: "disruptor",
@@ -113,8 +107,7 @@ PW.ENEMIES = Object.freeze({
     aura: 4.2,
     slowTowers: 0.45,
     damageTaken: { flak: 1.15, laser: 1.05 },
-    color: "#a267c7",
-    drops: { scrap: [1, 2, 4], crystal: [0.16, 1, 1], parts: [0.28, 1, 1] }
+    color: "#a267c7"
   },
   guardian: {
     id: "guardian",
@@ -130,7 +123,6 @@ PW.ENEMIES = Object.freeze({
     wallDamage: 36,
     damageTaken: { ballista: 0.68, catapult: 0.9, tesla: 0.8, laser: 1.2 },
     slowResistance: 0.6,
-    color: "#7a5a2e",
-    drops: { scrap: [1, 5, 8], iron: [0.55, 1, 3], gold: [0.1, 1, 1], crystal: [0.1, 1, 1], parts: [0.75, 1, 2] }
+    color: "#7a5a2e"
   }
 });

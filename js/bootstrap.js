@@ -103,7 +103,7 @@ PW.Bootstrap = {
       PW.Messages.add("Tag 1: Sammle Holz und Stein, baue Palisaden und Ballisten.", "ok");
     } });
     PW.UI.showDialog("Planet-Wrack", `
-      <p>Beschuetze das Wrack in der Kartenmitte, sammle Ressourcen, baue Verteidigung und repariere alle Schiffsmodule.</p>
+      <p>Beschütze das Wrack in der Kartenmitte, sammle Ressourcen, baue Verteidigung und repariere alle Schiffsmodule.</p>
       <p>Die Gegner greifen nachts das Wrack an. Du selbst wirst ignoriert, aber jede Sekunde ausserhalb der Basis fehlt beim Reparieren.</p>
       ${fromReload && hasSave ? "<p>Das Spiel wurde nach dem Aktualisieren gesichert. Du kannst fortsetzen oder neu starten.</p>" : ""}
       <section class="mode-picker${hasSave ? " mode-picker-readonly" : ""}" aria-labelledby="modeTitle">
@@ -120,7 +120,7 @@ PW.Bootstrap = {
           ${PW.CONFIG.difficulty.profiles.map((profile) => `<button type="button" class="difficulty-option" data-difficulty="${profile.id}" role="radio" aria-checked="${profile.id === dialogDifficulty}"${hasSave ? " disabled" : ""}><strong>${profile.name}</strong><span>${profile.description}</span></button>`).join("")}
         </div>
       </section>
-      <p>Steuerung: WASD/Pfeiltasten, Space fuer Aktion, E Inventar, R Wrack, P Pause.</p>
+      <p>Steuerung: WASD/Pfeiltasten, Space für Aktion, E Inventar, R Wrack, P Pause.</p>
       <section class="start-changelog" aria-labelledby="beta2ChangelogTitle">
         <h3 id="beta2ChangelogTitle">Beta 2 – Änderungen seit Beta 1</h3>
         <div class="start-changelog-scroll">

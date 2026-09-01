@@ -35,7 +35,7 @@ PW.Development = {
     const state = PW.state;
     if (state.paused || state.gameOver || state.victory || state.ship.launchActive || state.phase.current === "night" || state.wave.active) return false;
     PW.DayNight.beginNight();
-    PW.Messages.add("Entwicklungsmodus: Die naechste Nacht beginnt.", "danger");
+    PW.Messages.add("Entwicklungsmodus: Die nächste Nacht beginnt.", "danger");
     return true;
   }
 };

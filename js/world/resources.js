@@ -97,10 +97,10 @@ PW.ResourceSystem = {
     const dx = x - cx;
     const dy = y - cy;
     if (Math.abs(dx) > Math.abs(dy) * 1.6) return dx > 0 ? "Osten" : "Westen";
-    if (Math.abs(dy) > Math.abs(dx) * 1.6) return dy > 0 ? "Sueden" : "Norden";
-    if (dx > 0 && dy > 0) return "Suedost";
+    if (Math.abs(dy) > Math.abs(dx) * 1.6) return dy > 0 ? "Süden" : "Norden";
+    if (dx > 0 && dy > 0) return "Südost";
     if (dx > 0 && dy < 0) return "Nordost";
-    if (dx < 0 && dy > 0) return "Suedwest";
+    if (dx < 0 && dy > 0) return "Südwest";
     return "Nordwest";
   }
 };

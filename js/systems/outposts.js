@@ -117,7 +117,7 @@ PW.OutpostSystem = {
         PW.Utils.addEffect("outpostAlert", PW.Utils.tileToWorld(outpost.x), PW.Utils.tileToWorld(outpost.y), "#e35d57", 0.7, 1.5);
         PW.Messages.add("Sicherheitsbake aktiviert. Die Wachgruppe verteidigt das Gebiet.", "danger");
       } else {
-        PW.Messages.add("Sicherheitsbake aktiv: Besiege die Wachgruppe mit lokalen Tuerme.");
+        PW.Messages.add("Sicherheitsbake aktiv: Besiege die Wachgruppe mit lokalen Türme.");
       }
       PW.UI.renderPanel();
       return true;

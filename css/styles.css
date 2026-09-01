@@ -1044,6 +1044,21 @@ button:disabled {
   line-height: 1.38;
 }
 
+.tower-stats {
+  color: #8d968c;
+  font-size: 12px;
+  line-height: 1.35;
+  margin-top: 7px;
+}
+
+.upgrade-row + .upgrade-row {
+  margin-top: 8px;
+}
+
+.upgrade-row .tower-stats {
+  margin: 4px 2px 0;
+}
+
 .costs {
   display: flex;
   flex-wrap: wrap;

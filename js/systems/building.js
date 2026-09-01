@@ -9,16 +9,16 @@ PW.BuildingSystem = {
     const def = PW.BUILDINGS[type];
     if (!def) return false;
     if (!PW.GameModes.allowsBuilding(type)) {
-      PW.Messages.add(`${def.name} ist im Classic Mode nicht verfuegbar.`);
+      PW.Messages.add(`${def.name} ist im Classic Mode nicht verfügbar.`);
       return false;
     }
     if (!state.unlockedBuildings.has(type)) {
-      PW.Messages.add(`${def.name} ist noch nicht verfuegbar.`);
+      PW.Messages.add(`${def.name} ist noch nicht verfügbar.`);
       return false;
     }
     const placement = this.placementStatus(type, x, y);
     if (!placement.ok) {
-      PW.Messages.add(placement.reason === "route" ? "Dieser Bau wuerde den letzten Weg zum Wrack versperren." : "Hier kann nicht gebaut werden.");
+      PW.Messages.add(placement.reason === "route" ? "Dieser Bau würde den letzten Weg zum Wrack versperren." : "Hier kann nicht gebaut werden.");
       return false;
     }
     if (!PW.Utils.canAfford(def.cost)) {
