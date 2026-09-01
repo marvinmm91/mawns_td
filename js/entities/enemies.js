@@ -12,7 +12,7 @@ PW.EnemySystem = {
       y,
       hp: Math.round(def.hp * hpScale),
       maxHp: Math.round(def.hp * hpScale),
-      speed: def.speed * (1 + Math.max(0, night - 1) * 0.012) * PW.Development.factor("enemySpeedMultiplier"),
+      speed: def.speed * (1 + Math.max(0, night - 1) * 0.012) * PW.Development.factor("enemySpeedMultiplier") * PW.state.rng.float(1, 1.1),
       attackCooldown: PW.state.rng.float(0, def.attackCooldown),
       slowTimer: 0,
       slowFactor: 1,
