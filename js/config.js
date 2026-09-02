@@ -15,7 +15,8 @@ PW.CONFIG = Object.freeze({
   shipMaxHp: 500,
   baseSafeRadius: 14,
   playerSpeed: 132,
-  actionRepeatInterval: 0.16,
+  actionRepeatInterval: 0.8,
+  blueprintBatchCostMultiplier: 1.2,
   playerInteractRange: 1,
   dropPickupRadius: 30,
   dropMagnetRadius: 72,
@@ -92,7 +93,7 @@ PW.CONFIG = Object.freeze({
   tools: [
     { id: "axe", key: "1", label: "Axt", hint: "Bäume" },
     { id: "pickaxe", key: "2", label: "Hacke", hint: "Stein/Erz" },
-    { id: "repair", key: "3", label: "Reparatur", hint: "Wrack/Bauten" },
+    { id: "repair", key: "3", label: "Reparatur", hint: "Reparatur/Upgrade" },
     { id: "build", key: "4", label: "Bauen", hint: "Bauplan" },
     { id: "demolish", key: "5", label: "Abriss", hint: "Rückbau" }
   ],

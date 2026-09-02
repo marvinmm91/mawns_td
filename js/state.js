@@ -35,9 +35,7 @@ PW.createInitialState = function createInitialState() {
     input: {
       keys: new Set(),
       pressed: new Set(),
-      blueprintPainting: false,
-      blueprintPaintTile: null,
-      blueprintPaintAction: null
+      mouseActionHeld: false
     },
     mouse: {
       x: 0,
@@ -85,7 +83,8 @@ PW.createInitialState = function createInitialState() {
       dirY: -1,
       speed: cfg.playerSpeed,
       actionCooldown: 0,
-      selectedTool: "axe"
+      selectedTool: "axe",
+      buildMode: "build"
     },
     ship: {
       x: Math.floor(cfg.mapWidth / 2) - Math.floor(cfg.shipSize / 2),
@@ -112,6 +111,7 @@ PW.createInitialState = function createInitialState() {
     knownResources: new Set(["wood", "stone"]),
     unlockedBuildings: new Set(["palisade", "ballista", "catapult", "flak", "tesla", "laser"]),
     selectedBuild: "palisade",
+    toolFeedback: { id: null, buildType: null, until: 0 },
     enemies: [],
     projectiles: [],
     drops: [],
@@ -130,6 +130,7 @@ PW.createInitialState = function createInitialState() {
     },
     effects: [],
     messages: [],
+    lastTooltipId: null,
     panel: "status",
     inspectedTile: null,
     hoveredUpgradeBuildingId: null,

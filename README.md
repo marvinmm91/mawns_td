@@ -27,11 +27,13 @@ Das Wrack muss repariert und bis zum Start verteidigt werden. Verliert es alle S
 
 - WASD oder Pfeiltasten: Bewegung.
 - Space: Aktion auf der Kachel vor dem Spieler.
-- Linksklick: Im Baumodus direkt auf die Maus-Kachel bauen, sonst Kachel/Bauwerk/Ressource rechts inspizieren.
-- Strg + Linksklick/Ziehen im Baumodus: Blaupausen setzen.
-- Alt + Linksklick/Ziehen im Baumodus: Blaupausen entfernen.
+- Linksklick auf freies Gelände: Aktion auf der Kachel vor dem Spieler; Bauwerke, Ressourcen und andere Weltobjekte öffnen ihre Statusseite.
+- 4: Bauen aktivieren; erneutes Drücken wechselt den Bauplan.
+- Strg im Baumodus: dauerhaft zwischen Bauen und Blaupausen wechseln. Ein Tipp auf Alt entfernt im Blaupausenmodus die Blaupause vor dem Spieler.
+- Sammelbau im Baumenü: errichtet alle Blaupausen gemeinsam für 20 Prozent Mehrkosten.
+- Mausrad über dem Spielfeld: Werkzeug wechseln.
 - Rechtsklick: Baumodus verlassen.
-- 1-5: Werkzeug wechseln.
+- 1-5: Werkzeug wechseln. Werkzeug 3 repariert und verbessert vollständig reparierte Bauwerke.
 - E: Inventar.
 - R: Wrackmenue.
 - Entwicklung: Globale Testfaktoren, Nachtstart und Simulationsgeschwindigkeit.

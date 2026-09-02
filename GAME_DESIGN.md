@@ -36,7 +36,7 @@ Dieses Dokument ist die zentrale und verbindliche Designbeschreibung von Planet-
 - Der Spieler erkundet und deckt neue Kacheln auf.
 - Ressourcen werden mit Axt oder Spitzhacke abgebaut.
 - Der Ertrag eines Ressourcenknotens wird ohne Mengenbonus auf seine Abbautreffer verteilt; der Rest kommt beim letzten Treffer.
-- Mauern, Tuerme und Bruecken werden gebaut.
+- Mauern, Tuerme und Bruecken werden gebaut. Blaupausen können einzeln zum Normalpreis oder gesammelt mit 20 Prozent Mehrkosten errichtet werden.
 - Das Wrack und beschaedigte Bauwerke werden repariert.
 - Truhen und Monsterhorden koennen gezielt aufgesucht werden.
 - Hinweise auf seltene Ressourcen und kommende Gefahren helfen bei der Planung.
@@ -110,14 +110,16 @@ Gegner duerfen aus unbekannten Bereichen kommen. Fog of War begrenzt Information
 - Bewegung: WASD oder Pfeiltasten.
 - Aktion: Leertaste mit der Kachel vor dem Spieler.
 - Der Spieler kollidiert mit Terrain, Ressourcen, Wrack und Bauwerken, aber nicht mit Gegnern.
-- Linksklick inspiziert eine Kachel oder baut im Baumodus direkt. Strg + Linksklick bzw. Ziehen setzt Blaupausen; Alt + Linksklick bzw. Ziehen entfernt sie.
+- Linksklick auf freies Gelände wirkt wie die Aktion auf der Kachel vor dem Spieler; Bauwerke und andere Weltobjekte bleiben direkt inspizierbar.
+- Taste 4 aktiviert das Bauwerkzeug und wechselt bei erneutem Drücken den Bauplan. Strg schaltet dauerhaft zwischen Bauen und Blaupausen; ein Tipp auf Alt entfernt nur im Blaupausenmodus die Blaupause vor dem Spieler.
+- Das Mausrad wechselt Werkzeuge; ein kurzer Symbolhinweis bestätigt jeden Wechsel.
 - Rechtsklick beendet den Baumodus.
 
 Werkzeuge:
 
 - Axt: Baeume abbauen.
 - Spitzhacke: Felsen und Erze abbauen.
-- Reparaturset: Wrack und Bauwerke reparieren.
+- Reparaturset: Wrack und Bauwerke reparieren; bei vollständig reparierten Bauwerken löst ein weiterer Einsatz das Upgrade aus.
 - Bauwerkzeug: Bauwerke platzieren.
 - Abrisswerkzeug: Bauwerke entfernen und teilweise Material zurueckerstatten.
 
@@ -142,7 +144,7 @@ Die Wirtschaft bleibt dauerhaft spielbar: Baeume wachsen langsam auf freien Wald
 
 ## 8. BAU UND VERTEIDIGUNG
 
-Alle Bauwerke stehen auf einzelnen Gitterkacheln. Bau ist nicht auf Wrack, Ressourcen, Truhen, Monsterlager oder blockiertem Terrain moeglich. Blaupausen werden mit gedrueckter Strg-Taste gesetzt, erlauben Bauwerke und Bauwerkslinien ohne Materialkosten vorzumerken, blockieren keine Bewegung und koennen spaeter einzeln oder gesammelt errichtet werden. Alt entfernt sie wieder direkt auf der Karte.
+Alle Bauwerke stehen auf einzelnen Gitterkacheln. Bau ist nicht auf Wrack, Ressourcen, Truhen, Monsterlager oder blockiertem Terrain moeglich. Die halbtransparente Vorschau schwebt immer auf der Kachel vor dem Spieler. Im dauerhaft umschaltbaren Blaupausenmodus lassen sich kostenfreie, nicht blockierende Bauvorhaben einzeln vormerken; sie werden später mit dem Bauwerkzeug an ihrer Position errichtet. Ein Tipp auf Alt entfernt sie dort wieder.
 
 Direktes Feedback: Getroffene Gegner zeigen gebuendelte Schadenszahlen an ihrer Position. Beim Einsammeln erscheinen Ressourcenmengen an ihrer Quelle, statt die allgemeine Hinweisanzeige mit Standardgewinnen zu fuellen.
 
@@ -176,7 +178,7 @@ Alle Tuerme sind von Beginn an sichtbar und auswaehlbar. Ihre Ressourcen- und Ba
 - Krabbler: Standarddruck; Ballisten halten einzelne Ziele am billigsten auf.
 - Schwarm: erscheint immer als schwaches Paket aus 5 bis 7 Einheiten; Katapult-AoE und Tesla-Slow sind die passenden Antworten.
 - Panzereinheit: langsam, viele HP und resistent gegen Ballisten; Laser sind der klare Fernkonter.
-- Brecher: schnell genug, um Mauern zu bedrohen, und verursacht besonders hohen Blockadenschaden; Ballisten mit Brecher-Prioritaet sind effizient.
+- Brecher: schnell genug, um Mauern zu bedrohen, und verursacht besonders hohen Blockadenschaden; Ballisten profitieren von gezielter Platzierung und passender allgemeiner Zielpriorität.
 - Nesthueter: schweres stationaeres Ziel mit wertvoller Beute; Laser und eine vorbereitete Mauerlinie sind entscheidend.
 
 ### Luft

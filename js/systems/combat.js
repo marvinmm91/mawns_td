@@ -2,12 +2,10 @@
 
 PW.Combat = {
   targetPriorityDefinitions: Object.freeze({
-    ship: { label: "Wracknah" },
-    nearest: { label: "Nächster" },
+    ship: { label: "Wracknähe" },
     last: { label: "Letzter" },
     strongest: { label: "Stärkster" },
-    breaker: { label: "Brecher zuerst" },
-    air: { label: "Luft zuerst" }
+    weakest: { label: "Schwächster" }
   }),
   update(dt) {
     const state = PW.state;
@@ -42,9 +40,7 @@ PW.Combat = {
     };
   },
   targetPriorityOptions(building, def) {
-    const options = ["ship", "nearest", "last", "strongest", "breaker"];
-    if (def.targets.includes("ground") && def.targets.includes("air")) options.push("air");
-    return options.map((id) => ({ id, ...this.targetPriorityDefinitions[id] }));
+    return ["ship", "last", "strongest", "weakest"].map((id) => ({ id, ...this.targetPriorityDefinitions[id] }));
   },
   targetPriority(building, def) {
     const options = this.targetPriorityOptions(building, def);
@@ -54,22 +50,11 @@ PW.Combat = {
     const priority = this.targetPriority(building, def);
     return this.targetPriorityDefinitions[priority].label;
   },
-  preferredCandidates(candidates, priority) {
-    if (priority === "air") {
-      const airTargets = candidates.filter((enemy) => PW.ENEMIES[enemy.type].moveType === "air");
-      return airTargets.length ? airTargets : candidates;
-    }
-    if (priority === "breaker") {
-      const breakers = candidates.filter((enemy) => enemy.type === "breaker");
-      return breakers.length ? breakers : candidates;
-    }
-    return candidates;
-  },
   targetScore(enemy, origin, ship, priority) {
     const dist = PW.Utils.distance(origin.x, origin.y, enemy.x, enemy.y);
-    if (priority === "nearest") return dist;
-    if (priority === "last") return -PW.Utils.distance(enemy.x, enemy.y, ship.x, ship.y) + dist * 0.05;
+    if (priority === "last") return -dist;
     if (priority === "strongest") return -(enemy.maxHp || enemy.hp) * 1000 + dist;
+    if (priority === "weakest") return enemy.hp * 1000 + dist;
     return PW.Utils.distance(enemy.x, enemy.y, ship.x, ship.y) + dist * 0.05;
   },
   findTarget(building, def) {
@@ -84,10 +69,9 @@ PW.Combat = {
       if (scaled.targets.includes(enemyDef.moveType)) candidates.push(enemy);
     }
     const priority = this.targetPriority(building, def);
-    const preferred = this.preferredCandidates(candidates, priority);
     let best = null;
     let bestScore = Infinity;
-    for (const enemy of preferred) {
+    for (const enemy of candidates) {
       const score = this.targetScore(enemy, origin, ship, priority);
       if (score < bestScore) {
         best = enemy;

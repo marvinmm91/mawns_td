@@ -1,0 +1,33 @@
+"use strict";
+
+PW.TOOLTIPS = Object.freeze([
+  { id: "free-click", text: "Freies Gelände anklicken: Aktion vor der Figur." },
+  { id: "same-rhythm", text: "Leertaste und Maus folgen demselben Aktionsrhythmus." },
+  { id: "build-cycle", text: "Taste 4 erneut: nächsten Bauplan wählen." },
+  { id: "blueprints", text: "Strg wechselt dauerhaft zu Blaupausen." },
+  { id: "remove-blueprints", text: "Ein Tipp auf Alt entfernt eine Blaupause." },
+  { id: "wheel", text: "Das Mausrad wechselt Werkzeuge." },
+  { id: "tower-status", text: "Klicke auf Türme für ihre Statuswerte." },
+  { id: "repair-upgrade", text: "Werkzeug 3 repariert und verbessert Bauwerke." },
+  { id: "repair-first", text: "Erst reparieren, dann verbessern." },
+  { id: "palisades", text: "Palisaden kaufen Zeit für deine Türme." },
+  { id: "catapult", text: "Katapulte lieben dichte Schwärme." },
+  { id: "tesla", text: "Tesla-Felder bremsen schnelle Bodenfeinde." },
+  { id: "flak", text: "Flak trifft nur Luftziele." },
+  { id: "laser", text: "Laser sind teuer, aber vielseitig." },
+  { id: "lanes", text: "Baue Türme in Feuerlinien, nicht in Sackgassen." },
+  { id: "blueprint-cost", text: "Blaupausen kosten erst beim Errichten Material." },
+  { id: "blueprint-batch-cost", text: "Sammelbau für Blaupausen kostet 20 % mehr Material." },
+  { id: "priority-ship", text: "Wracknähe schützt vor Durchbrüchen." },
+  { id: "priority-last", text: "Letzter verlängert die Feuerzeit entlang einer Lane." },
+  { id: "priority-strong", text: "Stärkster fokussiert robuste Gegner." },
+  { id: "priority-weak", text: "Schwächster räumt angeschlagene Ziele schnell weg." },
+  { id: "persistent-enemies", text: "Nachtgegner bleiben aktiv, bis sie fallen." },
+  { id: "swarm", text: "Schwärme kommen mindestens zu fünft." },
+  { id: "air", text: "Fliegende Gegner ignorieren Palisaden." },
+  { id: "scrap", text: "Schrott ist für fortgeschrittene Türme wertvoll." },
+  { id: "keys", text: "Schlüssel öffnen jede beliebige Schatztruhe." },
+  { id: "hordes", text: "Horden bewachen oft einen Schlüssel." },
+  { id: "fords", text: "Furten sind natürliche Übergänge für Bodengegner." },
+  { id: "classic", text: "Im Classic Mode brechen Gegner geschlossene Wege auf." }
+]);

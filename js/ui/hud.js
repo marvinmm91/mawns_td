@@ -16,7 +16,7 @@ Object.assign(PW.UI, {
     dom.phaseTimer.textContent = state.ship.launchActive ? PW.Utils.formatTime(state.ship.launchTimer) : state.phase.current === "night" ? "Welle aktiv" : PW.Utils.formatTime(state.phase.timer);
     dom.nightText.textContent = String(state.phase.night);
     dom.moduleText.textContent = `${PW.Progression.repairedModuleCount()}/${Object.keys(PW.SHIP_MODULES).length}`;
-    const toolKey = state.player.selectedTool;
+    const toolKey = `${state.player.selectedTool}:${state.player.buildMode}`;
     const resourceKey = Object.values(PW.RESOURCES).map((res) => `${res.id}:${state.inventory[res.id] || 0}`).join("|");
     this._hudCache = this._hudCache || {};
     if (this._hudCache.toolKey !== toolKey) {
@@ -43,15 +43,15 @@ Object.assign(PW.UI, {
       label.textContent = tool.label;
       const hint = document.createElement("span");
       hint.className = "tool-hint";
-      hint.textContent = tool.hint;
+      hint.textContent = tool.id === "build" && PW.state.player.buildMode === "blueprint" ? "Blaupause" : tool.hint;
       button.append(key, PW.Icons.toolCanvas(tool.id), label, hint);
-      button.addEventListener("click", () => {
-        PW.state.player.selectedTool = tool.id;
-        if (tool.id === "build") this.togglePanel("build", true);
-        this.renderHud();
-      });
+      button.title = tool.id === "build" ? `Taste 4: ${PW.BUILDINGS[PW.state.selectedBuild]?.name || "Bauen"}; Strg: ${PW.state.player.buildMode === "blueprint" ? "Baumodus" : "Blaupausenmodus"}.` : `${tool.label}: ${tool.hint}.`;
+      button.addEventListener("click", () => PW.Input.selectTool(tool.id));
       bar.appendChild(button);
     });
+  },
+  showToolFeedback(id, buildType = null) {
+    PW.state.toolFeedback = { id, buildType, until: performance.now() + 600 };
   },
   renderResources() {
     const bar = PW.state.dom.resourceBar;

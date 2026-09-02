@@ -22,7 +22,7 @@ Die UI-Dateien sind inzwischen konsolidiert: Bau-, Inventar-, Wrack-, Kontext- u
 - `js/state.js`: Zentraler Spielzustand, Laufzeitlisten, Inputstatus, Kamera, Timer, Inventar, Schwierigkeitsprofil, Spielmodus und Wrackdaten.
 - `js/bootstrap.js`: Initialisierung, Event Listener, Start des Game Loops.
 - `js/gameLoop.js`: Feste Update-Reihenfolge, Delta-Time-Begrenzung, Pause/Resume, zentraler Renderaufruf und schaltbare Laufzeitmessung.
-- `js/input.js`: Tastaturstatus, Hotkeys, DPI-skalierte Mausposition, Mausbau, temporaere Blaupausen-/Loeschmodi, Kachel-Inspektion und Panel-Toggles.
+- `js/input.js`: Tastaturstatus, Hotkeys, DPI-skalierte Mausposition, Nahbereichsaktionen per Maus, Bauplan-/Werkzeugwechsel, dauerhaft umschaltbare Blaupausen, Kachel-Inspektion und Panel-Toggles.
 - `js/camera.js`: Kamera folgt Spieler, Welt-zu-Screen-Umrechnung, sichtbarer Bereich.
 - `js/random.js`: Seedbarer Zufall fuer Map und Wellen.
 - `js/utils.js`: Kosten, Inventar, Formatierung, Distanzrechnung, priorisierte und begrenzte Effekte, gebuendelte Floating-Texte und kleine Helfer.
@@ -34,6 +34,7 @@ Die UI-Dateien sind inzwischen konsolidiert: Bau-, Inventar-, Wrack-, Kontext- u
 - `js/data/enemies.js`: Gegnertypen, Rollen, Konterhinweise, HP, Tempo, Schadens-/Slow-Profile, Zielverhalten und Drops.
 - `js/data/wildlife.js`: Dekorative Voegel und passive Waldbewohner mit HP, Verhalten und Belohnungen.
 - `js/data/waves.js`: Feste Begegnungsskripte fuer die ersten zehn Naechte sowie wiederkehrende Invasionsdoktrinen mit Rollen-, Richtungs- und Budgetskalierung.
+- `js/data/tooltips.js`: Kurze, nicht spielrelevante Hilfetexte für zufällige Morgenberichte.
 - `js/data/shipModules.js`: Reparaturmodule, Kosten, Freischaltungen, Siegfortschritt.
 
 ## Welt und Karte
@@ -53,9 +54,9 @@ Die UI-Dateien sind inzwischen konsolidiert: Bau-, Inventar-, Wrack-, Kontext- u
 - `js/systems/development.js`: Entwicklungsfaktoren fuer Wellen, Gegnerwerte und Simulationsgeschwindigkeit sowie manueller Nachtstart.
 - `js/systems/gameModes.js`: Aufloesung und Validierung der zentralen Spielmodusprofile.
 - `js/systems/damageVisuals.js`: Zentraler Treffereffekt und kurzzeitige Schadensblitze fuer Wrack und Bauwerke.
-- `js/systems/building.js`: Bauplatzpruefung, Platzieren, Blaupausen, Reparieren, Abreissen, Kosten.
+- `js/systems/building.js`: Bauplatzpruefung, Platzieren, Blaupausen mit Einzelbau oder atomarem Sammelbau (20 Prozent Aufschlag), Reparieren, werkzeuggebundene Upgrades, Abreissen und Kosten.
 - `js/systems/pathfinding.js`: Normales Grid-Pfadfeld sowie strukturdurchlaessiges Direktfeld fuer Bodengegner, Blockaden und Direktziele. Die Laufzeitfelder werden nur nach relevanten Weltveraenderungen berechnet; Classic nutzt bei vollständigen Sperren das Durchbruchziel.
-- `js/systems/combat.js`: Turmzielwahl mit Prioritaeten einschließlich wrackfernstem Ziel, Schaden, AoE, Slow, Luft-/Bodenfilter.
+- `js/systems/combat.js`: Turmzielwahl mit Prioritaeten für Wracknähe, Letzten, Stärksten und Schwächsten, Schaden, AoE, Slow und Luft-/Bodenfilter.
 - `js/systems/spawning.js`: Nachtspawns, modus- und skriptgewichtete Wellenbudgets, garantierte Schwerpunktgegner, Schwarmformationen, Spawnpunkte, Sicherheitsradius und Warnrichtungen.
 - `js/systems/drops.js`: Gegnerdrops, Einsammeln, Drop-Verfall optional.
 - `js/systems/treasure.js`: Schatztruhen, stationaere Monsterhorden, Schluesseldrops und Truhenbelohnungen.
@@ -72,7 +73,7 @@ Die zusammengefasste Modusregression liegt in `tests/defense-modes-regression.js
 
 - `js/ui/hud.js`: Wrack-HP, Timer, Nachtzaehler, Modulfortschritt, Werkzeugleiste und Ressourcen-Kurzliste.
 - `js/ui/icons.js`: Canvas-Icons fuer Ressourcen, Werkzeuge, Kostenchips, Bauvorschau und Bauwerksdarstellung.
-- `js/ui/panels.js`: Status-, Inventar-, Bau-, Upgrade-, Wrack-, Entwicklungs-, Kontext- und Dialogansichten einschliesslich Zielprioritaeten, Morgenbericht und Hilfe.
+- `js/ui/panels.js`: Status-, Inventar-, Bau-, Wrack-, Entwicklungs-, Kontext- und Dialogansichten einschließlich der reinen Bauwerksstatusansichten, Zielprioritäten, Morgenbericht mit Zufallstipp und Hilfe.
 - `js/ui/designPanel.js`: Vereinfachter Pixel-Editor fuer manuelle Designs, Reset, Import und Export.
 - `js/ui/tacticalMap.js`: Live-Karte mit erkundetem Terrain, Spieler, Wrack, Nadeln und Gegnerpunkten; oeffnen und schliessen mit M.
 - `js/ui/messages.js`: Kurze Hinweise, Nachtwarnung, Fehlertexte.

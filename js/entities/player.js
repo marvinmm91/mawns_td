@@ -22,11 +22,8 @@ PW.Player = {
     }
 
     const actionPressed = PW.Input.consume(" ");
-    const actionHeld = PW.Input.isDown(" ");
-    if ((actionPressed || actionHeld) && player.actionCooldown <= 0) {
-      player.actionCooldown = PW.CONFIG.actionRepeatInterval;
-      this.interact();
-    }
+    const actionHeld = PW.Input.isDown(" ") || state.input.mouseActionHeld;
+    if (actionPressed || actionHeld) this.tryInteract();
   },
   move(dx, dy) {
     const state = PW.state;
@@ -62,6 +59,13 @@ PW.Player = {
       y: py + state.player.dirY * PW.CONFIG.playerInteractRange
     };
   },
+  tryInteract() {
+    const player = PW.state.player;
+    if (player.actionCooldown > 0) return false;
+    player.actionCooldown = PW.CONFIG.actionRepeatInterval;
+    this.interact();
+    return true;
+  },
   interact() {
     const state = PW.state;
     if (state.gameOver || state.victory || state.reportOpen) return;
@@ -77,7 +81,12 @@ PW.Player = {
     if (PW.OutpostSystem && PW.OutpostSystem.interactAt(target.x, target.y)) return;
     if (PW.TreasureSystem && PW.TreasureSystem.openChestAt(target.x, target.y)) return;
     if (state.player.selectedTool === "repair") {
-      if (PW.BuildingSystem.repairAt(target.x, target.y)) return;
+      const building = PW.Tiles.getBuilding(target.x, target.y);
+      if (building) {
+        if (building.hp < building.maxHp) PW.BuildingSystem.repairAt(target.x, target.y);
+        else PW.BuildingSystem.upgrade(building.id);
+        return;
+      }
       if (PW.Tiles.isShipTile(target.x, target.y)) {
         PW.Progression.repairShip();
         return;

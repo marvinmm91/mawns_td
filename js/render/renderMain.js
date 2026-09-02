@@ -23,6 +23,7 @@ PW.Render = {
     PW.RenderFog.draw(ctx);
     PW.RenderEntities.drawPlayer(ctx);
     this.drawOverlay(ctx);
+    this.drawToolFeedback(ctx);
     this.drawPerformanceOverlay(ctx);
     if (PW.TacticalMap) PW.TacticalMap.render();
   },
@@ -45,7 +46,7 @@ PW.Render = {
       if (def && !eraseBlueprintMode) {
         ctx.save();
         ctx.translate(sx, sy);
-        PW.Icons.drawBuilding(ctx, state.selectedBuild, ts, ok ? (blueprintMode ? 0.38 : 0.62) : 0.24);
+        PW.Icons.drawBuilding(ctx, state.selectedBuild, ts, ok ? 0.5 : 0.24);
         ctx.restore();
         if (def.category === "tower") {
           const cx = sx + ts / 2;
@@ -106,11 +107,28 @@ PW.Render = {
     rows.forEach((row, index) => ctx.fillText(row, 18, 18 + index * 16));
     ctx.restore();
   },
-  buildTargetTile() {
-    const state = PW.state;
-    if (state.mouse.inside && PW.Tiles.inBounds(state.mouse.tileX, state.mouse.tileY)) {
-      return { x: state.mouse.tileX, y: state.mouse.tileY };
+  drawToolFeedback(ctx) {
+    const feedback = PW.state.toolFeedback;
+    const remaining = feedback.until - performance.now();
+    if (!feedback.id || remaining <= 0) {
+      if (remaining <= 0) PW.state.toolFeedback = { id: null, buildType: null, until: 0 };
+      return;
     }
+    const size = 48;
+    const x = PW.state.camera.w - size - 18;
+    const y = PW.state.camera.h - size - 18;
+    ctx.save();
+    ctx.globalAlpha = Math.min(1, remaining / 180);
+    ctx.fillStyle = "rgba(11, 13, 13, .72)";
+    ctx.fillRect(x - 6, y - 6, size + 12, size + 12);
+    ctx.translate(x, y);
+    if (feedback.buildType) PW.Icons.drawBuilding(ctx, feedback.buildType, size, 1);
+    else {
+      PW.Icons.drawTool(ctx, feedback.id, size);
+    }
+    ctx.restore();
+  },
+  buildTargetTile() {
     return PW.Player.targetTile();
   }
 };

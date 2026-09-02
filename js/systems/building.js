@@ -4,9 +4,11 @@ PW.BuildingSystem = {
   placeSelected(x, y) {
     return this.place(PW.state.selectedBuild, x, y);
   },
-  place(type, x, y) {
+  place(type, x, y, options = {}) {
     const state = PW.state;
     const def = PW.BUILDINGS[type];
+    const payCost = options.payCost !== false;
+    const quiet = options.quiet === true;
     if (!def) return false;
     if (!PW.GameModes.allowsBuilding(type)) {
       PW.Messages.add(`${def.name} ist im Classic Mode nicht verfügbar.`);
@@ -21,7 +23,7 @@ PW.BuildingSystem = {
       PW.Messages.add("Hier kann nicht gebaut werden.");
       return false;
     }
-    if (!PW.Utils.canAfford(def.cost)) {
+    if (payCost && !PW.Utils.canAfford(def.cost)) {
       PW.Messages.add(`Zu wenig Material: ${PW.Utils.costText(def.cost)}.`);
       return false;
     }
@@ -29,7 +31,7 @@ PW.BuildingSystem = {
       PW.Messages.add("Du stehst zu nah am Bauplatz.");
       return false;
     }
-    PW.Utils.pay(def.cost);
+    if (payCost) PW.Utils.pay(def.cost);
     const building = {
       id: `building-${Date.now()}-${state.world.buildings.length}`,
       type,
@@ -46,9 +48,11 @@ PW.BuildingSystem = {
     PW.SpatialIndex.add("buildings", building);
     this.removeBlueprintAt(x, y, false);
     PW.Pathfinding.markDirty();
-    PW.Messages.add(`${def.name} gebaut.`, "ok");
-    PW.UI.renderHud();
-    PW.UI.renderPanel();
+    if (!quiet) {
+      PW.Messages.add(`${def.name} gebaut.`, "ok");
+      PW.UI.renderHud();
+      PW.UI.renderPanel();
+    }
     return true;
   },
   canPlaceBlueprint(type, x, y) {
@@ -94,14 +98,53 @@ PW.BuildingSystem = {
     if (!blueprint) return false;
     return this.place(blueprint.type, blueprint.x, blueprint.y);
   },
-  buildAllBlueprints() {
-    let built = 0;
-    [...PW.state.world.blueprints].forEach((blueprint) => {
-      if (this.buildBlueprint(blueprint.id)) built += 1;
+  blueprintCost(blueprints = PW.state.world.blueprints) {
+    return blueprints.reduce((total, blueprint) => {
+      const cost = PW.BUILDINGS[blueprint.type]?.cost || {};
+      Object.entries(cost).forEach(([resourceId, amount]) => {
+        total[resourceId] = (total[resourceId] || 0) + amount;
+      });
+      return total;
+    }, {});
+  },
+  blueprintBatchCost(blueprints = PW.state.world.blueprints) {
+    const multiplier = PW.CONFIG.blueprintBatchCostMultiplier;
+    return Object.fromEntries(Object.entries(this.blueprintCost(blueprints)).map(([resourceId, amount]) => [resourceId, Math.ceil(amount * multiplier)]));
+  },
+  canBuildAllBlueprints(blueprints = PW.state.world.blueprints) {
+    const state = PW.state;
+    return blueprints.every((blueprint) => {
+      const def = PW.BUILDINGS[blueprint.type];
+      return def
+        && PW.GameModes.allowsBuilding(blueprint.type)
+        && state.unlockedBuildings.has(blueprint.type)
+        && this.canPlaceBuilding(blueprint.type, blueprint.x, blueprint.y)
+        && !this.playerOverlapsTile(state.player.x, state.player.y, state.player.radius, blueprint.x, blueprint.y);
     });
-    if (!built) PW.Messages.add("Keine Blaupause konnte errichtet werden.");
+  },
+  buildAllBlueprints() {
+    const blueprints = [...PW.state.world.blueprints];
+    if (!blueprints.length) {
+      PW.Messages.add("Keine Blaupausen vorgemerkt.");
+      return 0;
+    }
+    if (!this.canBuildAllBlueprints(blueprints)) {
+      PW.Messages.add("Sammelbau braucht freie Bauplätze. Tritt von den Blaupausen weg.");
+      PW.UI.renderPanel();
+      return 0;
+    }
+    const cost = this.blueprintBatchCost(blueprints);
+    if (!PW.Utils.canAfford(cost)) {
+      PW.Messages.add(`Zu wenig Material für den Sammelbau: ${PW.Utils.costText(cost)}.`);
+      PW.UI.renderPanel();
+      return 0;
+    }
+    PW.Utils.pay(cost);
+    blueprints.forEach((blueprint) => this.place(blueprint.type, blueprint.x, blueprint.y, { payCost: false, quiet: true }));
+    PW.Messages.add(`${blueprints.length} Blaupausen mit 20 % Aufschlag errichtet.`, "ok");
+    PW.UI.renderHud();
     PW.UI.renderPanel();
-    return built;
+    return blueprints.length;
   },
   canPlaceBuilding(type, x, y) {
     return this.placementStatus(type, x, y).ok;
@@ -217,20 +260,24 @@ PW.BuildingSystem = {
   },
   upgrade(buildingId) {
     const building = PW.state.world.buildings.find((item) => item.id === buildingId);
-    if (!building) return;
+    if (!building) return false;
     const def = PW.BUILDINGS[building.type];
     if (def.upgradeable === false) {
       PW.Messages.add(`${def.name} kann nicht verbessert werden.`);
-      return;
+      return false;
     }
     if (building.level >= 3) {
       PW.Messages.add("Maximale Stufe erreicht.");
-      return;
+      return false;
+    }
+    if (building.hp < building.maxHp) {
+      PW.Messages.add(`${def.name} muss vor dem Upgrade vollständig repariert werden.`);
+      return false;
     }
     const cost = this.upgradeCost(building);
     if (!PW.Utils.canAfford(cost)) {
       PW.Messages.add(`Upgrade braucht ${PW.Utils.costText(cost)}.`);
-      return;
+      return false;
     }
     PW.Utils.pay(cost);
     building.level += 1;
@@ -239,6 +286,7 @@ PW.BuildingSystem = {
     building.damageFlash = 0;
     PW.Messages.add(`${def.name} auf Stufe ${building.level}.`, "ok");
     PW.UI.renderPanel();
+    return true;
   },
   upgradeCost(building) {
     const base = PW.BUILDINGS[building.type].cost;

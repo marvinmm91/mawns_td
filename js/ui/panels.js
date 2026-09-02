@@ -171,7 +171,8 @@ Object.assign(PW.UI, {
     const build = document.createElement("div");
     build.className = "build-card";
     const selected = PW.BUILDINGS[state.selectedBuild];
-    build.innerHTML = `<h3>Aktiver Bauplan</h3><div class="meta">${selected ? selected.name : "Keiner"}. Werkzeug 4 und Linksklick auf die Maus-Kachel; Strg setzt Blaupausen.</div>`;
+    const mode = state.player.buildMode === "blueprint" ? "Blaupause" : "Bauen";
+    build.innerHTML = `<h3>Aktiver Bauplan</h3><div class="meta">${selected ? selected.name : "Keiner"}. Modus: ${mode}. Werkzeug 4 und Leertaste oder Klick auf freies Gelände baut vor der Figur; Strg wechselt den Modus.</div>`;
     if (selected) {
       const costs = document.createElement("div");
       costs.className = "costs";
@@ -260,37 +261,39 @@ Object.assign(PW.UI, {
       card.appendChild(button);
       body.appendChild(card);
     });
-    this.renderUpgradeList(body);
   },
   renderBlueprintControls(body) {
     const state = PW.state;
     const card = document.createElement("div");
     card.className = "build-card";
-    card.innerHTML = "<h3>Blaupausen</h3><div class=\"meta\">Strg gedrückt halten und ziehen: kostenfreie, nicht blockierende Bauvorhaben planen. Alt gedrückt halten und ziehen: vorhandene Blaupausen entfernen.</div>";
+    const mode = state.player.buildMode === "blueprint" ? "aktiv" : "inaktiv";
+    card.innerHTML = `<h3>Blaupausen</h3><div class="meta">Blaupausenmodus: ${mode}. Strg schaltet dauerhaft um. Ein Tipp auf Alt entfernt die Blaupause vor der Figur.</div>`;
     const blueprints = state.world.blueprints || [];
     const summary = document.createElement("div");
     summary.className = "meta";
     summary.textContent = blueprints.length ? `${blueprints.length} Blaupausen vorgemerkt.` : "Keine Blaupausen vorgemerkt.";
     card.appendChild(summary);
     if (blueprints.length) {
-      const totalCost = blueprints.reduce((total, blueprint) => {
-        const cost = PW.BUILDINGS[blueprint.type]?.cost || {};
-        Object.entries(cost).forEach(([resourceId, amount]) => {
-          total[resourceId] = (total[resourceId] || 0) + amount;
-        });
-        return total;
-      }, {});
+      const totalCost = PW.BuildingSystem.blueprintCost(blueprints);
       const totalTitle = document.createElement("div");
       totalTitle.className = "meta";
-      totalTitle.textContent = "Gesamtbedarf für alle Blaupausen";
+      totalTitle.textContent = "Einzelbau: Gesamtbedarf";
       const totalCosts = document.createElement("div");
       totalCosts.className = "costs";
       this.renderCostChips(totalCosts, totalCost);
-      card.append(totalTitle, totalCosts);
+      const batchTitle = document.createElement("div");
+      batchTitle.className = "meta";
+      batchTitle.textContent = "Sammelbau: 20 % höhere Baukosten (aufgerundet)";
+      const batchCosts = document.createElement("div");
+      batchCosts.className = "costs";
+      this.renderCostChips(batchCosts, PW.BuildingSystem.blueprintBatchCost(blueprints));
       const buildAll = document.createElement("button");
-      buildAll.textContent = "Alle errichten";
+      buildAll.type = "button";
+      buildAll.textContent = "Alle errichten (+20 %)";
+      buildAll.title = "Errichtet alle Blaupausen gemeinsam für 20 % mehr Material.";
+      buildAll.disabled = !PW.Utils.canAfford(PW.BuildingSystem.blueprintBatchCost(blueprints)) || !PW.BuildingSystem.canBuildAllBlueprints(blueprints);
       buildAll.addEventListener("click", () => PW.BuildingSystem.buildAllBlueprints());
-      card.appendChild(buildAll);
+      card.append(totalTitle, totalCosts, batchTitle, batchCosts, buildAll);
     }
     body.appendChild(card);
   },
@@ -309,35 +312,6 @@ Object.assign(PW.UI, {
       chip.appendChild(text);
       container.appendChild(chip);
     });
-  },
-  renderUpgradeList(body) {
-    const towers = PW.state.world.buildings.filter((b) => PW.BUILDINGS[b.type].category === "tower" || PW.BUILDINGS[b.type].category === "wall");
-    if (!towers.length) return;
-    const wrap = document.createElement("div");
-    wrap.className = "build-card";
-    wrap.innerHTML = "<h3>Upgrades</h3><div class=\"meta\">Bauwerke können bis Stufe 3 verbessert werden.</div>";
-    towers.slice(0, 16).forEach((building) => {
-      const def = PW.BUILDINGS[building.type];
-      const row = document.createElement("div");
-      row.className = "upgrade-row";
-      const button = document.createElement("button");
-      button.textContent = `${def.name} (${building.x}/${building.y}) Stufe ${building.level}`;
-      button.disabled = building.level >= 3 || !PW.Utils.canAfford(PW.BuildingSystem.upgradeCost(building));
-      button.addEventListener("click", () => PW.BuildingSystem.upgrade(building.id));
-      button.addEventListener("mouseenter", () => {
-        PW.state.hoveredUpgradeBuildingId = building.id;
-      });
-      button.addEventListener("mouseleave", () => {
-        if (PW.state.hoveredUpgradeBuildingId === building.id) PW.state.hoveredUpgradeBuildingId = null;
-      });
-      row.appendChild(button);
-      if (def.category === "tower") {
-        const nextLevel = Math.min(3, building.level + 1);
-        row.appendChild(this.towerStatsLine(def, building.level, nextLevel === building.level ? null : nextLevel));
-      }
-      wrap.appendChild(row);
-    });
-    body.appendChild(wrap);
   },
   towerStatsLine(def, level, nextLevel = null) {
     const format = (value) => Number(value).toLocaleString("de-DE", { maximumFractionDigits: 1 });
@@ -363,12 +337,7 @@ Object.assign(PW.UI, {
     body.innerHTML = "";
     const status = document.createElement("div");
     status.className = "build-card";
-    status.innerHTML = `<h3>Wrackstruktur</h3><div class="meta">${Math.ceil(state.ship.hp)} von ${state.ship.maxHp} HP. Reparatur mit Werkzeug 3 am Wrack oder hier per Button.</div>`;
-    const repair = document.createElement("button");
-    repair.textContent = "Wrack +50 HP reparieren";
-    repair.disabled = state.ship.hp >= state.ship.maxHp;
-    repair.addEventListener("click", () => { PW.Progression.repairShip(); this.renderShip(body); });
-    status.appendChild(repair);
+    status.innerHTML = `<h3>Wrackstruktur</h3><div class="meta">${Math.ceil(state.ship.hp)} von ${state.ship.maxHp} HP. Reparatur nur mit Werkzeug 3 am Wrack.</div>`;
     body.appendChild(status);
 
     Object.values(PW.SHIP_MODULES).forEach((mod) => {
@@ -409,9 +378,8 @@ Object.assign(PW.UI, {
       this.togglePanel("ship", true);
       return;
     }
-    const isEmptyBuildTile = PW.Tiles.canBuildAt(x, y);
-    PW.state.inspectedTile = isEmptyBuildTile ? null : { x, y };
-    PW.state.panel = isEmptyBuildTile ? "build" : "context";
+    PW.state.inspectedTile = { x, y };
+    PW.state.panel = "context";
     this.renderPanel();
   },
   renderContext(body) {
@@ -475,23 +443,6 @@ Object.assign(PW.UI, {
     card.innerHTML = `<h3>${tile.x}/${tile.y}</h3>`;
     card.appendChild(this.infoLine("Terrain", this.tileLabel(ground)));
     card.appendChild(this.infoLine("Status", PW.Tiles.canBuildAt(tile.x, tile.y) || PW.Tiles.canBuildBridgeAt(tile.x, tile.y) ? "Bebaubar" : "Blockiert"));
-    const selected = PW.BUILDINGS[state.selectedBuild];
-    if (selected) {
-      const canPlace = PW.BuildingSystem.canPlaceBuilding(selected.id, tile.x, tile.y);
-      const costs = document.createElement("div");
-      costs.className = "costs";
-      this.renderCostChips(costs, selected.cost);
-      card.appendChild(costs);
-      const action = document.createElement("button");
-      action.textContent = `${selected.name} hier bauen`;
-      action.disabled = !canPlace || !state.unlockedBuildings.has(selected.id) || !PW.Utils.canAfford(selected.cost);
-      action.addEventListener("click", () => {
-        state.player.selectedTool = "build";
-        PW.BuildingSystem.placeSelected(tile.x, tile.y);
-        this.inspectTile(tile.x, tile.y);
-      });
-      card.appendChild(action);
-    }
     body.appendChild(card);
     this.renderMapPinControl(body, tile.x, tile.y);
   },
@@ -558,29 +509,10 @@ Object.assign(PW.UI, {
       priority.appendChild(select);
       card.appendChild(priority);
     }
-    const actions = document.createElement("div");
-    actions.className = "build-actions";
-    const repair = document.createElement("button");
-    repair.textContent = "Reparieren";
-    repair.disabled = building.hp >= building.maxHp;
-    repair.addEventListener("click", () => {
-      PW.BuildingSystem.repairAt(building.x, building.y);
-      this.inspectTile(building.x, building.y);
-    });
-    const upgrade = document.createElement("button");
     const canUpgrade = def.upgradeable !== false && building.level < 3;
-    upgrade.textContent = "Upgrade";
-    upgrade.disabled = !canUpgrade || !PW.Utils.canAfford(PW.BuildingSystem.upgradeCost(building));
-    upgrade.addEventListener("click", () => PW.BuildingSystem.upgrade(building.id));
-    const demolish = document.createElement("button");
-    demolish.textContent = "Abreissen";
-    demolish.addEventListener("click", () => {
-      PW.BuildingSystem.demolishAt(building.x, building.y);
-      this.inspectTile(building.x, building.y);
-    });
-    actions.append(repair, upgrade, demolish);
-    card.appendChild(actions);
     if (canUpgrade) {
+      const status = building.hp < building.maxHp ? "Vollständig mit Werkzeug 3 reparieren, dann erneut einsetzen." : "Vollständig repariert: Werkzeug 3 erneut einsetzen, um zu verbessern.";
+      card.appendChild(this.infoLine("Nächstes Upgrade", status));
       const costs = document.createElement("div");
       costs.className = "costs";
       this.renderCostChips(costs, PW.BuildingSystem.upgradeCost(building));
@@ -604,17 +536,7 @@ Object.assign(PW.UI, {
     costs.className = "costs";
     this.renderCostChips(costs, def.cost);
     card.appendChild(costs);
-    const actions = document.createElement("div");
-    actions.className = "build-actions";
-    const build = document.createElement("button");
-    build.textContent = "Errichten";
-    build.disabled = !PW.Utils.canAfford(def.cost) || !PW.BuildingSystem.canPlaceBuilding(blueprint.type, blueprint.x, blueprint.y);
-    build.addEventListener("click", () => PW.BuildingSystem.buildBlueprint(blueprint.id));
-    const remove = document.createElement("button");
-    remove.textContent = "Entfernen";
-    remove.addEventListener("click", () => PW.BuildingSystem.removeBlueprintAt(blueprint.x, blueprint.y));
-    actions.append(build, remove);
-    card.appendChild(actions);
+    card.appendChild(this.infoLine("Bedienung", "Im Baumodus vor der Figur errichten; im Blaupausenmodus mit Alt-Tipp entfernen."));
     body.appendChild(card);
   },
   renderResourceContext(body, node) {
@@ -772,7 +694,26 @@ Object.assign(PW.UI, {
       row.textContent = line;
       body.appendChild(row);
     });
+    const tooltip = this.nextTooltip();
+    if (tooltip) {
+      const tip = document.createElement("blockquote");
+      tip.className = "morning-tooltip";
+      const label = document.createElement("strong");
+      label.textContent = "Tipp";
+      const text = document.createElement("span");
+      text.textContent = tooltip.text;
+      tip.append(label, text);
+      body.appendChild(tip);
+    }
     PW.state.dom.morningReport.classList.remove("hidden");
+  },
+  nextTooltip() {
+    const all = PW.TOOLTIPS || [];
+    if (!all.length) return null;
+    const choices = all.length > 1 ? all.filter((tip) => tip.id !== PW.state.lastTooltipId) : all;
+    const tooltip = choices[Math.floor(Math.random() * choices.length)];
+    PW.state.lastTooltipId = tooltip.id;
+    return tooltip;
   },
   hideMorningReport() {
     PW.state.reportOpen = false;
@@ -900,7 +841,8 @@ Object.assign(PW.UI, {
   showHelp() {
     this.showDialog("Hilfe", `
       <p><span class="kbd">WASD</span> oder Pfeiltasten bewegen. <span class="kbd">Space</span> interagiert mit der Kachel vor dir.</p>
-      <p><span class="kbd">1</span> Axt, <span class="kbd">2</span> Spitzhacke, <span class="kbd">3</span> Reparatur, <span class="kbd">4</span> Bauen, <span class="kbd">5</span> Abriss.</p>
+      <p><span class="kbd">1</span> Axt, <span class="kbd">2</span> Spitzhacke, <span class="kbd">3</span> Reparatur und Upgrade, <span class="kbd">4</span> Bauen, <span class="kbd">5</span> Abriss. Taste 4 erneut wechselt den Bauplan; <span class="kbd">Strg</span> schaltet Blaupausen um.</p>
+      <p>Ein Klick auf freies Gelände wirkt wie Space. Bauwerke und andere Weltobjekte öffnen weiterhin ihre Statusansicht. Das Mausrad wechselt Werkzeuge.</p>
       <p><span class="kbd">E</span> Inventar, <span class="kbd">M</span> Karte, <span class="kbd">O</span> Optik, <span class="kbd">R</span> Wrack, <span class="kbd">P</span> Pause. <span class="kbd">F3</span> Leistungsanzeige.</p>
       <p>Tagsüber erkundest und baust du. Nachts greifen Gegner das Wrack an. Du kannst nachts weiter rausgehen, riskierst dann aber Reparaturzeit.</p>
       <p class="meta">Die folgenden Werte zeigen, wofür Gegner und Türme gedacht sind. Grund-DPS berücksichtigt keine Flächenziele oder Spezialeffekte.</p>

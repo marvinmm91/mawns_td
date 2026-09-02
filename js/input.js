@@ -18,9 +18,12 @@ PW.Input = {
       if (key === "enter" && state.dom.gameDialog && state.dom.gameDialog.classList.contains("hidden")) {
         event.preventDefault();
       }
+      if (key === "alt" && state.player.selectedTool === "build" && state.player.buildMode === "blueprint") {
+        event.preventDefault();
+      }
       if (!state.input.keys.has(key)) state.input.pressed.add(key);
       state.input.keys.add(key);
-      this.handleHotkey(key);
+      this.handleHotkey(key, event.repeat);
     });
     window.addEventListener("keyup", (event) => {
       PW.state.input.keys.delete(event.key.toLowerCase());
@@ -28,7 +31,7 @@ PW.Input = {
     window.addEventListener("blur", () => {
       PW.state.input.keys.clear();
       PW.state.input.pressed.clear();
-      this.stopBlueprintPainting();
+      PW.state.input.mouseActionHeld = false;
       PW.state.paused = true;
       PW.UI.updatePause();
     });
@@ -38,7 +41,6 @@ PW.Input = {
     const canvas = PW.state.canvas;
     canvas.addEventListener("mousemove", (event) => {
       this.updateMouse(event);
-      this.placeBlueprintWhileDragging();
     });
     canvas.addEventListener("mouseenter", (event) => {
       PW.state.mouse.inside = true;
@@ -46,14 +48,6 @@ PW.Input = {
     });
     canvas.addEventListener("mouseleave", () => {
       PW.state.mouse.inside = false;
-      this.stopBlueprintPainting();
-    });
-    canvas.addEventListener("pointerup", () => {
-      if (PW.state.input.blueprintPainting) PW.UI.renderPanel();
-      this.stopBlueprintPainting();
-    });
-    canvas.addEventListener("pointercancel", () => {
-      this.stopBlueprintPainting();
     });
     canvas.addEventListener("contextmenu", (event) => {
       event.preventDefault();
@@ -65,39 +59,29 @@ PW.Input = {
     canvas.addEventListener("pointerdown", (event) => {
       canvas.focus();
       this.updateMouse(event);
-      if (event.button === 2) return;
+      if (event.button !== 0) return;
       if (PW.state.paused || PW.state.reportOpen || PW.state.gameOver || PW.state.victory) return;
-      if (PW.state.player.selectedTool === "build") {
-        const action = this.buildAction();
-        if (action === "blueprint" || action === "eraseBlueprint") {
-          PW.state.input.blueprintPainting = true;
-          PW.state.input.blueprintPaintAction = action;
-          PW.state.input.blueprintPaintTile = { x: PW.state.mouse.tileX, y: PW.state.mouse.tileY };
-          this.applyBlueprintAction(action, PW.state.mouse.tileX, PW.state.mouse.tileY);
-        } else {
-          PW.BuildingSystem.placeSelected(PW.state.mouse.tileX, PW.state.mouse.tileY);
-        }
-        PW.UI.renderPanel();
-      } else {
+      if (this.isInspectableTile(PW.state.mouse.tileX, PW.state.mouse.tileY)) {
+        PW.state.input.mouseActionHeld = false;
         PW.UI.inspectTile(PW.state.mouse.tileX, PW.state.mouse.tileY);
+      } else {
+        PW.state.input.mouseActionHeld = true;
+        if (Number.isInteger(event.pointerId)) canvas.setPointerCapture(event.pointerId);
+        PW.Player.tryInteract();
       }
     });
-  },
-  placeBlueprintWhileDragging() {
-    const state = PW.state;
-    if (!state.input.blueprintPainting || state.player.selectedTool !== "build") return;
-    const action = state.input.blueprintPaintAction;
-    if (!action) return;
-    const from = state.input.blueprintPaintTile || { x: state.mouse.tileX, y: state.mouse.tileY };
-    const dx = state.mouse.tileX - from.x;
-    const dy = state.mouse.tileY - from.y;
-    const steps = Math.max(Math.abs(dx), Math.abs(dy));
-    for (let step = 1; step <= steps; step++) {
-      const x = Math.round(from.x + dx * step / steps);
-      const y = Math.round(from.y + dy * step / steps);
-      this.applyBlueprintAction(action, x, y, true);
-    }
-    state.input.blueprintPaintTile = { x: state.mouse.tileX, y: state.mouse.tileY };
+    canvas.addEventListener("pointerup", (event) => {
+      if (event.button === 0) PW.state.input.mouseActionHeld = false;
+      if (Number.isInteger(event.pointerId) && canvas.hasPointerCapture(event.pointerId)) canvas.releasePointerCapture(event.pointerId);
+    });
+    canvas.addEventListener("pointercancel", (event) => {
+      PW.state.input.mouseActionHeld = false;
+      if (Number.isInteger(event.pointerId) && canvas.hasPointerCapture(event.pointerId)) canvas.releasePointerCapture(event.pointerId);
+    });
+    canvas.addEventListener("wheel", (event) => {
+      event.preventDefault();
+      if (event.deltaY) this.cycleTool(event.deltaY > 0 ? 1 : -1);
+    }, { passive: false });
   },
   updateMouse(event) {
     const state = PW.state;
@@ -119,19 +103,74 @@ PW.Input = {
     state.mouse.inside = localX >= 0 && localY >= 0 && localX <= rect.width && localY <= rect.height;
   },
   buildAction() {
-    if (this.isDown("alt")) return "eraseBlueprint";
-    if (this.isDown("control")) return "blueprint";
-    return "build";
+    return PW.state.player.buildMode === "blueprint" ? "blueprint" : "build";
   },
   applyBlueprintAction(action, x, y, quiet = false) {
     if (action === "eraseBlueprint") return PW.BuildingSystem.removeBlueprintAt(x, y, !quiet);
     return PW.BuildingSystem.placeBlueprintSelected(x, y, quiet);
   },
-  stopBlueprintPainting() {
-    const input = PW.state.input;
-    input.blueprintPainting = false;
-    input.blueprintPaintTile = null;
-    input.blueprintPaintAction = null;
+  removeBlueprintAhead() {
+    const target = PW.Player.targetTile();
+    return PW.BuildingSystem.removeBlueprintAt(target.x, target.y);
+  },
+  isInspectableTile(x, y) {
+    if (!PW.Tiles.inBounds(x, y)) return false;
+    return PW.Tiles.isShipTile(x, y) || Boolean(
+      PW.Tiles.getBuilding(x, y) ||
+      PW.Tiles.getBlueprint(x, y) ||
+      PW.Tiles.getResource(x, y) ||
+      PW.Tiles.getChest(x, y) ||
+      PW.Tiles.getCamp(x, y) ||
+      PW.Tiles.getOutpost(x, y) ||
+      (PW.WildlifeSystem && PW.WildlifeSystem.atTile(x, y))
+    );
+  },
+  selectTool(id) {
+    const tool = PW.CONFIG.tools.find((item) => item.id === id);
+    if (!tool) return false;
+    const state = PW.state;
+    const switchesToBuild = tool.id === "build" && state.player.selectedTool !== "build";
+    state.player.selectedTool = tool.id;
+    if (switchesToBuild) this.selectFirstBuild();
+    if (tool.id === "build") PW.UI.togglePanel("build", true);
+    PW.UI.showToolFeedback(tool.id, switchesToBuild ? state.selectedBuild : null);
+    PW.UI.renderHud();
+    return true;
+  },
+  cycleTool(direction) {
+    const tools = PW.CONFIG.tools;
+    const current = tools.findIndex((tool) => tool.id === PW.state.player.selectedTool);
+    const index = (Math.max(0, current) + direction + tools.length) % tools.length;
+    return this.selectTool(tools[index].id);
+  },
+  cycleBuild() {
+    const state = PW.state;
+    const options = this.availableBuildOptions();
+    if (!options.length) return false;
+    const current = options.findIndex((def) => def.id === state.selectedBuild);
+    state.selectedBuild = options[(Math.max(0, current) + 1) % options.length].id;
+    PW.UI.showToolFeedback("build", state.selectedBuild);
+    PW.UI.renderHud();
+    PW.UI.renderPanel();
+    return true;
+  },
+  availableBuildOptions() {
+    return Object.values(PW.BUILDINGS).filter((def) => PW.GameModes.allowsBuilding(def.id) && PW.state.unlockedBuildings.has(def.id));
+  },
+  selectFirstBuild() {
+    const first = this.availableBuildOptions()[0];
+    if (!first) return false;
+    PW.state.selectedBuild = first.id;
+    return true;
+  },
+  toggleBuildMode() {
+    const state = PW.state;
+    if (state.player.selectedTool !== "build") return false;
+    state.player.buildMode = state.player.buildMode === "blueprint" ? "build" : "blueprint";
+    PW.Messages.add(state.player.buildMode === "blueprint" ? "Blaupausenmodus aktiv." : "Baumodus aktiv.", "ok");
+    PW.UI.renderHud();
+    PW.UI.renderPanel();
+    return true;
   },
   isDown(...keys) {
     return keys.some((key) => PW.state.input.keys.has(key));
@@ -145,8 +184,13 @@ PW.Input = {
   endFrame() {
     PW.state.input.pressed.clear();
   },
-  handleHotkey(key) {
+  handleHotkey(key, repeating = false) {
     const state = PW.state;
+    if (key === "control" && !repeating && this.toggleBuildMode()) return;
+    if (key === "alt" && !repeating && state.player.selectedTool === "build" && state.player.buildMode === "blueprint") {
+      this.removeBlueprintAhead();
+      return;
+    }
     if (key === "enter") {
       PW.UI.showCheatDialog();
       return;
@@ -172,10 +216,9 @@ PW.Input = {
     if (key === "f6") PW.Save.save(true);
     if (key === "f9") PW.Save.load(true);
     const tool = PW.CONFIG.tools.find((item) => item.key === key);
-    if (tool) {
-      state.player.selectedTool = tool.id;
-      if (tool.id === "build") PW.UI.togglePanel("build", true);
-      PW.UI.renderHud();
+    if (tool && !repeating) {
+      if (tool.id === "build" && state.player.selectedTool === "build") this.cycleBuild();
+      else this.selectTool(tool.id);
     }
   }
 };

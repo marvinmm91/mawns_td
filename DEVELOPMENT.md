@@ -33,7 +33,7 @@ Noch nicht beschlossene Vorschlaege gehoeren ausschliesslich in `ROADMAP.md`. So
 - [x] WASD- und Pfeiltasten fuer Bewegung.
 - [x] Leertaste fuer die Kontextaktion vor dem Spieler.
 - [x] Hotkeys fuer Werkzeuge, Inventar, Baumenue, Wrackmenue, Hilfe und Pause.
-- [x] Mausinspektion und direkter Mausbau.
+- [x] Mausinspektion auf Weltobjekten sowie Nahbereichsaktionen auf freiem Gelände.
 - [x] Sammeln, Abbauen, Reparieren, Bauen und Abreissen.
 
 ### VERTEIDIGUNG
@@ -41,7 +41,7 @@ Noch nicht beschlossene Vorschlaege gehoeren ausschliesslich in `ROADMAP.md`. So
 - [x] Palisaden, Steinmauern und Stahlmauern.
 - [x] Bruecken auf Wasser.
 - [x] Balliste, Katapult, Flak, Tesla-Feld und Laser-Turm.
-- [x] HP, Reparatur und bis zu drei Ausbaustufen.
+- [x] HP, werkzeuggebundene Reparatur/Upgrades und bis zu drei Ausbaustufen.
 - [x] Zieltypen fuer Boden und Luft.
 - [x] Projektile, Treffer, AoE, Slow und visuelles Schadensfeedback.
 - [x] Pathfinding-Neuberechnung nur nach relevanten Bauveraenderungen.
@@ -122,8 +122,9 @@ Die folgenden Punkte wurden aus `ROADMAP.md` verbindlich fuer die naechste Entwi
 - [x] **Aggressive Mode** (`M`, Issue #55): Regulaere Bodengegner greifen ausschliesslich Verteidigungen auf ihrem strukturbewerteten Direktweg an, auch bei vorhandenem Umweg. Seitliche Strukturen bleiben sicher; volle Blockaden werden weiterhin gezielt aufgebrochen. Betroffene Dateien: `js/entities/enemies.js`, `js/systems/pathfinding.js`, `GAME_DESIGN.md`, `tests/`. Akzeptanz: Direkte Mauer-, Palisaden- und Turmziele werden angegriffen; der Wrackfokus, Luftgegner und stationaere Wachen bleiben korrekt.
 - [x] **Modusbalance und Feedback** (`M`, Issue #56): Classic nutzt 372 Prozent Wellenbudget bei 40 Prozent Gegnerschaden und bietet nur die Palisade neu an; Aggressive nutzt 92 Prozent Wellenbudget bei normalem Gegnerschaden. Der Spawner wendet den jeweiligen Modusfaktor nach dem Director an. Betroffene Dateien: `js/config.js`, `js/systems/autobalance.js`, `js/systems/spawning.js`, `js/ui/panels.js`, `GAME_DESIGN.md`, `tests/`. Akzeptanz: Beide Modi haben einen klaren wirtschaftlichen Nachteil fuer ihre Verteidigungsregel; Schwierigkeit Stufe 3 bleibt die Mitte je Modus.
 - [x] **Modus-Regression** (`M`, Issue #57): Ein gemeinsamer Testlauf verbindet Auswahl und Legacy-Migration mit freiem Weg, Direktziel, vollstaendiger Blockade, Classic-/Aggressive-Strukturschaden, Modusbudget und Prognose. Betroffene Dateien: `tests/defense-modes-regression.js`, `tests/game-mode-*.js`, `tests/*-mode.js`. Akzeptanz: Die Szenarien sind reproduzierbar und laufen gemeinsam mit der bestehenden Gesamt-Testsuite fehlerfrei.
-- [x] **Turm-Zielprioritaeten** (`M`): Pro Turm waehlt der Spieler Wracknah, Naechster, Letzter, Staerkster oder Brecher zuerst; der Laser bietet zusaetzlich Luft zuerst. „Letzter“ priorisiert das wrackfernste Ziel in Reichweite. Betroffene Dateien: `js/systems/building.js`, `js/systems/combat.js`, `js/ui/panels.js`, `js/systems/save.js`, `tests/`. Akzeptanz: Prioritaeten sind im Baukontext lesbar, speicherbar und durch Tests abgedeckt.
-- [x] **Blaupausen fuer geplante Gebaeudelinien** (`M`): Kostenfreie, nicht blockierende Blaupausen lassen sich auch per Ziehen setzen, einzeln oder gesammelt errichten, entfernen und speichern. Betroffene Dateien: `js/world/*`, `js/systems/building.js`, `js/systems/save.js`, `js/input.js`, `js/render/*`, `js/ui/*`, `tests/`. Akzeptanz: Bauvorhaben sind auf der Karte klar erkennbar, kollisionsfrei und nach Laden wieder verfuegbar.
+- [x] **Nahbereichs-Bau und Werkzeugsteuerung** (`M`): Freies Gelände löst per Maus dieselbe Nahbereichsaktion wie Space aus; vorhandene Weltobjekte bleiben inspizierbar. Taste 4 wählt und wechselt Baupläne, Strg schaltet den persistenten Blaupausenmodus und das Mausrad wechselt Werkzeuge mit Symbolfeedback. Betroffene Dateien: `js/input.js`, `js/entities/player.js`, `js/ui/hud.js`, `js/render/renderMain.js`, `tests/`. Akzeptanz: Kein Mausbau auf Entfernung und kein Mausweg um den Aktions-Cooldown; alle Wechsel sind sichtbar und reproduzierbar.
+- [x] **Werkzeuggebundene Bauwerksverwaltung** (`M`): Bauwerks- und Blaupausenfenster sind reine Statusansichten, mit Ausnahme der strategischen Zielpriorität und des atomaren Blaupausen-Sammelbaus mit 20 Prozent Mehrkosten. Werkzeug 3 repariert beschädigte Bauwerke und verbessert sie nur im vollständig reparierten Zustand; Werkzeug 5 bleibt alleiniger Abrissweg. Betroffene Dateien: `js/entities/player.js`, `js/systems/building.js`, `js/ui/panels.js`, `tests/`. Akzeptanz: Keine Menüschaltfläche kann reparieren, upgraden oder abreißen; der Sammelbau errichtet nur alle vorgemerkten Plätze gemeinsam.
+- [x] **Turm-Zielprioritäten** (`M`): Pro Turm wählt der Spieler Wracknähe, Letzter, Stärkster oder Schwächster. „Letzter“ priorisiert das vom Turm am weitesten entfernte Ziel innerhalb seiner Reichweite. Betroffene Dateien: `js/systems/combat.js`, `js/ui/panels.js`, `js/systems/save.js`, `tests/`. Akzeptanz: Prioritäten sind im Baukontext lesbar, speicherbar und durch Tests abgedeckt.
 - [x] **Kartennadeln** (`S`): Spieler kann wichtige Ressourcen, Truhen, Horden und Brueckenplaetze markieren. Betroffene Dateien: `js/systems/mapPins.js`, `js/render/*`, `js/ui/panels.js`, `js/systems/save.js`, `tests/`. Akzeptanz: Markierungen sind auf der erkundeten Karte sichtbar und bleiben nach Speichern/Laden erhalten.
 
 ### DESIGN UND UX

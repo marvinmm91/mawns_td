@@ -54,7 +54,7 @@ const { pathToFileURL } = require("url");
   }
   if (shellLayout.variedResources < 80) throw new Error(`Ressourcenvarianten fehlen: ${shellLayout.variedResources}`);
 
-  await page.keyboard.press("B");
+  await page.keyboard.press("4");
   await page.locator(".build-card", { hasText: "Balliste" }).getByRole("button").click();
   const buildMenu = await page.evaluate(() => {
     const cards = Array.from(document.querySelectorAll(".build-card"));
@@ -69,24 +69,36 @@ const { pathToFileURL } = require("url");
         hasCostFill: Boolean(card && Array.from(card.querySelectorAll(".cost-chip")).every((chip) => chip.style.getPropertyValue("--fill")))
       };
     });
-    rows.hiddenClassicWalls = !cards.some((card) => /Steinmauer|Stahlmauer/.test(card.textContent));
-    return rows;
+    return {
+      rows,
+      hiddenClassicWalls: !cards.some((card) => /Steinmauer|Stahlmauer/.test(card.textContent))
+    };
   });
-  const badBuildRows = buildMenu.filter((row) => !row.hasIcon || !row.hasHp || !row.hasCostIcon || !row.hasCostFill);
+  const badBuildRows = buildMenu.rows.filter((row) => !row.hasIcon || !row.hasHp || !row.hasCostIcon || !row.hasCostFill);
   if (badBuildRows.length || !buildMenu.hiddenClassicWalls) throw new Error(`Baumenue ohne Symbol/HP/Kostenbalken oder mit Classic-Mauern: ${JSON.stringify(buildMenu)}`);
   const mouseBuild = await page.evaluate(() => {
     Object.assign(PW.state.inventory, { wood: 999, stone: 999 });
     PW.state.selectedBuild = "palisade";
     PW.state.player.selectedTool = "build";
-    for (let y = PW.Utils.worldToTile(PW.state.player.y) - 3; y <= PW.Utils.worldToTile(PW.state.player.y) + 3; y++) {
-      for (let x = PW.Utils.worldToTile(PW.state.player.x) - 3; x <= PW.Utils.worldToTile(PW.state.player.x) + 3; x++) {
-        if (PW.Tiles.canBuildAt(x, y)) {
+    PW.state.player.buildMode = "build";
+    PW.state.panel = "status";
+    PW.UI.renderPanel();
+    for (let y = PW.state.ship.y - 8; y <= PW.state.ship.y + PW.state.ship.size + 8; y++) {
+      for (let x = PW.state.ship.x - 8; x <= PW.state.ship.x + PW.state.ship.size + 8; x++) {
+        if (PW.Tiles.canBuildAt(x, y) && PW.Tiles.canBuildAt(x - 1, y) && PW.Tiles.canBuildAt(x - 2, y) && !(PW.WildlifeSystem && PW.WildlifeSystem.atTile(x - 1, y))) {
+          const source = PW.Tiles.tileCenter(x - 1, y);
+          PW.state.player.x = source.x;
+          PW.state.player.y = source.y;
+          PW.state.player.dirX = 1;
+          PW.state.player.dirY = 0;
+          PW.state.player.actionCooldown = 0;
+          PW.Camera.update();
           const rect = PW.state.canvas.getBoundingClientRect();
           return {
             x,
             y,
-            sx: rect.left + x * PW.state.world.tileSize - PW.state.camera.x + 16,
-            sy: rect.top + y * PW.state.world.tileSize - PW.state.camera.y + 16,
+            sx: rect.left + ((x - 1) * PW.state.world.tileSize + 16 - PW.state.camera.x) / PW.state.camera.w * rect.width,
+            sy: rect.top + (y * PW.state.world.tileSize + 16 - PW.state.camera.y) / PW.state.camera.h * rect.height,
             before: PW.state.world.buildings.length
           };
         }
@@ -100,9 +112,10 @@ const { pathToFileURL } = require("url");
   const mouseBuilt = await page.evaluate(({ x, y, before }) => ({
     built: Boolean(PW.Tiles.getBuilding(x, y)),
     count: PW.state.world.buildings.length,
-    before
+    before,
+    openedBuildMenu: PW.state.panel === "build"
   }), mouseBuild);
-  if (!mouseBuilt.built || mouseBuilt.count <= mouseBuilt.before) throw new Error(`Mausbau fehlgeschlagen: ${JSON.stringify(mouseBuilt)}`);
+  if (!mouseBuilt.built || mouseBuilt.count <= mouseBuilt.before || mouseBuilt.openedBuildMenu) throw new Error(`Nahbereichs-Mausbau fehlgeschlagen: ${JSON.stringify(mouseBuilt)}`);
   await page.keyboard.press("E");
   await page.keyboard.press("R");
 
@@ -178,9 +191,9 @@ const { pathToFileURL } = require("url");
   const beforeMove = await page.evaluate(() => ({ x: PW.state.player.x, y: PW.state.player.y }));
   await page.evaluate(async () => {
     const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-    window.dispatchEvent(new KeyboardEvent("keydown", { key: "d", bubbles: true }));
+    window.dispatchEvent(new KeyboardEvent("keydown", { key: "a", bubbles: true }));
     await wait(300);
-    window.dispatchEvent(new KeyboardEvent("keyup", { key: "d", bubbles: true }));
+    window.dispatchEvent(new KeyboardEvent("keyup", { key: "a", bubbles: true }));
   });
   await page.waitForTimeout(120);
   const movedAfterReload = await page.evaluate((before) => {

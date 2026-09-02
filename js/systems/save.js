@@ -70,7 +70,8 @@ PW.Save = {
       PW.state.paused = wasPaused;
       PW.state.reportOpen = false;
       PW.state.rng = PW.Random.create((data.seed || Date.now()) ^ Date.now());
-      PW.state.input = { keys: new Set(), pressed: new Set() };
+      PW.state.input = { keys: new Set(), pressed: new Set(), mouseActionHeld: false };
+      PW.state.player.buildMode = PW.state.player.buildMode === "blueprint" ? "blueprint" : "build";
       if (!PW.CONFIG.difficulty.profiles.some((profile) => profile.id === PW.state.difficulty)) {
         PW.state.difficulty = PW.CONFIG.difficulty.default;
       }

@@ -20,7 +20,7 @@ const { pathToFileURL } = require("url");
     const state = PW.state;
     const emptyBuildTile = state.world.tiles.find((tile) => PW.Tiles.canBuildAt(tile.x, tile.y));
     PW.UI.inspectTile(emptyBuildTile.x, emptyBuildTile.y);
-    const emptyTileOpensBuildMenu = state.panel === "build" && state.dom.panelTitle.textContent === "Bauen" && state.dom.panelBody.querySelectorAll(".build-card").length > 1;
+    const emptyTileOpensContext = state.panel === "context" && state.dom.panelTitle.textContent === "Kachel";
     state.inventory.wood = 10;
     state.inventory.stone = 0;
     state.gameMode = "aggressive";
@@ -39,6 +39,8 @@ const { pathToFileURL } = require("url");
       level: 1,
       cooldown: 0
     }];
+    state.world.buildingMap = new Map([[PW.Utils.tileKey(3, 3), state.world.buildings[0]]]);
+    state.world.blueprintMap = new Map([[PW.Utils.tileKey(1, 1), state.world.blueprints[0]], [PW.Utils.tileKey(2, 1), state.world.blueprints[1]]]);
     state.panel = "build";
     PW.UI.renderPanel();
 
@@ -51,35 +53,39 @@ const { pathToFileURL } = require("url");
     const stoneWallCard = Array.from(body.querySelectorAll(".build-card"))
       .find((card) => card.querySelector("h3")?.textContent.includes("Steinmauer"));
     const lockedText = stoneWallCard?.textContent || "";
-    const upgradeButton = Array.from(body.querySelectorAll(".upgrade-row button"))
-      .find((button) => button.textContent.includes("Balliste"));
-    upgradeButton.dispatchEvent(new MouseEvent("mouseenter"));
-    const hoveredId = state.hoveredUpgradeBuildingId;
-    upgradeButton.dispatchEvent(new MouseEvent("mouseleave"));
+    const batchBuild = Array.from(blueprintCard?.querySelectorAll("button") || []).find((button) => button.textContent.includes("Alle errichten"));
+    const batchBuildCorrect = blueprintText.includes("20 % höhere Baukosten") && batchBuild?.textContent === "Alle errichten (+20 %)" && batchBuild.disabled;
+    const noUpgradeList = !body.textContent.includes("Upgrades");
+    state.inspectedTile = { x: 3, y: 3 };
+    state.panel = "context";
+    PW.UI.renderPanel();
+    const buildingButtons = Array.from(state.dom.panelBody.querySelectorAll("button")).map((button) => button.textContent);
+    const statusOnlyBuilding = !buildingButtons.some((label) => /Reparieren|Upgrade|Abreissen/.test(label));
 
     return {
       blueprintText,
       totalCosts,
       lockedText,
-      hoveredId,
-      clearedHover: state.hoveredUpgradeBuildingId,
-      emptyTileOpensBuildMenu
+      batchBuildCorrect,
+      noUpgradeList,
+      statusOnlyBuilding,
+      emptyTileOpensContext
     };
   });
 
   await browser.close();
   if (errors.length) throw new Error(`Browserfehler:\n${errors.join("\n")}`);
-  if (!result.blueprintText.includes("Gesamtbedarf für alle Blaupausen") || !result.totalCosts.includes("Holz (10/24)") || !result.totalCosts.includes("Stein (0/5)")) {
+  if (!result.blueprintText.includes("Einzelbau: Gesamtbedarf") || !result.totalCosts.includes("Holz (10/24)") || !result.totalCosts.includes("Stein (0/5)") || !result.totalCosts.includes("Holz (10/29)") || !result.totalCosts.includes("Stein (0/6)")) {
     throw new Error(`Blaupausen-Gesamtbedarf fehlt: ${JSON.stringify(result)}`);
   }
   if (!result.lockedText.includes("Freischaltung: ab Nacht 1.")) {
     throw new Error(`Freischaltbedingung fehlt: ${JSON.stringify(result)}`);
   }
-  if (result.hoveredId !== "test-ballista-building" || result.clearedHover !== null) {
-    throw new Error(`Upgrade-Hervorhebung reagiert nicht korrekt: ${JSON.stringify(result)}`);
+  if (!result.batchBuildCorrect || !result.noUpgradeList || !result.statusOnlyBuilding) {
+    throw new Error(`Baumenue oder Baukontext bietet unzulaessige Aktionen: ${JSON.stringify(result)}`);
   }
-  if (!result.emptyTileOpensBuildMenu) {
-    throw new Error(`Leere Kachel oeffnet nicht die vollstaendige Bauauswahl: ${JSON.stringify(result)}`);
+  if (!result.emptyTileOpensContext) {
+    throw new Error(`Leere Kachel oeffnet nicht den reinen Kachelstatus: ${JSON.stringify(result)}`);
   }
   console.log("OK build menu UX");
 })().catch((error) => {
