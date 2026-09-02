@@ -93,6 +93,7 @@ PW.createInitialState = function createInitialState() {
       hp: cfg.shipMaxHp,
       maxHp: cfg.shipMaxHp,
       damageFlash: 0,
+      repairCount: 0,
       modules,
       launchActive: false,
       launchTimer: 0,

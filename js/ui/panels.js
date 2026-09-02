@@ -293,7 +293,12 @@ Object.assign(PW.UI, {
       buildAll.title = "Errichtet alle Blaupausen gemeinsam für 20 % mehr Material.";
       buildAll.disabled = !PW.Utils.canAfford(PW.BuildingSystem.blueprintBatchCost(blueprints)) || !PW.BuildingSystem.canBuildAllBlueprints(blueprints);
       buildAll.addEventListener("click", () => PW.BuildingSystem.buildAllBlueprints());
-      card.append(totalTitle, totalCosts, batchTitle, batchCosts, buildAll);
+      const removeAll = document.createElement("button");
+      removeAll.type = "button";
+      removeAll.textContent = "Alle Blaupausen entfernen";
+      removeAll.title = "Entfernt alle vorgemerkten Blaupausen ohne Materialkosten.";
+      removeAll.addEventListener("click", () => PW.BuildingSystem.removeAllBlueprints());
+      card.append(totalTitle, totalCosts, batchTitle, batchCosts, buildAll, removeAll);
     }
     body.appendChild(card);
   },
@@ -509,8 +514,11 @@ Object.assign(PW.UI, {
       priority.appendChild(select);
       card.appendChild(priority);
     }
-    const canUpgrade = def.upgradeable !== false && building.level < 3;
-    if (canUpgrade) {
+    const palisadeUpgradeLocked = state.gameMode === "classic" && building.type === "palisade";
+    const canUpgrade = PW.BuildingSystem.canUpgrade(building);
+    if (palisadeUpgradeLocked) {
+      card.appendChild(this.infoLine("Upgrade", "Im Classic-Modus dienen Palisaden nur als Labyrinth und können nicht verbessert werden."));
+    } else if (canUpgrade) {
       const status = building.hp < building.maxHp ? "Vollständig mit Werkzeug 3 reparieren, dann erneut einsetzen." : "Vollständig repariert: Werkzeug 3 erneut einsetzen, um zu verbessern.";
       card.appendChild(this.infoLine("Nächstes Upgrade", status));
       const costs = document.createElement("div");

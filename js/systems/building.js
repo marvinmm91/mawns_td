@@ -93,6 +93,18 @@ PW.BuildingSystem = {
     }
     return true;
   },
+  removeAllBlueprints() {
+    const blueprints = [...PW.state.world.blueprints];
+    if (!blueprints.length) return 0;
+    blueprints.forEach((blueprint) => {
+      PW.state.world.blueprintMap.delete(PW.Utils.tileKey(blueprint.x, blueprint.y));
+      PW.SpatialIndex.remove("blueprints", blueprint);
+    });
+    PW.state.world.blueprints = [];
+    PW.Messages.add(`${blueprints.length} Blaupausen entfernt.`);
+    PW.UI.renderPanel();
+    return blueprints.length;
+  },
   buildBlueprint(blueprintId) {
     const blueprint = PW.state.world.blueprints.find((item) => item.id === blueprintId);
     if (!blueprint) return false;
@@ -258,10 +270,18 @@ PW.BuildingSystem = {
     PW.Pathfinding.markDirty();
     PW.Utils.addEffect("splash", PW.Utils.tileToWorld(building.x), PW.Utils.tileToWorld(building.y), "#e35d57", 0.5, 1.2);
   },
+  canUpgrade(building) {
+    const def = building && PW.BUILDINGS[building.type];
+    return Boolean(def && def.upgradeable !== false && building.level < 3 && !(PW.state.gameMode === "classic" && building.type === "palisade"));
+  },
   upgrade(buildingId) {
     const building = PW.state.world.buildings.find((item) => item.id === buildingId);
     if (!building) return false;
     const def = PW.BUILDINGS[building.type];
+    if (PW.state.gameMode === "classic" && building.type === "palisade") {
+      PW.Messages.add("Palisaden sind im Classic-Modus nur für Labyrinthe und können nicht verbessert werden.");
+      return false;
+    }
     if (def.upgradeable === false) {
       PW.Messages.add(`${def.name} kann nicht verbessert werden.`);
       return false;

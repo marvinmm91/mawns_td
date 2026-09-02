@@ -80,6 +80,7 @@ PW.Save = {
       PW.state.balance = { ...fresh.balance, ...(data.balance || {}) };
       PW.state.balance.drift = Math.max(0, Number(PW.state.balance.drift) || 0);
       PW.state.balance.dropBonus = 0;
+      PW.state.ship.repairCount = Math.max(0, Math.floor(Number(PW.state.ship.repairCount) || 0));
       PW.state.world.tileSize = PW.state.world.tileSize || PW.CONFIG.tileSize;
       PW.state.world.birds = PW.state.world.birds || [];
       PW.state.world.wildlife = PW.state.world.wildlife || [];

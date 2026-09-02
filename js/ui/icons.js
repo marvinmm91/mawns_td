@@ -50,9 +50,9 @@ PW.Icons = {
     this.drawTool(canvas.getContext("2d"), id, size);
     return canvas;
   },
-  drawResource(ctx, id, size = 20) {
+  drawResource(ctx, id, size = 20, clear = true) {
     const s = size / 20;
-    ctx.clearRect(0, 0, size, size);
+    if (clear) ctx.clearRect(0, 0, size, size);
     if (PW.PixelArt && PW.PixelArt.draw(ctx, `resourceIcon.${id}`, 0, 0, size, size)) return;
     if (id === "wood") {
       ctx.fillStyle = "#5a3d25";

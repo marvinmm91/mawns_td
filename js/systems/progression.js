@@ -21,25 +21,39 @@ PW.Progression = {
     if (state.phase.night >= 8 && state.knownResources.has("gold")) state.unlockedBuildings.add("laser");
     if (!PW.GameModes.allowsBuilding(state.selectedBuild)) state.selectedBuild = "palisade";
   },
+  shipRepairCostOptions() {
+    const repairCount = PW.state.ship.repairCount || 0;
+    const multiplier = Math.pow(PW.CONFIG.shipRepair.costMultiplier, repairCount);
+    const scaleCost = (baseCost) => Object.fromEntries(Object.entries(baseCost).map(([resourceId, amount]) => [resourceId, Math.ceil(amount * multiplier)]));
+    return {
+      scrap: scaleCost(PW.CONFIG.shipRepair.scrapCost),
+      basic: scaleCost(PW.CONFIG.shipRepair.basicCost)
+    };
+  },
+  shipRepairCost() {
+    const options = this.shipRepairCostOptions();
+    return PW.Utils.canAfford(options.scrap) ? options.scrap : options.basic;
+  },
   repairShip() {
     const state = PW.state;
     if (state.ship.hp >= state.ship.maxHp) {
       PW.Messages.add("Wrack ist bereits stabil.");
-      return;
+      return false;
     }
-    const scrapCost = { scrap: 10 };
-    const basicCost = { wood: 10, stone: 8 };
-    const cost = PW.Utils.canAfford(scrapCost) ? scrapCost : basicCost;
+    const options = this.shipRepairCostOptions();
+    const cost = this.shipRepairCost();
     if (!PW.Utils.canAfford(cost)) {
-      PW.Messages.add(`Wrackreparatur braucht ${PW.Utils.costText(basicCost)} oder ${PW.Utils.costText(scrapCost)}.`);
-      return;
+      PW.Messages.add(`Wrackreparatur braucht ${PW.Utils.costText(options.basic)} oder ${PW.Utils.costText(options.scrap)}.`);
+      return false;
     }
     PW.Utils.pay(cost);
-    state.ship.hp = Math.min(state.ship.maxHp, state.ship.hp + 50);
+    state.ship.repairCount += 1;
+    state.ship.hp = Math.min(state.ship.maxHp, state.ship.hp + PW.CONFIG.shipRepair.hpRestored);
     if (state.ship.hp >= state.ship.maxHp) state.ship.damageFlash = 0;
     PW.Utils.addEffect("splash", PW.EnemySystem.shipCenter().x, PW.EnemySystem.shipCenter().y, "#6ec36e", 0.5, 1.7);
-    PW.Messages.add("Wrack +50 HP.", "ok");
+    PW.Messages.add(`Wrack +${PW.CONFIG.shipRepair.hpRestored} HP.`, "ok");
     PW.UI.renderHud();
+    return true;
   },
   canRepairModule(id) {
     const state = PW.state;

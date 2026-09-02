@@ -13,6 +13,12 @@ PW.CONFIG = Object.freeze({
   canvasHeight: 720,
   shipSize: 4,
   shipMaxHp: 500,
+  shipRepair: {
+    hpRestored: 50,
+    costMultiplier: 1.5,
+    scrapCost: { scrap: 10 },
+    basicCost: { wood: 10, stone: 8 }
+  },
   baseSafeRadius: 14,
   playerSpeed: 132,
   actionRepeatInterval: 0.8,

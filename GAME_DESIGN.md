@@ -71,7 +71,7 @@ Dieses Dokument ist die zentrale und verbindliche Designbeschreibung von Planet-
 
 - Das Wrack startet mit 500 Strukturpunkten.
 - Bei 0 HP ist die Partie verloren.
-- Reparatur ist tagsueber und nachts moeglich, solange Material vorhanden ist.
+- Reparatur ist tagsueber und nachts moeglich, solange Material vorhanden ist. Jede erfolgreiche Wrackreparatur stellt 50 HP wieder her und erhöht die Kosten der nächsten Reparatur um den Faktor 1,5; sie bleibt damit eine bewusste Notmaßnahme.
 
 ### Sieg
 
@@ -144,7 +144,7 @@ Die Wirtschaft bleibt dauerhaft spielbar: Baeume wachsen langsam auf freien Wald
 
 ## 8. BAU UND VERTEIDIGUNG
 
-Alle Bauwerke stehen auf einzelnen Gitterkacheln. Bau ist nicht auf Wrack, Ressourcen, Truhen, Monsterlager oder blockiertem Terrain moeglich. Die halbtransparente Vorschau schwebt immer auf der Kachel vor dem Spieler. Im dauerhaft umschaltbaren Blaupausenmodus lassen sich kostenfreie, nicht blockierende Bauvorhaben einzeln vormerken; sie werden später mit dem Bauwerkzeug an ihrer Position errichtet. Ein Tipp auf Alt entfernt sie dort wieder.
+Alle Bauwerke stehen auf einzelnen Gitterkacheln. Bau ist nicht auf Wrack, Ressourcen, Truhen, Monsterlager oder blockiertem Terrain moeglich. Die halbtransparente Vorschau schwebt immer auf der Kachel vor dem Spieler. Im dauerhaft umschaltbaren Blaupausenmodus lassen sich kostenfreie, nicht blockierende Bauvorhaben einzeln vormerken; sie werden später mit dem Bauwerkzeug an ihrer Position errichtet. Ein Tipp auf Alt entfernt sie dort wieder. Im Classic-Modus bleiben Palisaden bewusst reine Labyrinthbauteile und sind nicht ausbaubar.
 
 Direktes Feedback: Getroffene Gegner zeigen gebuendelte Schadenszahlen an ihrer Position. Beim Einsammeln erscheinen Ressourcenmengen an ihrer Quelle, statt die allgemeine Hinweisanzeige mit Standardgewinnen zu fuellen.
 
