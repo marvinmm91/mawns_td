@@ -68,8 +68,8 @@ const { pathToFileURL } = require("url");
     throw new Error(`Bedrohungsprognose ist fehlerhaft: ${JSON.stringify(result.forecast)}`);
   }
   if (!result.loaded || result.loadedDifficulty !== "hard") throw new Error(`Schwierigkeit bleibt nicht gespeichert: ${JSON.stringify(result)}`);
-  if (!/Schwierigkeit/.test(result.statusText) || !/Bedrohung Nacht/.test(result.statusText)) {
-    throw new Error(`Status zeigt keine Prognose: ${result.statusText}`);
+  if (!/Schwierigkeit/.test(result.statusText) || /Bedrohung Nacht|Balance/.test(result.statusText)) {
+    throw new Error(`Status zeigt interne Balanceinformationen: ${result.statusText}`);
   }
   if (result.helpCards < 13 || result.helpImages !== result.helpCards || result.catalogScrollable !== "auto") {
     throw new Error(`Hilfeuebersicht unvollstaendig: ${JSON.stringify(result)}`);

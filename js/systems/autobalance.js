@@ -16,7 +16,7 @@ PW.Autobalance = {
     const cfg = this.balanceConfig();
     const profile = this.difficultyProfile();
     const base = this.baseThreatForNight(night);
-    const drift = PW.Utils.clamp(PW.state.balance.drift, cfg.maxNegativeDrift, cfg.maxPositiveDrift);
+    const drift = PW.Utils.clamp(PW.state.balance.drift, 0, cfg.maxPositiveDrift);
     return base * profile.threatMultiplier * (1 + drift);
   },
   threatBudgetForNight(night) {
@@ -35,9 +35,7 @@ PW.Autobalance = {
     const gameMode = PW.GameModes.profile();
     const budget = directorBudget * gameMode.waveMultiplier * PW.Development.factor("waveMultiplier");
     const relativePressure = directorBudget / Math.max(1, this.baseThreatForNight(night) * profile.threatMultiplier);
-    const forecast = relativePressure < 0.82 ? { label: "Niedrig", description: "Niedriger" } :
-      relativePressure < 0.95 ? { label: "Gering", description: "Geringer" } :
-      relativePressure < 1.05 ? { label: "Planmäßig", description: "Planmäßiger" } :
+    const forecast = relativePressure < 1.05 ? { label: "Planmäßig", description: "Planmäßiger" } :
       relativePressure < 1.18 ? { label: "Erhöht", description: "Erhöhter" } :
       { label: "Hoch", description: "Hoher" };
     return { night, budget, directorBudget, relativePressure, ...forecast, profile, gameMode };
@@ -59,8 +57,8 @@ PW.Autobalance = {
     if (hard) {
       state.balance.hardStreak += 1;
       state.balance.easyStreak = 0;
-      adjustment = Math.max(cfg.maxNightRelief, -0.1 - damageRatio * 0.18);
-      state.balance.dropBonus = Math.min(cfg.maxDropBonus, state.balance.dropBonus + 0.06);
+      adjustment = 0;
+      state.balance.dropBonus = 0;
       if (stats.airDamage / Math.max(1, stats.shipDamageTaken) > 0.45) {
         state.balance.nextHints.push("air");
         PW.ResourceSystem.revealHint("iron");
@@ -69,16 +67,15 @@ PW.Autobalance = {
       state.balance.easyStreak += 1;
       state.balance.hardStreak = 0;
       if (state.balance.easyStreak >= 2) adjustment = cfg.maxNightBoost;
-      state.balance.dropBonus = Math.max(0, state.balance.dropBonus - 0.03);
+      state.balance.dropBonus = 0;
     } else {
       state.balance.easyStreak = 0;
       state.balance.hardStreak = 0;
       if (damageRatio < cfg.idealDamageMin) adjustment = 0.04;
-      if (damageRatio > cfg.idealDamageMax) adjustment = -0.06;
-      state.balance.dropBonus = Math.max(0, state.balance.dropBonus - 0.015);
+      state.balance.dropBonus = 0;
     }
 
-    state.balance.drift = PW.Utils.clamp(state.balance.drift + adjustment, cfg.maxNegativeDrift, cfg.maxPositiveDrift);
+    state.balance.drift = PW.Utils.clamp(Math.max(0, state.balance.drift) + Math.max(0, adjustment), 0, cfg.maxPositiveDrift);
 
     if (state.phase.night >= 3 && !state.knownResources.has("iron")) PW.ResourceSystem.revealHint("iron");
     if (state.phase.night >= 6 && !state.knownResources.has("crystal")) PW.ResourceSystem.revealHint("crystal");
@@ -109,9 +106,9 @@ PW.Autobalance = {
     else lines.push(`Wrackschaden: ${stats.shipDamageTaken} HP.`);
     if (stats.airDamage > stats.shipDamageTaken * 0.45) lines.push(`Luftgegner verursachten ${Math.round(stats.airDamage / Math.max(1, stats.shipDamageTaken) * 100)} Prozent des Schadens.`);
     if (stats.wallsDestroyed > 0) lines.push(`${stats.wallsDestroyed} Mauern wurden zerstört.`);
-    if (damageRatio > cfg.hardDamageRatio || hpRatio < cfg.lowHpRatio) lines.push("Nächste Nacht wird leicht entschärft und Schrottdrops steigen.");
-    else if (damageRatio < cfg.easyDamageRatio && avgKillDistance > PW.state.world.tileSize * 9) lines.push("Verteidigung war sehr stark. Der nächste Angriff kann breiter werden.");
-    else lines.push("Schwierigkeit bleibt nahe am aktuellen Druck.");
+    if (damageRatio > cfg.hardDamageRatio || hpRatio < cfg.lowHpRatio) lines.push("Der Angriff hat die Verteidigung stark beansprucht.");
+    else if (damageRatio < cfg.easyDamageRatio && avgKillDistance > PW.state.world.tileSize * 9) lines.push("Die Verteidigung hielt die Gegner auf großer Distanz.");
+    else lines.push("Die Verteidigung hielt dem aktuellen Druck stand.");
     if (!PW.hasAntiAir() && PW.state.phase.night >= 3) lines.push("Luftabwehr fehlt: Flak oder Laser vorbereiten.");
     if (PW.state.world.buildings.filter((b) => PW.BUILDINGS[b.type].category === "wall").length < 8 && PW.state.phase.night >= 2) lines.push("Mehr Mauern geben Ballisten Zeit zum Feuern.");
     return lines;

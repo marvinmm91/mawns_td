@@ -102,6 +102,13 @@ Object.assign(PW.UI, {
     });
     body.appendChild(factors);
 
+    const autobalance = document.createElement("section");
+    autobalance.className = "development-section";
+    const forecastNight = state.wave.active ? state.phase.night : state.phase.night + 1;
+    const forecast = PW.Autobalance.forecastForNight(forecastNight);
+    autobalance.innerHTML = `<h3>Automatische Steigerung</h3><div class="meta" title="Dieser interne Faktor kann nach besonders souveränen Nächten nur steigen. Er senkt die Schwierigkeit niemals automatisch.">Aktueller Zusatzdruck: ${Math.round(state.balance.drift * 100)}%. Nächste Nacht: ${forecast.label} (${Math.ceil(forecast.budget)} Budget).</div>`;
+    body.appendChild(autobalance);
+
     const simulation = document.createElement("section");
     simulation.className = "development-section";
     simulation.innerHTML = "<h3>Simulation</h3>";
@@ -132,8 +139,6 @@ Object.assign(PW.UI, {
   },
   renderStatus(body) {
     const state = PW.state;
-    const forecastNight = state.wave.active ? state.phase.night : state.phase.night + 1;
-    const forecast = PW.Autobalance.forecastForNight(forecastNight);
     const gameMode = PW.GameModes.profile();
     body.innerHTML = "";
     const phaseNames = { day: "Tag", dusk: "Dämmerung", night: state.ship.launchActive ? "Startsequenz" : "Nacht", dawn: "Morgen" };
@@ -146,12 +151,10 @@ Object.assign(PW.UI, {
       <div class="stat-box"><span>Bauwerke</span><strong>${state.world.buildings.length}</strong></div>
       <div class="stat-box"><span>Truhen</span><strong>${(state.world.treasureChests || []).filter((chest) => !chest.opened).length}</strong></div>
       <div class="stat-box"><span>Horden</span><strong>${(state.world.monsterCamps || []).filter((camp) => !camp.cleared).length}</strong></div>
-      <div class="stat-box"><span>${state.wave.active ? "Restbudget" : "Nächste Welle"}</span><strong>${Math.ceil(state.wave.active ? state.wave.budgetRemaining : forecast.budget)}</strong></div>
-      <div class="stat-box"><span>Balance</span><strong>${Math.round(state.balance.drift * 100)}%</strong></div>
-      <div class="stat-box"><span>Schwierigkeit</span><strong>${forecast.profile.shortName}</strong></div>
+      <div class="stat-box"><span>${state.wave.active ? "Restbudget" : "Nächste Welle"}</span><strong>${state.wave.active ? Math.ceil(state.wave.budgetRemaining) : "Bereit"}</strong></div>
+      <div class="stat-box"><span>Schwierigkeit</span><strong>${PW.Autobalance.difficultyProfile().shortName}</strong></div>
       <div class="stat-box"><span>Spielmodus</span><strong>${gameMode.shortName}</strong></div>
       <div class="stat-box"><span>Moduswellen</span><strong>${Math.round(gameMode.waveMultiplier * 100)}%</strong></div>
-      <div class="stat-box"><span>Bedrohung Nacht ${forecast.night}</span><strong>${forecast.label}</strong></div>
     `;
     body.appendChild(stats);
     const build = document.createElement("div");
@@ -751,9 +754,7 @@ Object.assign(PW.UI, {
       `Nacht ${report.night} überstanden.`,
       `Wrack: ${Math.ceil(report.hp)}/${report.maxHp} HP.`,
       `Kills: ${report.kills}. Zerstörte Mauern: ${report.wallsDestroyed}.`,
-      `Schwierigkeit: ${report.difficulty || PW.Autobalance.difficultyProfile().shortName}. Balance-Drift: ${Math.round(report.drift * 100)} Prozent. Drop-Hilfe: ${Math.round(report.dropBonus * 100)} Prozent.`,
-      `Spielmodus: ${report.gameMode || PW.GameModes.profile().shortName}. Moduswellen: ${Math.round((report.modeWaveMultiplier || PW.GameModes.profile().waveMultiplier) * 100)} Prozent.`,
-      report.nextForecast ? `Nächste Nacht: ${report.nextForecast.description || report.nextForecast.label} Druck, Budget ${Math.ceil(report.nextForecast.budget)}.` : ""
+      `Schwierigkeit: ${report.difficulty || PW.Autobalance.difficultyProfile().shortName}. Spielmodus: ${report.gameMode || PW.GameModes.profile().shortName}.`
     ].concat(report.diagnosis).forEach((line) => {
       const row = document.createElement("div");
       row.className = "report-row";

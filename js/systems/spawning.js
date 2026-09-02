@@ -7,7 +7,7 @@ PW.Spawning = {
     const night = state.phase.night;
     const waveDef = this.waveForNight(night);
     const multiplier = Math.max(0.1, Number(budgetMultiplier) || 1);
-    const budget = PW.Autobalance.effectiveThreatBudgetForNight(night) * (finalMode ? 0.58 : 1) * multiplier;
+    const budget = PW.Autobalance.effectiveThreatBudgetForNight(night) * waveDef.budgetMultiplier * (finalMode ? 0.58 : 1) * multiplier;
     state.wave = {
       active: true,
       finalMode,
@@ -17,6 +17,7 @@ PW.Spawning = {
       pulseTimer: 1.4,
       pulseIndex: 0,
       plannedDirections: this.pickDirections(waveDef.directions + (finalMode ? 1 : 0)),
+      featuredQueue: [...(waveDef.featured || [])],
       spawnedThisNight: 0,
       gameMode: PW.GameModes.profile().id,
       waveDef
@@ -26,7 +27,7 @@ PW.Spawning = {
     this.spawnPulse();
   },
   waveForNight(night) {
-    return PW.WAVES.find((wave) => wave.night === Math.min(night, 10)) || PW.WAVES[PW.WAVES.length - 1];
+    return PW.WaveScript.forNight(night);
   },
   pickDirections(count) {
     const rng = PW.state.rng;
@@ -120,6 +121,14 @@ PW.Spawning = {
   },
   pickEnemyType(waveDef, maxBudget) {
     const state = PW.state;
+    const featuredQueue = state.wave.featuredQueue || (state.wave.featuredQueue = []);
+    const featuredIndex = featuredQueue.findIndex((id) => {
+      const def = PW.ENEMIES[id];
+      if (!def) return false;
+      const minimumGroupBudget = def.budget * (def.packSize ? def.packSize[0] : 1);
+      return minimumGroupBudget <= maxBudget;
+    });
+    if (featuredIndex >= 0) return featuredQueue.splice(featuredIndex, 1)[0];
     let types = waveDef.enemies.filter((id) => {
       const def = PW.ENEMIES[id];
       const minimumGroupBudget = def.budget * (def.packSize ? def.packSize[0] : 1);
@@ -129,7 +138,7 @@ PW.Spawning = {
     if (!types.length) return null;
     const entries = types.map((id) => {
       const def = PW.ENEMIES[id];
-      let weight = 1 / def.budget;
+      let weight = (waveDef.enemyWeights?.[id] || 1) / def.budget;
       if (def.moveType === "air" && state.phase.night < 5) weight *= 0.45;
       if (id === "guardian" && !state.wave.finalMode) weight *= 0.25;
       if (state.balance.nextHints.includes("air")) weight *= def.moveType === "air" ? 0.82 : 1.08;

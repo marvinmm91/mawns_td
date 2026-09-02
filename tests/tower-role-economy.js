@@ -79,7 +79,7 @@ function table(rows) {
     const swarmGroupMultiplier = 1 + (catapult.expectedTargets - 1) * catapult.splashFalloff;
     const swarmEnemy = { id: "slow-swarm", type: "swarm", x: 120, y: 120, hp: 999, maxHp: 999, slowFactor: 1, slowTimer: 0 };
     PW.ProjectileSystem.hit({ sourceType: "tesla", damage: 0, splash: 0, slow: PW.BUILDINGS.tesla.slow, slowTime: PW.BUILDINGS.tesla.slowTime, color: "#fff" }, swarmEnemy);
-    const packCount = PW.Spawning.packSizeFor("swarm", PW.ENEMIES.swarm.budget * 4);
+    const packCount = PW.Spawning.packSizeFor("swarm", PW.ENEMIES.swarm.budget * 5);
     PW.state.phase.current = "night";
     PW.state.wave = {
       active: true,
@@ -118,7 +118,7 @@ function table(rows) {
     }
   }
   const { counters } = result;
-  if (counters.packCount < 2 || counters.packCount > 4 || counters.spawnedSwarmCount < 2 || counters.remainingSwarmBudget >= 5) {
+  if (counters.packCount < 5 || counters.packCount > 7 || counters.spawnedSwarmCount < 5 || counters.remainingSwarmBudget >= 5) {
     throw new Error(`Schwarmpaket fehlerhaft: ${JSON.stringify(counters)}`);
   }
   if (counters.catapultVsSwarm < counters.ballistaVsSwarm * 2) throw new Error(`Katapult ist kein klarer Schwarmkonter: ${JSON.stringify(counters)}`);

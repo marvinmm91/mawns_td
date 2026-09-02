@@ -76,6 +76,9 @@ PW.Save = {
       }
       PW.state.gameMode = PW.GameModes.normalize(PW.state.gameMode);
       PW.state.development = { ...PW.Development.defaults(), ...(data.development || {}) };
+      PW.state.balance = { ...fresh.balance, ...(data.balance || {}) };
+      PW.state.balance.drift = Math.max(0, Number(PW.state.balance.drift) || 0);
+      PW.state.balance.dropBonus = 0;
       PW.state.world.tileSize = PW.state.world.tileSize || PW.CONFIG.tileSize;
       PW.state.world.birds = PW.state.world.birds || [];
       PW.state.world.wildlife = PW.state.world.wildlife || [];
@@ -92,6 +95,7 @@ PW.Save = {
       if (!PW.state.treasure.campTarget) PW.state.treasure.campTarget = Math.max(PW.CONFIG.treasure.campCount[0], PW.state.world.monsterCamps.filter((camp) => !camp.cleared).length);
       PW.state.inventory.key = PW.state.inventory.key || 0;
       PW.state.wave = data.wave || PW.state.wave;
+      PW.state.wave.featuredQueue = Array.isArray(PW.state.wave.featuredQueue) ? PW.state.wave.featuredQueue : [];
       if (PW.state.wave.active && !PW.state.wave.id) {
         PW.state.wave.id = `legacy-wave-${PW.state.phase.night}`;
         PW.state.enemies.forEach((enemy) => {
