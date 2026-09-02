@@ -18,7 +18,7 @@ PW.BuildingSystem = {
     }
     const placement = this.placementStatus(type, x, y);
     if (!placement.ok) {
-      PW.Messages.add(placement.reason === "route" ? "Dieser Bau würde den letzten Weg zum Wrack versperren." : "Hier kann nicht gebaut werden.");
+      PW.Messages.add("Hier kann nicht gebaut werden.");
       return false;
     }
     if (!PW.Utils.canAfford(def.cost)) {
@@ -111,9 +111,6 @@ PW.BuildingSystem = {
     if (!def || !PW.GameModes.allowsBuilding(type)) return { ok: false, reason: "mode" };
     const canBuild = def.placeOnWater ? PW.Tiles.canBuildBridgeAt(x, y) : PW.Tiles.canBuildAt(x, y);
     if (!canBuild) return { ok: false, reason: "tile" };
-    if (def.blocksGround && PW.GameModes.profile().structureTargeting === "blockade" && !PW.Pathfinding.canPreserveClassicRoutes(type, x, y)) {
-      return { ok: false, reason: "route" };
-    }
     return { ok: true, reason: null };
   },
   nudgePlayerAwayFromBuildTile(tileX, tileY) {

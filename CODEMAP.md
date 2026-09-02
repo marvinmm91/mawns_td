@@ -33,7 +33,7 @@ Die UI-Dateien sind inzwischen konsolidiert: Bau-, Inventar-, Wrack-, Kontext- u
 - `js/data/buildings.js`: Mauern, Tuerme, Kosten, HP, Reichweite, Schaden, Zieltypen und gruppenspezifische AoE-Erwartung.
 - `js/data/enemies.js`: Gegnertypen, Rollen, Konterhinweise, HP, Tempo, Schadens-/Slow-Profile, Zielverhalten und Drops.
 - `js/data/wildlife.js`: Dekorative Voegel und passive Waldbewohner mit HP, Verhalten und Belohnungen.
-- `js/data/waves.js`: Wellenstufen, Freischaltungen, Mischungen und Spawngewichte.
+- `js/data/waves.js`: Feste Begegnungsskripte fuer die ersten zehn Naechte sowie wiederkehrende Invasionsdoktrinen mit Rollen-, Richtungs- und Budgetskalierung.
 - `js/data/shipModules.js`: Reparaturmodule, Kosten, Freischaltungen, Siegfortschritt.
 
 ## Welt und Karte
@@ -53,16 +53,16 @@ Die UI-Dateien sind inzwischen konsolidiert: Bau-, Inventar-, Wrack-, Kontext- u
 - `js/systems/development.js`: Entwicklungsfaktoren fuer Wellen, Gegnerwerte und Simulationsgeschwindigkeit sowie manueller Nachtstart.
 - `js/systems/gameModes.js`: Aufloesung und Validierung der zentralen Spielmodusprofile.
 - `js/systems/damageVisuals.js`: Zentraler Treffereffekt und kurzzeitige Schadensblitze fuer Wrack und Bauwerke.
-- `js/systems/building.js`: Bauplatzpruefung, Classic-Wegsperre, Platzieren, Blaupausen, Reparieren, Abreissen, Kosten.
-- `js/systems/pathfinding.js`: Normales Grid-Pfadfeld sowie strukturdurchlaessiges Direktfeld fuer Bodengegner, Blockaden und Direktziele. Die Classic-Baupruefung erzeugt bei Bedarf ein lokales Gegenfeld mit neuen und vorgemerkten Blockaden; beide Laufzeitfelder werden nur nach relevanten Weltveraenderungen berechnet.
-- `js/systems/combat.js`: Turmzielwahl mit Prioritaeten, Schaden, AoE, Slow, Luft-/Bodenfilter.
-- `js/systems/spawning.js`: Nachtspawns, modusgewichtete Wellenbudgets, Schwarmformationen, Spawnpunkte, Sicherheitsradius und Warnrichtungen.
+- `js/systems/building.js`: Bauplatzpruefung, Platzieren, Blaupausen, Reparieren, Abreissen, Kosten.
+- `js/systems/pathfinding.js`: Normales Grid-Pfadfeld sowie strukturdurchlaessiges Direktfeld fuer Bodengegner, Blockaden und Direktziele. Die Laufzeitfelder werden nur nach relevanten Weltveraenderungen berechnet; Classic nutzt bei vollständigen Sperren das Durchbruchziel.
+- `js/systems/combat.js`: Turmzielwahl mit Prioritaeten einschließlich wrackfernstem Ziel, Schaden, AoE, Slow, Luft-/Bodenfilter.
+- `js/systems/spawning.js`: Nachtspawns, modus- und skriptgewichtete Wellenbudgets, garantierte Schwerpunktgegner, Schwarmformationen, Spawnpunkte, Sicherheitsradius und Warnrichtungen.
 - `js/systems/drops.js`: Gegnerdrops, Einsammeln, Drop-Verfall optional.
 - `js/systems/treasure.js`: Schatztruhen, stationaere Monsterhorden, Schluesseldrops und Truhenbelohnungen.
 - `js/systems/outposts.js`: Einmalige Versorgungslager, Forschungsterminals und Sicherheitsbaken mit lokalen Wachgruppen.
 - `js/systems/wildlife.js`: Kleine Voegel ohne Hitbox, passive Waldbewohner mit Wander-/Fluchtverhalten, Trefferlogik, Beutedrops und gespeichertem Kartenmaximum mit Respawn.
 - `js/systems/progression.js`: Turmverfuegbarkeit, Wrackmodule, Siegbedingung und finale Startsequenz.
-- `js/systems/autobalance.js`: Auswertung vergangener Nacht, profilabhaengige Anpassung, effektives Modusbudget und sichtbare Bedrohungsprognose.
+- `js/systems/autobalance.js`: Auswertung vergangener Nacht, einseitige profilabhaengige Druckerhoehung und effektives Modusbudget; Diagnosewerte sind nur im Entwicklungsmenue sichtbar.
 - `js/systems/pixelArt.js`: Pixel-Design-Overrides, Asset-Katalog, LocalStorage, Import/Export und Start-Mods.
 - `mods/pixel-overrides.js`: Optional geladene Pixel-Mod-Datei fuer Designs, die beim Spielstart aktiv sein sollen; aktuell leerer Mod-Container.
 

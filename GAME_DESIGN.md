@@ -174,7 +174,7 @@ Alle Tuerme sind von Beginn an sichtbar und auswaehlbar. Ihre Ressourcen- und Ba
 ### Boden
 
 - Krabbler: Standarddruck; Ballisten halten einzelne Ziele am billigsten auf.
-- Schwarm: erscheint als groesseres, schwaches Paket; Katapult-AoE und Tesla-Slow sind die passenden Antworten.
+- Schwarm: erscheint immer als schwaches Paket aus 5 bis 7 Einheiten; Katapult-AoE und Tesla-Slow sind die passenden Antworten.
 - Panzereinheit: langsam, viele HP und resistent gegen Ballisten; Laser sind der klare Fernkonter.
 - Brecher: schnell genug, um Mauern zu bedrohen, und verursacht besonders hohen Blockadenschaden; Ballisten mit Brecher-Prioritaet sind effizient.
 - Nesthueter: schweres stationaeres Ziel mit wertvoller Beute; Laser und eine vorbereitete Mauerlinie sind entscheidend.
@@ -193,16 +193,24 @@ Alle normalen Nachtgegner priorisieren das Wrack. Stationaere Horden bewachen ih
 |---:|---|---|
 | 1 | Krabbler aus einer Richtung | Grundprinzip von Mauer und Balliste lernen |
 | 2 | Krabbler und Schwaerme | mehrere Bodenachsen absichern |
-| 3 | Krabbler und erste Drohnen | Luftgefahr ankundigen; eine vorbereitete Flak pruefen |
-| 4 | Krabbler, Schwaerme und Panzer | Einzelschaden hinterfragen |
-| 5 | Boden plus Drohnen | Luftabwehr erforderlich machen |
+| 3 | Krabbler, Schwaerme und ein Panzer | Einzelschaden gegen robuste Ziele pruefen |
+| 4 | Schwaerme und Panzer | Bodenfeuerlinien unter kombiniertem Druck pruefen |
+| 5 | Boden plus erste Drohnen | Luftabwehr erforderlich machen |
 | 6 | Schwaerme, Panzer und Drohnen | gemischte Verteidigung pruefen |
 | 7 | mehrere Richtungen und Brecher | Verteidigungsring belasten |
 | 8 | Stoersender und Brecher | Spezialrollen einfuehren |
 | 9 | schwere gemischte Nacht | Vorfinale Belastungsprobe |
-| 10+ | gemischte Wellen mit Nesthueter | Startsequenz vorbereiten |
+| 10 | vollstaendige Welle mit Nesthueter | alle bekannten Konter zusammen pruefen |
+| 11-20 | Sturmdoktrin | Schwaerme und Brecher verdichten Bodenlinien |
+| 21-30 | Luftdoktrin | Luftabwehr muss eine echte zweite Verteidigungslinie sein |
+| 31-40 | Belagerungsdoktrin | Panzer und Nesthueter erfordern starken Einzelzielschaden |
+| 41-50 | Zangendoktrin | mehr Richtungen pruefen die Flaechenabdeckung |
+| 51-60 | Vorhutdoktrin | Eliten pruefen starken Einzelzielschaden und die äußere Linie |
+| 61-70 | Invasionsdoktrin | alle Rollen greifen in wechselnden Gruppen an; danach rotiert die Doktrinfolge |
 
-Das Threat-Budget skaliert die Anzahl und Mischung der Gegner. Neue Mechaniken werden an Mindestnaechte gebunden und nicht durch Balancing uebersprungen.
+Die ersten zehn Naechte sind feste Begegnungsskripte: Die angegebene Rolle wird mindestens einmal als Schwerpunkt gespawnt. Danach wiederholt sich die Zehn-Nacht-Kadenz mit einer Doktrin. Jede Doktrin ergaenzt Rollen, gewichtet sie hoeher und kann eine weitere Spawnrichtung hinzufuegen. Innerhalb dieses Rahmens bleiben Gruppenstaerke, Reihenfolge der Pulse und Richtungen seedbasiert unterschiedlich.
+
+Das Threat-Budget skaliert die Gesamtmenge. Zusaetzlich traegt jedes Skript seinen festen Multiplikator; jedes weitere Kapitel erhoeht ihn um 11 Prozent. Nacht 60 liegt damit im sechsten Kapitel bei 1,55-fachem Skriptdruck, Nacht 61 setzt die Doktrinrotation mit 1,66 fort. Neue Mechaniken werden an Mindestnaechte gebunden und nicht durch Balancing uebersprungen.
 
 ## 11. WRACKMODULE UND PROGRESSION
 
@@ -253,11 +261,11 @@ Feedback erfolgt ueber Morgenberichte, Nachrichten, Schadensanzeigen, Reichweite
 
 Vor einer neuen Partie wird zusaetzlich zur Schwierigkeit ein Verteidigungsmodus gewaehlt. Classic ist der Kompatibilitaetsstandard fuer bestehende Spielstaende. Die Modusauswahl wird gespeichert und im Status angezeigt. Die konkreten Angriffs- und Wellenregeln werden getrennt von den Schwierigkeitsprofilen definiert, damit der Modus Zielverhalten und die Schwierigkeit den Director-Druck steuert.
 
-Im Classic Mode verhindert die Baupruefung schon beim Platzieren, dass eine blockierende Struktur den letzten Bodenweg zum Wrack schliesst. Mauern und Verteidigungstuerme blockieren dabei beide Bodeneinheiten; die Pruefung bewertet auch ihre Blaupausen. Sie prueft die moeglichen Spawnraender, bereits laufende regulaere Bodengegner und vorgemerkte Blaupausen gemeinsam. Labyrinthe, Engstellen und Umwege bleiben moeglich; vollstaendige Einsperrungen nicht. Im seltenen Notfall eines alten Spielstands oder einer unvorhergesehenen Blockade greifen regulaere Bodengegner ausschliesslich das passende Durchbruchziel mit zehnfachem Strukturschaden an, bis wieder ein Weg offen ist. Luftgegner sowie stationaere Horden- und Aussenpostenwachen behalten ihre lokalen Regeln.
+Im Classic Mode duerfen Mauern, Palisaden und Verteidigungstuerme den Bodenweg vollstaendig schliessen. Regulaere Bodengegner ignorieren jede Struktur, solange ein Weg offen ist. Ohne Weg greifen sie ausschliesslich das passende Durchbruchziel mit zwanzigfachem Classic-Strukturschaden an, bis wieder ein Weg offen ist. Das macht eine vollstaendige Einsperrung zu einer bewussten, aber kurzlebigen Entscheidung statt zu einer fehleranfälligen Baupruefung. Luftgegner sowie stationaere Horden- und Aussenpostenwachen behalten ihre lokalen Regeln.
 
 Im Aggressive Mode greifen regulaere Bodengegner eine Mauer, Palisade oder einen Turm an, wenn sie auf ihrem berechneten direkten Weg zum Wrack liegen. Seitliche oder von der Route nicht beruehrte Verteidigungen bleiben unberuehrt. Vollstaendige Blockaden bleiben aufbrechbar; der normale Strukturschaden wird nicht auf das Wrack uebertragen.
 
-Classic erhaelt 372 Prozent des vom Director berechneten Wellenbudgets und bietet beim Neubau nur die Palisade an; Stein- und Stahlmauern bleiben fuer alte Spielstaende erhalten, sind dort aber nicht erneut baubar. Alle gegnerischen Treffer auf Wrack und Bauwerke verursachen im Classic Mode 40 Prozent ihres Grundschadens; der zehnfache Durchbruchschaden bleibt dabei relativ erhalten. Aggressive erhaelt unveraendert 92 Prozent Wellenbudget, 100 Prozent Gegnerschaden und alle drei Mauertypen, weil die aktive Verteidigung entlang der Direktroute bereits dauerhaft belastet wird. Der Status und Morgenbericht zeigen den Modusfaktor; die Bedrohungsprognose zeigt stets das daraus resultierende effektive Budget.
+Classic erhaelt 372 Prozent des vom Director berechneten Wellenbudgets und bietet beim Neubau nur die Palisade an; Stein- und Stahlmauern bleiben fuer alte Spielstaende erhalten, sind dort aber nicht erneut baubar. Alle gegnerischen Treffer auf Wrack und Bauwerke verursachen im Classic Mode 40 Prozent ihres Grundschadens. Der zwanzigfache Durchbruchschaden bleibt dabei relativ erhalten und entspricht achtfachem Grundschaden. Aggressive erhaelt unveraendert 92 Prozent Wellenbudget, 100 Prozent Gegnerschaden und alle drei Mauertypen, weil die aktive Verteidigung entlang der Direktroute bereits dauerhaft belastet wird. Der Status zeigt den statischen Modusfaktor.
 
 Das Ende einer Nacht stoppt nur neue Spawnpulse. Bereits gespawnte Gegner bleiben in beiden Modi aktiv und greifen bis zu ihrem Tod weiter an.
 
@@ -267,7 +275,7 @@ Jede Nacht besitzt ein Threat-Budget:
 
 ```text
 Basisbudget + Nachtwachstum + leichte spaete Skalierung
-multipliziert mit Schwierigkeitsprofil, begrenztem Balance-Drift und Moduswellenfaktor
+multipliziert mit Schwierigkeitsprofil, einseitigem Balance-Drift, Modus- und Skriptfaktor
 ```
 
 Bewertet werden aktuell vor allem:
@@ -277,27 +285,17 @@ Bewertet werden aktuell vor allem:
 - zerstoerte Mauern beziehungsweise Bauwerke
 - Kills und durchschnittliche Killentfernung
 
-Nach einer harten Nacht:
-
-- Threat-Budget moderat reduzieren
-- Schrottdrop-Chance erhoehen
-- bei starkem Luftschaden Eisenhinweis geben
-
-Nach wiederholt sehr leichten Naechten:
-
-- Threat-Budget moderat erhoehen
-- gegebenenfalls eine weitere Richtung oder gemischtere Gruppen verwenden
+Nach einer harten Nacht bleibt der automatische Druck unveraendert; bei starkem Luftschaden kann ein Eisenhinweis erscheinen. Nach einer wiederholt sehr leichten Nacht kann der Director den Druck in kleinen Schritten erhoehen. Er reduziert weder das Budget noch erhoeht er automatisch Drops.
 
 Grenzen:
 
-- maximal 18 Prozent Entschaerfung pro Nacht
 - maximal 12 Prozent Verstaerkung pro Nacht
-- Balance-Drift zwischen -30 und +30 Prozent
+- Balance-Drift zwischen 0 und +30 Prozent
 - finale Startsequenz bleibt an Mindestbedingungen gebunden
 
-Vor einer neuen Partie wird eine von fuenf Stufen gewaehlt. Stufe 3 (Standard) nutzt unveraendert die oben genannten Werte. Die Stufen 1 bis 2 senken den Grunddruck und verstarken Entlastung sowie Catch-up-Drops; die Stufen 4 bis 5 erhoehen den Grunddruck und begrenzen diese Hilfe. Gegnerwerte, Turmwerte, Kosten und Gegnerrollen bleiben dabei gleich.
+Vor einer neuen Partie wird eine von fuenf Stufen gewaehlt. Stufe 3 (Standard) nutzt unveraendert die oben genannten Werte. Die Stufen 1 bis 2 senken den Grunddruck, die Stufen 4 bis 5 erhoehen ihn. Gegnerwerte, Turmwerte, Kosten und Gegnerrollen bleiben dabei gleich.
 
-Der Status und der Morgenbericht zeigen die gewaehlte Stufe sowie eine Bedrohungsprognose fuer die naechste Nacht. Diese Prognose basiert auf Schwierigkeitsprofil und aktuellem Balance-Drift und zeigt das konkrete Wellenbudget, damit die Anpassung nachvollziehbar bleibt.
+Die gewaehlte Stufe bleibt im Status sichtbar. Der interne automatische Zusatzdruck und sein konkretes Budget sind ausschliesslich im Entwicklungsmenue sichtbar.
 
 Zielbild fuer eine gute Nacht auf Standard: ungefaehr 8 bis 22 Prozent Wrackschaden, sichtbare Belastung der Verteidigung und genug Beute fuer eine relevante Folgeentscheidung.
 

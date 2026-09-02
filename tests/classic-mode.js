@@ -66,21 +66,30 @@ const { pathToFileURL } = require("url");
 
     const blockedEnemy = setup(Array.from({ length: 16 }, (_, y) => ({ x: 7, y })));
     const blockedWall = PW.Tiles.getBuilding(7, 8);
+    PW.EnemySystem.updateAttack(blockedEnemy, 0.2);
     for (let step = 0; step < 6; step++) {
       PW.EnemySystem.updateAttack(blockedEnemy, 0.2);
     }
+    const routeAfterBreak = PW.Pathfinding.routeInfoFor(blockedEnemy).hasPath;
     const blocked = {
       hp: blockedWall.hp,
       expectedDamage: def.wallDamage * PW.GameModes.profile("classic").breakthroughDamageMultiplier * PW.GameModes.profile("classic").enemyDamageMultiplier,
-      shipHp: PW.state.ship.hp
+      shipHp: PW.state.ship.hp,
+      routeAfterBreak,
+      crossedBreak: PW.Utils.worldToTile(blockedEnemy.x) >= 7,
+      gapBlocked: PW.Tiles.isBlockedForGround(7, 8),
+      wallDestroyed: !PW.Tiles.getBuilding(7, 8)
     };
+
+    const openGapEnemy = setup(Array.from({ length: 16 }, (_, y) => y === 8 ? null : ({ x: 7, y })).filter(Boolean));
+    const openGapHasPath = PW.Pathfinding.routeInfoFor(openGapEnemy).hasPath;
 
     const airEnemy = setup([{ x: 7, y: 8 }]);
     airEnemy.type = "drone";
     airEnemy.attackCooldown = 0;
     const airWall = PW.Tiles.getBuilding(7, 8);
     PW.EnemySystem.updateAttack(airEnemy, 0.2);
-    return { alternate, blocked, airWallHp: airWall.hp };
+    return { alternate, blocked, openGapHasPath, airWallHp: airWall.hp };
   });
 
   await browser.close();
@@ -88,8 +97,8 @@ const { pathToFileURL } = require("url");
   if (result.alternate.hp !== 70 || !result.alternate.moved || !result.alternate.movedAround) {
     throw new Error(`Classic ignoriert Alternativweg nicht: ${JSON.stringify(result.alternate)}`);
   }
-  if (Math.abs(result.blocked.hp - Math.max(0, 70 - result.blocked.expectedDamage)) > 0.001 || result.blocked.shipHp !== 500) {
-    throw new Error(`Classic-Blockadeschaden fehlerhaft: ${JSON.stringify(result.blocked)}`);
+  if (!result.openGapHasPath || Math.abs(result.blocked.hp - Math.max(0, 70 - result.blocked.expectedDamage)) > 0.001 || result.blocked.shipHp !== 500 || !result.blocked.wallDestroyed || !result.blocked.crossedBreak || !result.blocked.routeAfterBreak) {
+    throw new Error(`Classic-Blockadeschaden fehlerhaft: ${JSON.stringify(result)}`);
   }
   if (result.airWallHp !== 70) throw new Error(`Luftgegner greifen im Classic Mode eine Mauer an: ${result.airWallHp}`);
   console.log("OK classic mode", JSON.stringify(result));

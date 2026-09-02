@@ -4,6 +4,7 @@ PW.Combat = {
   targetPriorityDefinitions: Object.freeze({
     ship: { label: "Wracknah" },
     nearest: { label: "Nächster" },
+    last: { label: "Letzter" },
     strongest: { label: "Stärkster" },
     breaker: { label: "Brecher zuerst" },
     air: { label: "Luft zuerst" }
@@ -41,7 +42,7 @@ PW.Combat = {
     };
   },
   targetPriorityOptions(building, def) {
-    const options = ["ship", "nearest", "strongest", "breaker"];
+    const options = ["ship", "nearest", "last", "strongest", "breaker"];
     if (def.targets.includes("ground") && def.targets.includes("air")) options.push("air");
     return options.map((id) => ({ id, ...this.targetPriorityDefinitions[id] }));
   },
@@ -67,6 +68,7 @@ PW.Combat = {
   targetScore(enemy, origin, ship, priority) {
     const dist = PW.Utils.distance(origin.x, origin.y, enemy.x, enemy.y);
     if (priority === "nearest") return dist;
+    if (priority === "last") return -PW.Utils.distance(enemy.x, enemy.y, ship.x, ship.y) + dist * 0.05;
     if (priority === "strongest") return -(enemy.maxHp || enemy.hp) * 1000 + dist;
     return PW.Utils.distance(enemy.x, enemy.y, ship.x, ship.y) + dist * 0.05;
   },

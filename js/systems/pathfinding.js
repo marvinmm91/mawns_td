@@ -47,35 +47,6 @@ PW.Pathfinding = {
     }
     return field;
   },
-  canPreserveClassicRoutes(type, x, y) {
-    const def = PW.BUILDINGS[type];
-    if (!def || !def.blocksGround || PW.GameModes.profile().structureTargeting !== "blockade") return true;
-    if (this.dirty) this.compute();
-    const blocked = new Set([PW.Utils.tileKey(x, y)]);
-    (PW.state.world.blueprints || []).forEach((blueprint) => {
-      const blueprintDef = PW.BUILDINGS[blueprint.type];
-      if (blueprintDef && blueprintDef.blocksGround) blocked.add(PW.Utils.tileKey(blueprint.x, blueprint.y));
-    });
-    const proposedField = this.computeGroundField(blocked);
-    return this.classicRouteSources().every(({ x: sourceX, y: sourceY }) => {
-      const index = PW.Tiles.idx(sourceX, sourceY);
-      return !Number.isFinite(this.field[index]) || Number.isFinite(proposedField[index]);
-    });
-  },
-  classicRouteSources() {
-    const sources = new Map();
-    const add = (x, y) => {
-      if (!PW.Tiles.inBounds(x, y)) return;
-      sources.set(PW.Utils.tileKey(x, y), { x, y });
-    };
-    PW.Spawning.groundEntryTiles().forEach(({ x, y }) => add(x, y));
-    PW.state.enemies.forEach((enemy) => {
-      const def = PW.ENEMIES[enemy.type];
-      if (!def || def.moveType !== "ground" || enemy.campId || enemy.outpostId || enemy.retreating) return;
-      add(PW.Utils.worldToTile(enemy.x), PW.Utils.worldToTile(enemy.y));
-    });
-    return [...sources.values()];
-  },
   computeDirectField() {
     const state = PW.state;
     const world = state.world;

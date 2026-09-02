@@ -97,17 +97,17 @@ const { pathToFileURL } = require("url");
 
   await browser.close();
   if (errors.length) throw new Error(`Browserfehler:\n${errors.join("\n")}`);
-  if (result.blockedStatus.ok || result.blockedStatus.reason !== "route") {
-    throw new Error(`Classic laesst eine vollstaendige Wegsperre zu: ${JSON.stringify(result.blockedStatus)}`);
+  if (!result.blockedStatus.ok || result.blockedStatus.reason) {
+    throw new Error(`Classic blockiert eine vollstaendige Palisadenlinie: ${JSON.stringify(result.blockedStatus)}`);
   }
-  if (result.blockedTowerStatus.ok || result.blockedTowerStatus.reason !== "route") {
-    throw new Error(`Classic laesst eine Turm-Wegsperre zu: ${JSON.stringify(result.blockedTowerStatus)}`);
+  if (!result.blockedTowerStatus.ok || result.blockedTowerStatus.reason) {
+    throw new Error(`Classic blockiert eine vollstaendige Turmlinie: ${JSON.stringify(result.blockedTowerStatus)}`);
   }
-  if (!result.firstBlueprint || result.secondBlueprint) {
-    throw new Error(`Blaupausen sichern den kuenftigen Weg nicht: ${JSON.stringify(result)}`);
+  if (!result.firstBlueprint || !result.secondBlueprint) {
+    throw new Error(`Classic blockiert eine vollstaendige Palisaden-Blaupause: ${JSON.stringify(result)}`);
   }
-  if (!result.firstTowerBlueprint || result.secondTowerBlueprint) {
-    throw new Error(`Turm-Blaupausen sichern den kuenftigen Weg nicht: ${JSON.stringify(result)}`);
+  if (!result.firstTowerBlueprint || !result.secondTowerBlueprint) {
+    throw new Error(`Classic blockiert eine vollstaendige Turm-Blaupause: ${JSON.stringify(result)}`);
   }
   if (/Steinmauer|Stahlmauer/.test(result.classicBuildText) || /Steinmauer|Stahlmauer/.test(result.classicHelpText) || result.selectedBuild !== "palisade") {
     throw new Error(`Classic zeigt oder waehlt gesperrte Mauern: ${JSON.stringify(result)}`);
