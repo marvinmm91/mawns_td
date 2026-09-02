@@ -21,8 +21,10 @@ PW.Player = {
       this.move(dx * player.speed * dt, dy * player.speed * dt);
     }
 
-    if (PW.Input.consume(" ") && player.actionCooldown <= 0) {
-      player.actionCooldown = 0.16;
+    const actionPressed = PW.Input.consume(" ");
+    const actionHeld = PW.Input.isDown(" ");
+    if ((actionPressed || actionHeld) && player.actionCooldown <= 0) {
+      player.actionCooldown = PW.CONFIG.actionRepeatInterval;
       this.interact();
     }
   },

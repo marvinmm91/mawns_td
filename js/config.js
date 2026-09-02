@@ -15,6 +15,7 @@ PW.CONFIG = Object.freeze({
   shipMaxHp: 500,
   baseSafeRadius: 14,
   playerSpeed: 132,
+  actionRepeatInterval: 0.16,
   playerInteractRange: 1,
   dropPickupRadius: 30,
   dropMagnetRadius: 72,
