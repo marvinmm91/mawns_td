@@ -136,6 +136,17 @@ Object.assign(PW.UI, {
     });
     simulation.append(speeds, night);
     body.appendChild(simulation);
+
+    const resources = document.createElement("section");
+    resources.className = "development-section";
+    resources.innerHTML = "<h3>Rohstoffe</h3><div class=\"meta\">Füllt jeden Rohstoff im Inventar auf.</div>";
+    const grantResources = document.createElement("button");
+    grantResources.type = "button";
+    grantResources.textContent = "200 von jedem Rohstoff geben";
+    grantResources.title = "Gibt dem Inventar 200 von jedem bekannten Rohstoff und Gegenstand.";
+    grantResources.addEventListener("click", () => PW.Development.grantAllResources(200));
+    resources.appendChild(grantResources);
+    body.appendChild(resources);
   },
   renderStatus(body) {
     const state = PW.state;

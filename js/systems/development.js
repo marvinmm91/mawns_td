@@ -31,6 +31,19 @@ PW.Development = {
     const next = Math.round((this.factor(id) + amount) * 20) / 20;
     return this.setFactor(id, next);
   },
+  grantAllResources(amount = 200) {
+    const state = PW.state;
+    Object.values(PW.RESOURCES).forEach((resource) => {
+      state.inventory[resource.id] = (state.inventory[resource.id] || 0) + amount;
+      state.knownResources.add(resource.id);
+    });
+    PW.Progression.refreshUnlocks();
+    PW.UI.refreshInventoryDependentPanel();
+    PW.UI.renderHud();
+    PW.Save.save(false);
+    PW.Messages.add(`Entwicklungsmodus: +${amount} von jedem Rohstoff.`, "ok");
+    return true;
+  },
   startNextNight() {
     const state = PW.state;
     if (state.paused || state.gameOver || state.victory || state.ship.launchActive || state.phase.current === "night" || state.wave.active) return false;
