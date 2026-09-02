@@ -15,6 +15,12 @@ const { pathToFileURL } = require("url");
 
   const url = pathToFileURL(path.join(__dirname, "..", "index.html")).href;
   await page.goto(url);
+  const changelog = await page.locator(".start-changelog").innerText();
+  const beta3Index = changelog.indexOf("Beta 3 – Änderungen seit Beta 2");
+  const beta2Index = changelog.indexOf("Beta 2 – Änderungen seit Beta 1");
+  if (beta3Index < 0 || beta2Index < 0 || beta3Index > beta2Index) {
+    throw new Error(`Start-Changelog ist unvollständig oder falsch sortiert: ${changelog}`);
+  }
   await page.getByRole("button", { name: "Neue Partie" }).click();
   await page.waitForTimeout(700);
 

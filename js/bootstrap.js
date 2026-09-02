@@ -21,6 +21,24 @@ const BETA_2_CHANGELOG = Object.freeze([
   "Fehlenden Umlaut im Upgrade-Menü korrigiert."
 ]);
 
+const BETA_3_CHANGELOG = Object.freeze([
+  "Fünf Schwierigkeitsstufen mit gespeicherter Auswahl und Vorschau für die nächste Nacht ergänzt.",
+  "Classic und Aggressive als eigenständige Spielmodi eingeführt, einschließlich gespeicherter Auswahl und eigener Balance.",
+  "Classic deutlich erweitert: mehr Gegner, weniger normaler Gegnerschaden und Palisaden als einzige neu baubare Mauer.",
+  "Vollständige Blockaden sind im Classic-Modus erlaubt; eingeschlossene Gegner brechen sie gezielt mit massivem Strukturschaden auf.",
+  "Reguläre Nächte enden erst nach dem letzten Wellengegner. Bereits gespawnte Gegner bleiben auch nach der Nacht aktiv.",
+  "Feste Begegnungen für die ersten zehn Nächte sowie abwechslungsreiche, skalierende Kapitel bis weit über Nacht 60 ergänzt.",
+  "Schwärme treten in sinnvollen Mindestgruppen auf; Gegner erhalten leicht unterschiedliche Bewegungsgeschwindigkeiten.",
+  "Taktische Karte mit Erkundungsstand, Wrack, Spieler, Gegnern und Kartennadeln ergänzt.",
+  "Entwicklungsmenü ersetzt die Benchmark-Sandbox: Testfaktoren, Zeitbeschleunigung, Nachtstart und Materialhilfe direkt im Spiel.",
+  "Automatisches Balancing erhöht nach sehr leichten Nächten nur noch den Druck und zeigt seine Diagnose ausschließlich im Entwicklungsmenü.",
+  "Turmziele auf Wracknähe, Letzter, Stärkster und Schwächster fokussiert; Klassik-Routen und Turmpositionen robuster gemacht.",
+  "Bau- und Werkzeugsteuerung überarbeitet: Aktionen vor der Figur, Bauplanwechsel mit Taste 4, Mausradwechsel und wiederholte Aktionen beim Halten.",
+  "Blaupausen sind dauerhaft umschaltbar, lassen sich mit einem Alt-Tipp entfernen und können gesammelt für 20 Prozent Mehrkosten errichtet werden.",
+  "Reparaturwerkzeug verbessert nun vollständig reparierte Bauwerke; Bau- und Kontextfenster dienen als reine Statusansichten.",
+  "DPS-Anzeigen, skalierte Gegnerbeute, Morgen-Tipps und weitere Hinweise zur Bedienung ergänzt."
+]);
+
 PW.Bootstrap = {
   init() {
     const state = PW.state;
@@ -125,9 +143,12 @@ PW.Bootstrap = {
         </div>
       </section>
       <p>Steuerung: WASD/Pfeiltasten, Space für Aktion, E Inventar, R Wrack, M Karte, P Pause.</p>
-      <section class="start-changelog" aria-labelledby="beta2ChangelogTitle">
-        <h3 id="beta2ChangelogTitle">Beta 2 – Änderungen seit Beta 1</h3>
+      <section class="start-changelog" aria-labelledby="beta3ChangelogTitle">
         <div class="start-changelog-scroll">
+          <h3 id="beta3ChangelogTitle">Beta 3 – Änderungen seit Beta 2</h3>
+          <ul>${BETA_3_CHANGELOG.map((entry) => `<li>${entry}</li>`).join("")}</ul>
+          <hr class="start-changelog-separator">
+          <h3 id="beta2ChangelogTitle">Beta 2 – Änderungen seit Beta 1</h3>
           <ul>${BETA_2_CHANGELOG.map((entry) => `<li>${entry}</li>`).join("")}</ul>
         </div>
       </section>

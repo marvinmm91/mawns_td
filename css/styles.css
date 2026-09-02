@@ -353,7 +353,7 @@ button:disabled {
 }
 
 .start-changelog-scroll {
-  max-height: 150px;
+  max-height: 240px;
   overflow-y: auto;
   padding-right: 8px;
 }
@@ -365,6 +365,12 @@ button:disabled {
 
 .start-changelog li + li {
   margin-top: 5px;
+}
+
+.start-changelog-separator {
+  margin: 14px 0;
+  border: 0;
+  border-top: 1px dashed #706b55;
 }
 
 .help-catalog {
