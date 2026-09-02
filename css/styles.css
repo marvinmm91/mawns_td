@@ -222,7 +222,7 @@ button:disabled {
 .morning-tooltip {
   display: grid;
   gap: 4px;
-  margin: 14px 0 0;
+  margin: 14px 0 18px;
   padding: 10px 12px;
   border-left: 3px solid var(--accent);
   background: rgba(131, 227, 218, .08);
