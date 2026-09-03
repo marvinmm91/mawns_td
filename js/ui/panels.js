@@ -108,7 +108,31 @@ Object.assign(PW.UI, {
     autobalance.className = "development-section";
     const forecastNight = state.wave.active ? state.phase.night : state.phase.night + 1;
     const forecast = PW.Autobalance.forecastForNight(forecastNight);
-    autobalance.innerHTML = `<h3>Automatische Steigerung</h3><div class="meta" title="Dieser interne Faktor kann nach besonders souveränen Nächten nur steigen. Er senkt die Schwierigkeit niemals automatisch.">Aktueller Zusatzdruck: ${Math.round(state.balance.drift * 100)}%. Nächste Nacht: ${forecast.label} (${Math.ceil(forecast.budget)} Budget).</div>`;
+    const balanceCfg = PW.Autobalance.balanceConfig();
+    const percent = (value) => `${Math.round(value * 100)} %`;
+    autobalance.innerHTML = "<h3>Automatische Steigerung</h3>";
+    const explanation = document.createElement("div");
+    explanation.className = "meta";
+    explanation.textContent = "Das Wellenbudget ist kein Gegnerzähler: Der Director verteilt es auf Gegnerrollen. Günstige Schwärme verbrauchen wenig Budget, schwere Gegner deutlich mehr.";
+    const details = [
+      ["Nächste Nacht", `${forecast.night}: ${forecast.label}`],
+      ["Basisbudget", forecast.baseBudget.toLocaleString("de-DE", { maximumFractionDigits: 1 })],
+      ["Schwierigkeitsstufe", `${forecast.profile.shortName} x${forecast.profile.threatMultiplier.toFixed(2)}`],
+      ["Automatischer Zusatzdruck", `+${percent(forecast.drift)} (maximal +${percent(balanceCfg.maxPositiveDrift)})`],
+      ["Nach Director", forecast.directorBudget.toLocaleString("de-DE", { maximumFractionDigits: 1 })],
+      ["Spielmodus", `${forecast.gameMode.shortName} x${forecast.gameMode.waveMultiplier.toFixed(2)}`],
+      ["Testfaktor Wellenmenge", `x${forecast.developmentMultiplier.toFixed(2)}`],
+      ["Endbudget", Math.ceil(forecast.budget).toLocaleString("de-DE")]
+    ];
+    autobalance.appendChild(explanation);
+    details.forEach(([label, value]) => autobalance.appendChild(this.infoLine(label, value)));
+    const behavior = document.createElement("div");
+    behavior.className = "meta";
+    behavior.textContent = `Nach zwei sehr leichten Nächten in Folge steigt der Druck um ${percent(balanceCfg.maxNightBoost)}. Eine kontrollierte Nacht unter ${percent(balanceCfg.idealDamageMin)} Wrackschaden erhöht ihn um 4 %. Harte Nächte senken ihn nicht, erhöhen ihn aber auch nicht.`;
+    const criteria = document.createElement("div");
+    criteria.className = "meta";
+    criteria.textContent = `Sehr leicht heißt: höchstens ${percent(balanceCfg.easyDamageRatio)} Wrackschaden, keine zerstörte Mauer und Gegner im Schnitt mehr als 9 Felder vor dem Wrack besiegt. Der Zusatzdruck erhöht nur das Budget und neue Gegner-HP geringfügig; Schaden und Tempo der Gegner bleiben unverändert.`;
+    autobalance.append(behavior, criteria);
     body.appendChild(autobalance);
 
     const simulation = document.createElement("section");

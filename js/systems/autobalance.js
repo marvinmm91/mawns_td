@@ -30,15 +30,19 @@ PW.Autobalance = {
     return budget;
   },
   forecastForNight(night) {
-    const directorBudget = this.calculateThreatBudget(night);
     const profile = this.difficultyProfile();
     const gameMode = PW.GameModes.profile();
-    const budget = directorBudget * gameMode.waveMultiplier * PW.Development.factor("waveMultiplier");
-    const relativePressure = directorBudget / Math.max(1, this.baseThreatForNight(night) * profile.threatMultiplier);
+    const baseBudget = this.baseThreatForNight(night);
+    const difficultyBudget = baseBudget * profile.threatMultiplier;
+    const drift = PW.Utils.clamp(PW.state.balance.drift, 0, this.balanceConfig().maxPositiveDrift);
+    const directorBudget = difficultyBudget * (1 + drift);
+    const developmentMultiplier = PW.Development.factor("waveMultiplier");
+    const budget = directorBudget * gameMode.waveMultiplier * developmentMultiplier;
+    const relativePressure = directorBudget / Math.max(1, difficultyBudget);
     const forecast = relativePressure < 1.05 ? { label: "Planmäßig", description: "Planmäßiger" } :
       relativePressure < 1.18 ? { label: "Erhöht", description: "Erhöhter" } :
       { label: "Hoch", description: "Hoher" };
-    return { night, budget, directorBudget, relativePressure, ...forecast, profile, gameMode };
+    return { night, budget, directorBudget, baseBudget, difficultyBudget, drift, developmentMultiplier, relativePressure, ...forecast, profile, gameMode };
   },
   evaluateNight() {
     const state = PW.state;
