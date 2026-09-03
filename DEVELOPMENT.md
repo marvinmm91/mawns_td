@@ -32,7 +32,7 @@ Noch nicht beschlossene Vorschlaege gehoeren ausschliesslich in `ROADMAP.md`. So
 
 - [x] WASD- und Pfeiltasten fuer Bewegung.
 - [x] Leertaste fuer die Kontextaktion vor dem Spieler.
-- [x] Hotkeys fuer Werkzeuge, Inventar, Baumenue, Wrackmenue, Hilfe und Pause.
+- [x] Hotkeys fuer Werkzeuge, Baumenue, Wrackmenue, Hilfe und Pause.
 - [x] Mausinspektion auf Weltobjekten sowie Nahbereichsaktionen auf freiem Gelände.
 - [x] Sammeln, Abbauen, Reparieren, Bauen und Abreissen.
 
@@ -42,6 +42,7 @@ Noch nicht beschlossene Vorschlaege gehoeren ausschliesslich in `ROADMAP.md`. So
 - [x] Bruecken auf Wasser.
 - [x] Balliste, Katapult, Flak, Tesla-Feld und Laser-Turm.
 - [x] HP, werkzeuggebundene Reparatur/Upgrades und bis zu drei Ausbaustufen.
+- [x] Bau- und Upgradezeiten mit sichtbarem Kreisfortschritt; Baustellen feuern und blockieren erst nach Fertigstellung, Upgrades arbeiten bis zum Abschluss mit den bisherigen Werten weiter.
 - [x] Zieltypen fuer Boden und Luft.
 - [x] Projektile, Treffer, AoE, Slow und visuelles Schadensfeedback.
 - [x] Pathfinding-Neuberechnung nur nach relevanten Bauveraenderungen.
@@ -61,6 +62,7 @@ Noch nicht beschlossene Vorschlaege gehoeren ausschliesslich in `ROADMAP.md`. So
 - [x] Alle Tuerme sind von Beginn an sichtbar; Ressourcen- und Baukosten bleiben die Zugangshuerde.
 - [x] Ressourcenbasierte und nachtbasierte Freischaltungen fuer Module und uebrige Gebaeude.
 - [x] Wrackmodule mit Kosten, Effekten und Siegfortschritt.
+- [x] Perk-Coins nach jeder ueberstandenen Nacht sowie ein persistenter, abhaengigkeitsbasierter Perkbaum.
 - [x] Startsequenz mit 120-Sekunden-Countdown.
 - [x] Sieg- und Niederlagendialog.
 
@@ -94,6 +96,7 @@ Noch nicht beschlossene Vorschlaege gehoeren ausschliesslich in `ROADMAP.md`. So
 - [x] Wildlife- und Beutetest.
 - [x] Drop-Magnet-Test.
 - [x] Pixel-Art-Editor-Test.
+- [x] Perk-, Baustellen-, Coin- und Save/Load-Test.
 - [x] Panel-Refresh-Test.
 - [x] Responsive-Layout-Test.
 - [x] Raeumlicher Index: Sichtbarkeit, Zellwechsel bewegter Objekte sowie Neuaufbau nach Speichern/Laden.
@@ -134,6 +137,7 @@ Die folgenden Punkte wurden aus `ROADMAP.md` verbindlich fuer die naechste Entwi
 
 ### NEUE SPIELINHALTE
 
+- [x] **Perks** (`L`, Issue #67): Jede ueberstandene Nacht gibt einen speicherbaren Coin. Bergung und Verteidigung/Baulogistik enthalten kaufbare, abhaengigkeitsbasierte Perks; Technik und Aufklaerung ist als sichtbarer, bewusst unscharfer Ausblick vorbereitet. Bergung verbessert Werkzeuge, Ertrag, Beute, Magnetradius, Bodendetektor und Kartenaufdeckung. Baulogistik steuert Bauzeit, Sammelbau, Reparatur, Feuerleit-Radar und Turmwerte. Betroffene Dateien: `js/data/perks.js`, `js/systems/perks.js`, `js/systems/building.js`, `js/systems/combat.js`, `js/ui/*`, `js/systems/save.js`. Akzeptanz: Coins, Kaufentscheidungen und Perk-Effekte bleiben nach Speichern/Laden erhalten; Baustellen feuern nicht vor Abschluss; alle Effekte sind zentral aus `PW.Perks` abgeleitet.
 - [x] **Verlassene Aussenposten** (`M`): Seltene Weltziele liefern eine einmalige Belohnung wie Ressourcen, Bauplan oder kurze Verteidigungsaufgabe. Betroffene Dateien: `js/world/mapGenerator.js`, `js/systems/outposts.js`, `js/entities/*`, `js/render/*`, `js/ui/*`, `js/systems/save.js`, `tests/`. Akzeptanz: Mehrere Outpost-Varianten sind erreichbar, lesbar und konfliktfrei mit Wasser, Ressourcen und Lagern platziert.
 - [ ] **Hordenanfuehrer** (`M`): Staerkste Horden enthalten einen klar erkennbaren Anfuehrer mit garantiertem Schluessel- oder Bauteildrop. Betroffene Dateien: `js/data/enemies.js`, `js/systems/treasure.js`, `js/entities/*`, `js/render/*`. Akzeptanz: Der Drop faellt genau einmal und die Horde bleibt weiterhin eine optionale Herausforderung.
 
@@ -166,6 +170,7 @@ Neue Punkte werden erst hier aufgenommen, wenn sie aus `ROADMAP.md` ausgewaehlt 
 node tests/smoke.js
 node tests/endurance.js
 node tests/tower-role-economy.js
+node tests/perks-construction.js
 ```
 
 Die weiteren Browsertests unter `tests/` koennen einzeln mit `node tests/<datei>.js` ausgefuehrt werden.

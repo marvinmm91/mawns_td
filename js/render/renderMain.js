@@ -30,6 +30,7 @@ PW.Render = {
   drawOverlay(ctx) {
     const state = PW.state;
     const target = this.buildTargetTile();
+    this.drawInspectedTowerRange(ctx);
     if (state.player.selectedTool === "build") {
       const ts = state.world.tileSize;
       const def = PW.BUILDINGS[state.selectedBuild];
@@ -90,6 +91,27 @@ PW.Render = {
       ctx.strokeStyle = "#f2eddc";
       ctx.strokeRect(state.camera.w / 2 - 180, 18, 360, 18);
     }
+  },
+  drawInspectedTowerRange(ctx) {
+    const tile = PW.state.inspectedTile;
+    if (!tile) return;
+    const building = PW.Tiles.getBuilding(tile.x, tile.y);
+    const def = building && PW.BUILDINGS[building.type];
+    if (!def || def.category !== "tower") return;
+    const stats = PW.Combat.towerStats(def, building.level);
+    const center = PW.Tiles.tileCenter(building.x, building.y);
+    const x = center.x - PW.state.camera.x;
+    const y = center.y - PW.state.camera.y;
+    ctx.save();
+    ctx.fillStyle = "rgba(243, 211, 107, .06)";
+    ctx.beginPath();
+    ctx.arc(x, y, stats.range * PW.state.world.tileSize, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = "rgba(243, 211, 107, .72)";
+    ctx.lineWidth = 2;
+    ctx.setLineDash([5, 4]);
+    ctx.stroke();
+    ctx.restore();
   },
   drawMissingBuildCost(ctx, target, cost) {
     const state = PW.state;

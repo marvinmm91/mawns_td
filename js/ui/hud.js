@@ -17,7 +17,7 @@ Object.assign(PW.UI, {
     dom.nightText.textContent = String(state.phase.night);
     dom.moduleText.textContent = `${PW.Progression.repairedModuleCount()}/${Object.keys(PW.SHIP_MODULES).length}`;
     const toolKey = `${state.player.selectedTool}:${state.player.buildMode}`;
-    const resourceKey = Object.values(PW.RESOURCES).map((res) => `${res.id}:${state.inventory[res.id] || 0}`).join("|");
+    const resourceKey = `${Object.values(PW.RESOURCES).map((res) => `${res.id}:${state.inventory[res.id] || 0}`).join("|")}|perks:${PW.Perks.state().coins}`;
     this._hudCache = this._hudCache || {};
     if (this._hudCache.toolKey !== toolKey) {
       this._hudCache.toolKey = toolKey;
@@ -65,6 +65,12 @@ Object.assign(PW.UI, {
       div.append(PW.Icons.resourceCanvas(res.id, 20), document.createTextNode(String(PW.state.inventory[res.id] || 0)));
       bar.appendChild(div);
     });
+    const perks = document.createElement("div");
+    perks.className = "resource-pill perk-pill";
+    perks.style.borderColor = "#f0c45a";
+    perks.title = "Perk-Coins";
+    perks.append(PW.Icons.perkCanvas(20), document.createTextNode(String(PW.Perks.state().coins)));
+    bar.appendChild(perks);
   },
   updatePause() {
     PW.state.dom.pauseOverlay.classList.toggle("hidden", !PW.state.paused);

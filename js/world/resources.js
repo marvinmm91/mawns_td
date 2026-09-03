@@ -42,6 +42,10 @@ PW.ResourceSystem = {
     if (!node) return false;
     const def = PW.RESOURCE_NODES[node.type];
     const resourceDef = PW.RESOURCES[def.resource];
+    if (node.type === "crystal" && !PW.Perks.has("reinforcedTools")) {
+      PW.Messages.add("Kristall braucht verstärkte Werkzeuge.");
+      return true;
+    }
     if (state.player.selectedTool !== resourceDef.tool) {
       PW.Messages.add(`${def.name}: brauche ${resourceDef.tool === "axe" ? "Axt" : "Spitzhacke"}.`);
       return true;
@@ -49,14 +53,15 @@ PW.ResourceSystem = {
     node.hp -= 1;
     PW.Utils.addEffect("hit", PW.Utils.tileToWorld(x), PW.Utils.tileToWorld(y), def.color, 0.28, 1.1);
     const yielded = node.yielded || 0;
-    const extracted = Math.floor(node.amount * (node.maxHp - node.hp) / Math.max(1, node.maxHp));
+    const totalAmount = PW.Perks.resourceYield(node.amount);
+    const extracted = Math.floor(totalAmount * (node.maxHp - node.hp) / Math.max(1, node.maxHp));
     const payout = Math.max(0, extracted - yielded);
     if (payout) {
       node.yielded = yielded + payout;
       PW.Utils.addInventory(def.resource, payout, { x: PW.Utils.tileToWorld(x), y: PW.Utils.tileToWorld(y) });
     }
     if (node.hp <= 0) {
-      const remainder = Math.max(0, node.amount - (node.yielded || 0));
+      const remainder = Math.max(0, totalAmount - (node.yielded || 0));
       if (remainder) PW.Utils.addInventory(def.resource, remainder, { x: PW.Utils.tileToWorld(x), y: PW.Utils.tileToWorld(y) });
       this.remove(node);
     }

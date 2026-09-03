@@ -41,7 +41,9 @@ PW.BuildingSystem = {
       maxHp: def.maxHp,
       cooldown: state.rng.float(0, 0.5),
       level: 1,
-      targetPriority: def.category === "tower" ? "ship" : undefined
+      targetPriority: def.category === "tower" ? "ship" : undefined,
+      constructionDuration: PW.Perks.constructionTime(def),
+      constructionRemaining: PW.Perks.constructionTime(def)
     };
     state.world.buildings.push(building);
     state.world.buildingMap.set(PW.Utils.tileKey(x, y), building);
@@ -120,7 +122,7 @@ PW.BuildingSystem = {
     }, {});
   },
   blueprintBatchCost(blueprints = PW.state.world.blueprints) {
-    const multiplier = PW.CONFIG.blueprintBatchCostMultiplier;
+    const multiplier = PW.Perks.batchCostMultiplier();
     return Object.fromEntries(Object.entries(this.blueprintCost(blueprints)).map(([resourceId, amount]) => [resourceId, Math.ceil(amount * multiplier)]));
   },
   canBuildAllBlueprints(blueprints = PW.state.world.blueprints) {
@@ -153,7 +155,8 @@ PW.BuildingSystem = {
     }
     PW.Utils.pay(cost);
     blueprints.forEach((blueprint) => this.place(blueprint.type, blueprint.x, blueprint.y, { payCost: false, quiet: true }));
-    PW.Messages.add(`${blueprints.length} Blaupausen mit 20 % Aufschlag errichtet.`, "ok");
+    const surcharge = Math.round((PW.Perks.batchCostMultiplier() - 1) * 100);
+    PW.Messages.add(`${blueprints.length} Blaupausen mit ${surcharge} % Aufschlag errichtet.`, "ok");
     PW.UI.renderHud();
     PW.UI.renderPanel();
     return blueprints.length;
@@ -231,6 +234,10 @@ PW.BuildingSystem = {
     const building = PW.Tiles.getBuilding(x, y);
     if (!building) return false;
     const def = PW.BUILDINGS[building.type];
+    if (this.isConstructing(building)) {
+      PW.Messages.add(`${def.name} wird noch errichtet.`);
+      return true;
+    }
     if (building.hp >= building.maxHp) {
       PW.Messages.add(`${def.name} ist intakt.`);
       return true;
@@ -241,7 +248,7 @@ PW.BuildingSystem = {
       return true;
     }
     PW.Utils.pay(cost);
-    building.hp = Math.min(building.maxHp, building.hp + Math.ceil(building.maxHp * 0.28));
+    building.hp = Math.min(building.maxHp, building.hp + Math.ceil(building.maxHp * 0.28 * PW.Perks.repairMultiplier()));
     if (building.hp >= building.maxHp) building.damageFlash = 0;
     PW.Messages.add(`${def.name} repariert.`, "ok");
     PW.UI.renderHud();
@@ -272,12 +279,20 @@ PW.BuildingSystem = {
   },
   canUpgrade(building) {
     const def = building && PW.BUILDINGS[building.type];
-    return Boolean(def && def.upgradeable !== false && building.level < 3 && !(PW.state.gameMode === "classic" && building.type === "palisade"));
+    return Boolean(def && !this.isConstructing(building) && !this.isUpgrading(building) && def.upgradeable !== false && building.level < 3 && !(PW.state.gameMode === "classic" && building.type === "palisade"));
   },
   upgrade(buildingId) {
     const building = PW.state.world.buildings.find((item) => item.id === buildingId);
     if (!building) return false;
     const def = PW.BUILDINGS[building.type];
+    if (this.isConstructing(building)) {
+      PW.Messages.add(`${def.name} wird noch errichtet.`);
+      return false;
+    }
+    if (this.isUpgrading(building)) {
+      PW.Messages.add(`${def.name} wird bereits verbessert.`);
+      return false;
+    }
     if (PW.state.gameMode === "classic" && building.type === "palisade") {
       PW.Messages.add("Palisaden sind im Classic-Modus nur für Labyrinthe und können nicht verbessert werden.");
       return false;
@@ -300,11 +315,10 @@ PW.BuildingSystem = {
       return false;
     }
     PW.Utils.pay(cost);
-    building.level += 1;
-    building.maxHp = Math.round(def.maxHp * (1 + (building.level - 1) * 0.35));
-    building.hp = building.maxHp;
-    building.damageFlash = 0;
-    PW.Messages.add(`${def.name} auf Stufe ${building.level}.`, "ok");
+    building.upgradeToLevel = building.level + 1;
+    building.upgradeDuration = this.upgradeDuration(def);
+    building.upgradeRemaining = building.upgradeDuration;
+    PW.Messages.add(`${def.name}: Upgrade auf Stufe ${building.upgradeToLevel} gestartet.`, "ok");
     PW.UI.renderPanel();
     return true;
   },
@@ -326,5 +340,55 @@ PW.BuildingSystem = {
     PW.Messages.add(`${def.name}: ${PW.Combat.targetPriorityLabel(building, def)}.`, "ok");
     PW.UI.renderPanel();
     return true;
+  },
+  isConstructing(building) {
+    return Number(building && building.constructionRemaining) > 0;
+  },
+  constructionProgress(building) {
+    if (!this.isConstructing(building)) return 1;
+    return 1 - building.constructionRemaining / Math.max(0.1, building.constructionDuration || 1);
+  },
+  isUpgrading(building) {
+    return Number(building && building.upgradeRemaining) > 0;
+  },
+  upgradeDuration(def) {
+    return Math.max(0.1, PW.Perks.constructionTime(def) / 2);
+  },
+  upgradeProgress(building) {
+    if (!this.isUpgrading(building)) return 1;
+    return 1 - building.upgradeRemaining / Math.max(0.1, building.upgradeDuration || 1);
+  },
+  workProgress(building) {
+    return this.isConstructing(building) ? this.constructionProgress(building) : this.upgradeProgress(building);
+  },
+  update(dt) {
+    const speed = PW.Perks.constructionSpeedMultiplier();
+    let completed = false;
+    PW.state.world.buildings.forEach((building) => {
+      const def = PW.BUILDINGS[building.type];
+      if (this.isConstructing(building)) {
+        building.constructionRemaining = Math.max(0, building.constructionRemaining - dt * speed);
+        if (building.constructionRemaining > 0) return;
+        completed = true;
+        PW.Messages.add(`${def.name} fertiggestellt.`, "ok");
+        return;
+      }
+      if (!this.isUpgrading(building)) return;
+      building.upgradeRemaining = Math.max(0, building.upgradeRemaining - dt);
+      if (building.upgradeRemaining > 0) return;
+      const oldMaxHp = building.maxHp;
+      const healthRatio = oldMaxHp > 0 ? building.hp / oldMaxHp : 1;
+      building.level = Math.min(3, Math.max(building.level + 1, building.upgradeToLevel || building.level + 1));
+      building.maxHp = Math.round(def.maxHp * (1 + (building.level - 1) * 0.35));
+      building.hp = Math.min(building.maxHp, Math.round(building.maxHp * healthRatio));
+      building.damageFlash = 0;
+      building.upgradeToLevel = null;
+      completed = true;
+      PW.Messages.add(`${def.name} auf Stufe ${building.level} verbessert.`, "ok");
+    });
+    if (completed) {
+      PW.Pathfinding.markDirty();
+      PW.UI.renderPanel();
+    }
   }
 };

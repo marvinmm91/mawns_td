@@ -25,6 +25,7 @@ const { pathToFileURL } = require("url");
         PW.Pathfinding.update();
         PW.Spawning.update(step);
         PW.EnemySystem.update(step);
+        PW.BuildingSystem.update(step);
         PW.Combat.update(step);
         PW.ProjectileSystem.update(step);
         PW.DropSystem.update(step);

@@ -56,9 +56,7 @@ PW.Bootstrap = {
       toastStack: document.getElementById("toastStack"),
       toolBar: document.getElementById("toolBar"),
       resourceBar: document.getElementById("resourceBar"),
-      inventoryButton: document.getElementById("inventoryButton"),
       shipButton: document.getElementById("shipButton"),
-      designButton: document.getElementById("designButton"),
       developmentButton: document.getElementById("developmentButton"),
       helpButton: document.getElementById("helpButton"),
       sidePanel: document.getElementById("sidePanel"),
@@ -142,7 +140,7 @@ PW.Bootstrap = {
           ${PW.CONFIG.difficulty.profiles.map((profile) => `<button type="button" class="difficulty-option" data-difficulty="${profile.id}" role="radio" aria-checked="${profile.id === dialogDifficulty}"${hasSave ? " disabled" : ""}><strong>${profile.name}</strong><span>${profile.description}</span></button>`).join("")}
         </div>
       </section>
-      <p>Steuerung: WASD/Pfeiltasten, Space für Aktion, E Inventar, R Wrack, M Karte, P Pause.</p>
+      <p>Steuerung: WASD/Pfeiltasten, Space für Aktion, R Wrack, M Karte, P Pause.</p>
       <section class="start-changelog" aria-labelledby="beta3ChangelogTitle">
         <div class="start-changelog-scroll">
           <h3 id="beta3ChangelogTitle">Beta 3 – Änderungen seit Beta 2</h3>

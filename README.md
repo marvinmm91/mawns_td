@@ -34,8 +34,8 @@ Das Wrack muss repariert und bis zum Start verteidigt werden. Verliert es alle S
 - Mausrad über dem Spielfeld: Werkzeug wechseln.
 - Rechtsklick: Baumodus verlassen.
 - 1-5: Werkzeug wechseln. Werkzeug 3 repariert und verbessert vollständig reparierte Bauwerke.
-- E: Inventar.
 - R: Wrackmenue.
+- Perk-Coins: Im Morgenbericht den Perkbaum oeffnen.
 - Entwicklung: Globale Testfaktoren, Nachtstart und Simulationsgeschwindigkeit.
 - H: Hilfe.
 - M: Live-Karte mit Nadeln, Spieler und aktiven Gegnern.

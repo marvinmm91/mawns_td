@@ -20,6 +20,7 @@ PW.MapGenerator = {
     world.blueprintMap.clear();
     world.mapPins = [];
     world.mapPinMap.clear();
+    world.buriedDeposits = [];
     world.waterways = { river: [], brooks: [] };
     PW.SpatialIndex.reset();
     this.biomeCenters = this.makeBiomeCenters();
@@ -73,7 +74,7 @@ PW.MapGenerator = {
     PW.SpatialIndex.remove("resources", node);
   },
 
-  addResource(type, x, y) {
+  addResource(type, x, y, options = {}) {
     const world = PW.state.world;
     const def = PW.RESOURCE_NODES[type];
     if (!def || !this.addResourceCheck(type, x, y)) return false;
@@ -95,7 +96,8 @@ PW.MapGenerator = {
       scale,
       offsetX: rng.float(-3.5, 3.5),
       offsetY: rng.float(-3.5, 3.5),
-      shape: rng.int(0, 3)
+      shape: rng.int(0, 3),
+      buried: options.buried === true
     };
     world.resources.push(node);
     world.resourceMap.set(PW.Utils.tileKey(x, y), node);
@@ -117,7 +119,8 @@ PW.MapGenerator = {
   normalizeResourceHp(node) {
     const def = PW.RESOURCE_NODES[node.type];
     if (!def) return;
-    node.yielded = Math.max(0, Math.min(node.amount || 0, Number(node.yielded) || 0));
+    const totalAmount = PW.Perks ? PW.Perks.resourceYield(node.amount || 0) : (node.amount || 0);
+    node.yielded = Math.max(0, Math.min(totalAmount, Number(node.yielded) || 0));
     const hpRange = this.resourceHpRange(node.type);
     const minHp = hpRange[0];
     const maxHp = hpRange[1];
@@ -148,6 +151,24 @@ PW.MapGenerator = {
     this.ensureResourceRing("iron", 22, 38, 7);
     this.ensureResourceRing("gold", 46, 66, 6);
     this.ensureResourceRing("crystal", 48, 70, 6);
+  },
+  generateBuriedDeposits() {
+    const world = PW.state.world;
+    if ((world.buriedDeposits || []).length) return;
+    const rng = PW.state.rng;
+    const shipX = PW.state.ship.x + PW.state.ship.size / 2;
+    const shipY = PW.state.ship.y + PW.state.ship.size / 2;
+    const deposits = [];
+    const types = ["iron", "gold", "crystal", "rock"];
+    for (let attempt = 0; attempt < 500 && deposits.length < 18; attempt += 1) {
+      const x = rng.int(3, world.width - 4);
+      const y = rng.int(3, world.height - 4);
+      const type = rng.pick(types);
+      if (Math.hypot(x - shipX, y - shipY) < 18 || !this.addResourceCheck(type, x, y)) continue;
+      if (deposits.some((deposit) => Math.hypot(deposit.x - x, deposit.y - y) < 6)) continue;
+      deposits.push({ id: `buried-${deposits.length + 1}-${Date.now()}`, type, x, y, discovered: false });
+    }
+    world.buriedDeposits = deposits;
   },
 
   findTreeRespawnTile() {

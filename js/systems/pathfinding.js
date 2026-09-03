@@ -113,7 +113,7 @@ PW.Pathfinding = {
   },
   directRouteCost(x, y) {
     const building = PW.Tiles.getBuilding(x, y);
-    return building && PW.BUILDINGS[building.type] && PW.BUILDINGS[building.type].blocksGround ? PW.CONFIG.pathfinding.directStructureCost : 1;
+    return building && !PW.BuildingSystem.isConstructing(building) && PW.BUILDINGS[building.type] && PW.BUILDINGS[building.type].blocksGround ? PW.CONFIG.pathfinding.directStructureCost : 1;
   },
   update() {
     if (this.dirty) this.compute();
@@ -141,7 +141,7 @@ PW.Pathfinding = {
   defenseAt(x, y) {
     const building = PW.Tiles.getBuilding(x, y);
     const def = building && PW.BUILDINGS[building.type];
-    return def && (def.category === "tower" || def.category === "wall") ? building : null;
+    return def && !PW.BuildingSystem.isConstructing(building) && (def.category === "tower" || def.category === "wall") ? building : null;
   },
   bestStepFor(tx, ty, field, allowStructures) {
     const current = field[PW.Tiles.idx(tx, ty)];

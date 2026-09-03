@@ -140,6 +140,7 @@ const { pathToFileURL } = require("url");
       PW.Spawning.update(0.1);
       PW.Pathfinding.update();
       PW.EnemySystem.update(0.1);
+      PW.BuildingSystem.update(0.1);
       PW.Combat.update(0.1);
       PW.ProjectileSystem.update(0.1);
     }

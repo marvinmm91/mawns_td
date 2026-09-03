@@ -66,7 +66,8 @@ PW.createInitialState = function createInitialState() {
       blueprints: [],
       blueprintMap: new Map(),
       mapPins: [],
-      mapPinMap: new Map()
+      mapPinMap: new Map(),
+      buriedDeposits: []
     },
     camera: {
       x: 0,
@@ -155,6 +156,11 @@ PW.createInitialState = function createInitialState() {
     },
     nightStats: null,
     lastReport: null,
+    perks: {
+      coins: 0,
+      purchased: [],
+      lastAwardedNight: 0
+    },
     wave: {
       active: false,
       budgetRemaining: 0,

@@ -12,23 +12,28 @@ PW.Combat = {
     const energyBonus = state.ship.modules.energy ? 1.1 : 1;
     for (const building of state.world.buildings) {
       const def = PW.BUILDINGS[building.type];
-      if (def.category !== "tower") continue;
+      if (def.category !== "tower" || PW.BuildingSystem.isConstructing(building)) continue;
       const disrupted = this.disruptionAt(building.x, building.y);
       const ratePenalty = disrupted ? 0.55 : 1;
       building.cooldown = Math.max(0, building.cooldown - dt * energyBonus * ratePenalty);
       if (building.cooldown > 0) continue;
-      const target = this.findTarget(building, def);
-      if (!target) continue;
+      const firstShotReady = PW.Perks.has("fireControlRadar") && (building.radarCharge || 0) >= 4;
+      const target = this.findTarget(building, def, firstShotReady ? 2 : 1);
+      if (!target) {
+        building.radarCharge = Math.min(4, (building.radarCharge || 0) + dt);
+        continue;
+      }
       const scaled = this.scaledTowerDef(building, def);
       PW.ProjectileSystem.spawn(building, target, scaled);
+      building.radarCharge = 0;
       building.cooldown = 1 / Math.max(0.1, scaled.rate);
     }
   },
   towerStats(def, level = 1) {
     const upgradeLevel = Math.max(1, level);
     return {
-      damage: def.damage * (1 + (upgradeLevel - 1) * 0.35),
-      rate: def.rate * (1 + (upgradeLevel - 1) * 0.18),
+      damage: def.damage * (1 + (upgradeLevel - 1) * 0.35) * PW.Perks.towerDamageMultiplier(),
+      rate: def.rate * (1 + (upgradeLevel - 1) * 0.18) * PW.Perks.towerRateMultiplier(),
       range: def.range * (1 + (upgradeLevel - 1) * 0.08),
       splash: (def.splash || 0) * (1 + (upgradeLevel - 1) * 0.08)
     };
@@ -57,10 +62,10 @@ PW.Combat = {
     if (priority === "weakest") return enemy.hp * 1000 + dist;
     return PW.Utils.distance(enemy.x, enemy.y, ship.x, ship.y) + dist * 0.05;
   },
-  findTarget(building, def) {
+  findTarget(building, def, rangeMultiplier = 1) {
     const scaled = this.scaledTowerDef(building, def);
     const origin = PW.Tiles.tileCenter(building.x, building.y);
-    const rangePx = scaled.range * PW.state.world.tileSize;
+    const rangePx = scaled.range * rangeMultiplier * PW.state.world.tileSize;
     const ship = PW.EnemySystem.shipCenter();
     const candidates = [];
     for (const enemy of PW.SpatialIndex.nearby("enemies", origin.x, origin.y, rangePx)) {

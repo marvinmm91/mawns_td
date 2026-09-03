@@ -62,7 +62,9 @@ PW.Player = {
   tryInteract() {
     const player = PW.state.player;
     if (player.actionCooldown > 0) return false;
-    player.actionCooldown = PW.CONFIG.actionRepeatInterval;
+    const target = this.targetTile();
+    const isGathering = (player.selectedTool === "axe" || player.selectedTool === "pickaxe") && Boolean(PW.Tiles.getResource(target.x, target.y));
+    player.actionCooldown = isGathering ? PW.Perks.gatheringCooldown() : PW.CONFIG.actionRepeatInterval;
     this.interact();
     return true;
   },

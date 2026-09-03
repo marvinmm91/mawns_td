@@ -33,6 +33,9 @@ PW.Fog = {
       PW.state.world.fog[PW.Tiles.idx(x, y)] = 2;
     });
   },
+  revealAll() {
+    PW.state.world.fog.fill(2);
+  },
   isKnown(x, y) {
     if (!PW.Tiles.inBounds(x, y)) return false;
     return PW.state.world.fog[PW.Tiles.idx(x, y)] > 0;
@@ -48,4 +51,3 @@ PW.Fog = {
     }
   }
 };
-

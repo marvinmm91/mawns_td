@@ -57,6 +57,7 @@ PW.DayNight = {
     state.wave.active = false;
     this.setPhase("dawn");
     PW.Autobalance.evaluateNight();
+    PW.Perks.awardNightCoin();
     PW.UI.showMorningReport();
     PW.Save.save(false);
   },

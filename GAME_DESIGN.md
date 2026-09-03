@@ -142,11 +142,25 @@ Jeder besiegte Gegner kann Holz, Stein, Schrott, Eisen, Gold, Kristall oder Baut
 
 Die Wirtschaft bleibt dauerhaft spielbar: Baeume wachsen langsam auf freien Waldkacheln ausserhalb des Wrack-Sicherheitsbereichs nach. Waldhuepfer und Mooskaefer erscheinen bis zu ihrem Kartenmaximum erneut und liefern weiter Holz beziehungsweise Stein. Seltene Materialien bleiben ueber Truhen, Horden und seltene Drops spaeter Gegner erreichbar.
 
+### Perks
+
+Nach jeder ueberstandenen Nacht erhaelt der Spieler einen Perk-Coin. Coins duerfen gespart werden; teure Perks kosten zwei oder drei Coins. Gekaufte Perks gelten fuer die gesamte laufende Partie und sind ueber Abhaengigkeiten in drei Forschungszweigen verbunden.
+
+- **Bergung:** Verstaerkte Werkzeuge erschliessen Kristalle. Weitere Perks beschleunigen den Abbau, erhoehen den Ertrag jedes Vorkommens um 50 Prozent, erweitern den Bergungsmagneten und verbessern Gegnerbeute. Der Bodendetektor legt nahe unterirdische Lagerstaetten frei; sie sind gelb markiert und werden normal abgebaut. Orbitalkartografie deckt die ganze Karte auf.
+- **Verteidigung und Baulogistik:** Feldmonteur verkuerzt Bauzeiten, Bauplanlogistik senkt den Sammelbauaufschlag, und Bauhelfer-Drohnen beschleunigen Baustellen nur tagsueber. Wartungsroutine verbessert Werkzeugreparaturen. Feuerleit-Radar verdoppelt nach vier ruhigen Sekunden nur die Reichweite des ersten Schusses. Zwei teure Endpunkte erhoehen global Turmschaden oder Feuerrate um 12 Prozent.
+- **Technik und Aufklaerung:** Dieser Zweig ist sichtbar, aber noch nicht erforscht. Er enthaelt unter anderem die spaeter zu entscheidenden Autoreparatur-Bots.
+
 ## 8. BAU UND VERTEIDIGUNG
 
-Alle Bauwerke stehen auf einzelnen Gitterkacheln. Bau ist nicht auf Wrack, Ressourcen, Truhen, Monsterlager oder blockiertem Terrain moeglich. Die halbtransparente Vorschau schwebt immer auf der Kachel vor dem Spieler. Im dauerhaft umschaltbaren Blaupausenmodus lassen sich kostenfreie, nicht blockierende Bauvorhaben einzeln vormerken; sie werden später mit dem Bauwerkzeug an ihrer Position errichtet. Ein Tipp auf Alt entfernt sie dort wieder. Im Classic-Modus bleiben Palisaden bewusst reine Labyrinthbauteile und sind nicht ausbaubar.
+Alle Bauwerke stehen auf einzelnen Gitterkacheln. Bau ist nicht auf Wrack, Ressourcen, Truhen, Monsterlager oder blockiertem Terrain moeglich. Die halbtransparente Vorschau schwebt immer auf der Kachel vor dem Spieler. Im dauerhaft umschaltbaren Blaupausenmodus lassen sich kostenfreie, nicht blockierende Bauvorhaben einzeln vormerken; sie werden spaeter mit dem Bauwerkzeug an ihrer Position errichtet. Ein Tipp auf Alt entfernt sie dort wieder. Im Classic-Modus bleiben Palisaden bewusst reine Labyrinthbauteile und sind nicht ausbaubar.
+
+Errichtete Bauwerke beginnen als Baustelle: Palisaden brauchen 3 Sekunden, die Balliste 10 Sekunden, weitere Tuerme je nach Macht 12 bis 20 Sekunden. Eine ablaufende weisse Kreisblende liegt ueber dem abgedunkelten Objekt. Erst nach Abschluss blockiert das Bauwerk Bodengegner oder feuert als Turm. Das zwingt zu Planung vor der Nacht statt hektischem Nachbauen unter Druck.
+
+Verbesserungen brauchen ebenfalls Zeit, aber nur die Haelfte der jeweiligen effektiven Bauzeit. Die Kosten werden beim Start bezahlt. Waerend der Kreisfortschritt laeuft, bleiben Mauer oder Turm auf ihrer bisherigen Stufe voll funktionsfaehig; die besseren Werte werden erst mit Abschluss aktiv. Das macht Upgrades wirtschaftlich attraktiv, ohne sie zu einer sofortigen Reaktion unter Nachtstress zu machen.
 
 Direktes Feedback: Getroffene Gegner zeigen gebuendelte Schadenszahlen an ihrer Position. Beim Einsammeln erscheinen Ressourcenmengen an ihrer Quelle, statt die allgemeine Hinweisanzeige mit Standardgewinnen zu fuellen.
+
+Ein angeklickter Turm zeigt seinen aktuellen Reichweitenkreis. Der Kreis verwendet die Werte der vorhandenen Stufe und bleibt sichtbar, bis ein anderes Objekt oder freies Gelaende ausgewaehlt wird.
 
 ### Mauern und Bruecke
 

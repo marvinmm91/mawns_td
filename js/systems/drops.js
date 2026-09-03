@@ -31,6 +31,7 @@ PW.DropSystem = {
     const dropBonus = state.balance.dropBonus || 0;
     let rolls = state.rng.chance(profile.chance) ? state.rng.int(...profile.amounts) : 0;
     if (state.rng.chance(dropBonus)) rolls += 1;
+    if (state.rng.chance(PW.Perks.extraEnemyDropChance())) rolls += 1;
     const rewards = {};
     for (let index = 0; index < rolls; index += 1) {
       const resource = this.rollResource(profile.weights);
@@ -59,7 +60,7 @@ PW.DropSystem = {
       if (dist < PW.CONFIG.dropPickupRadius) {
         PW.Utils.addInventory(drop.resource, drop.amount, drop);
         drop.remove = true;
-      } else if (dist < PW.CONFIG.dropMagnetRadius) {
+      } else if (dist < PW.Perks.magnetRadius()) {
         const speed = PW.CONFIG.dropMagnetSpeed * dt;
         drop.x += (state.player.x - drop.x) / dist * Math.min(speed, dist);
         drop.y += (state.player.y - drop.y) / dist * Math.min(speed, dist);

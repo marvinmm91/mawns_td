@@ -117,7 +117,7 @@ PW.RenderWorld = {
       const sx = node.x * ts - state.camera.x + (node.offsetX || 0);
       const sy = node.y * ts - state.camera.y + (node.offsetY || 0);
       this.drawGroundShadow(ctx, sx + ts / 2, sy + ts - 5, 22, 4);
-      if (PW.PixelArt && PW.PixelArt.draw(ctx, `resource.${node.type}`, sx, sy, ts, ts)) {
+      if (!node.buried && PW.PixelArt && PW.PixelArt.draw(ctx, `resource.${node.type}`, sx, sy, ts, ts)) {
         // Custom pixel resource drawn.
       } else if (node.type === "tree") {
         this.drawTreeNode(ctx, sx, sy, node);
@@ -172,6 +172,15 @@ PW.RenderWorld = {
       ctx.fillRect(sx + 15, sy + 4, 4, 15);
       ctx.fillRect(sx + 9, sy + 10, 4, 10);
     }
+    if (node.buried) {
+      ctx.strokeStyle = "#d7c951";
+      ctx.lineWidth = 1;
+      ctx.setLineDash([2, 2]);
+      ctx.strokeRect(sx + 3, sy + 3, 26, 26);
+      ctx.setLineDash([]);
+      ctx.fillStyle = "#d7c951";
+      ctx.fillRect(sx + 4, sy + 4, 3, 3);
+    }
   },
   darker(color) {
     const named = {
@@ -192,9 +201,11 @@ PW.RenderWorld = {
       const sy = building.y * ts - state.camera.y;
       this.drawGroundShadow(ctx, sx + ts / 2, sy + ts - 4, 25, 4);
       ctx.save();
+      if (PW.BuildingSystem.isConstructing(building) || PW.BuildingSystem.isUpgrading(building)) ctx.globalAlpha = 0.34;
       ctx.translate(sx, sy);
       PW.Icons.drawBuilding(ctx, building.type, ts, 1);
       ctx.restore();
+      if (PW.BuildingSystem.isConstructing(building) || PW.BuildingSystem.isUpgrading(building)) this.drawConstructionProgress(ctx, sx, sy, ts, PW.BuildingSystem.workProgress(building));
       const accent = def.category === "tower" ? this.towerColor(building.type) : building.type === "bridge" ? "#83e3da" : "#d8d1ad";
       this.drawStateCorners(ctx, sx + ts / 2, sy + ts / 2, accent, 13);
       this.drawStructureDamage(ctx, sx, sy, ts, ts, building.hp / building.maxHp, building.damageFlash, building.type);
@@ -217,6 +228,23 @@ PW.RenderWorld = {
         ctx.fillRect(sx + 4, sy + 27, 24 * building.hp / building.maxHp, 3);
       }
     });
+  },
+  drawConstructionProgress(ctx, sx, sy, size, progress) {
+    const cx = sx + size / 2;
+    const cy = sy + size / 2;
+    const radius = Math.max(7, size * 0.32);
+    ctx.save();
+    ctx.fillStyle = "rgba(255,255,255,.88)";
+    ctx.beginPath();
+    ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.globalCompositeOperation = "destination-out";
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, radius + 1, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * Math.max(0, Math.min(1, progress)));
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
   },
   drawBlueprints(ctx, bounds) {
     const state = PW.state;

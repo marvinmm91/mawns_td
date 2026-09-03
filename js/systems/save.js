@@ -20,6 +20,7 @@ PW.Save = {
         monsterCamps: state.world.monsterCamps || [],
         outposts: state.world.outposts || [],
         waterways: state.world.waterways || { river: [], brooks: [] },
+        buriedDeposits: state.world.buriedDeposits || [],
         buildings: state.world.buildings,
         blueprints: state.world.blueprints || [],
         mapPins: state.world.mapPins || []
@@ -43,7 +44,8 @@ PW.Save = {
       nightStats: state.nightStats,
       balance: state.balance,
       development: state.development,
-      lastReport: state.lastReport
+      lastReport: state.lastReport,
+      perks: state.perks
     };
     localStorage.setItem(PW.CONFIG.saveKey, JSON.stringify(data));
     if (showMessage) PW.Messages.add("Spiel gespeichert.", "ok");
@@ -80,6 +82,8 @@ PW.Save = {
       PW.state.balance = { ...fresh.balance, ...(data.balance || {}) };
       PW.state.balance.drift = Math.max(0, Number(PW.state.balance.drift) || 0);
       PW.state.balance.dropBonus = 0;
+      PW.state.perks = { ...fresh.perks, ...(data.perks || {}) };
+      PW.Perks.state();
       PW.state.ship.repairCount = Math.max(0, Math.floor(Number(PW.state.ship.repairCount) || 0));
       PW.state.world.tileSize = PW.state.world.tileSize || PW.CONFIG.tileSize;
       PW.state.world.birds = PW.state.world.birds || [];
@@ -88,6 +92,7 @@ PW.Save = {
       PW.state.world.monsterCamps = PW.state.world.monsterCamps || [];
       PW.state.world.outposts = PW.state.world.outposts || [];
       PW.state.world.waterways = PW.state.world.waterways || { river: [], brooks: [] };
+      PW.state.world.buriedDeposits = PW.state.world.buriedDeposits || [];
       PW.state.world.blueprints = PW.state.world.blueprints || [];
       PW.state.world.mapPins = PW.state.world.mapPins || [];
       PW.state.fauna = data.fauna || PW.state.fauna || { birdTarget: 0, critterMax: 0, critterRespawnTimer: 0 };
@@ -127,8 +132,15 @@ PW.Save = {
       PW.state.world.buildings.forEach((building) => {
         const def = PW.BUILDINGS[building.type];
         if (def && def.category === "tower") building.targetPriority = PW.Combat.targetPriority(building, def);
+        building.constructionDuration = Math.max(0.1, Number(building.constructionDuration) || 0);
+        building.constructionRemaining = Math.max(0, Number(building.constructionRemaining) || 0);
+        building.upgradeDuration = Math.max(0.1, Number(building.upgradeDuration) || 0);
+        building.upgradeRemaining = Math.max(0, Number(building.upgradeRemaining) || 0);
+        building.upgradeToLevel = Number.isInteger(building.upgradeToLevel) ? building.upgradeToLevel : null;
         PW.state.world.buildingMap.set(PW.Utils.tileKey(building.x, building.y), building);
       });
+      if (PW.Perks.has("groundScanner")) PW.MapGenerator.generateBuriedDeposits();
+      if (PW.Perks.has("orbitalCartography")) PW.Fog.revealAll();
       PW.state.enemies.forEach((enemy) => { enemy.retreating = false; });
       PW.state.world.blueprintMap = new Map();
       PW.state.world.blueprints = PW.state.world.blueprints.filter((blueprint) => {

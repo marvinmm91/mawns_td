@@ -10,6 +10,15 @@ PW.Icons = {
     this.drawResource(canvas.getContext("2d"), id, size);
     return canvas;
   },
+  perkCanvas(size = 20) {
+    const canvas = document.createElement("canvas");
+    canvas.className = "resource-icon perk-icon";
+    canvas.width = size;
+    canvas.height = size;
+    canvas.setAttribute("aria-hidden", "true");
+    this.drawPerkCoin(canvas.getContext("2d"), size);
+    return canvas;
+  },
   buildingCanvas(id, size = 32) {
     const canvas = document.createElement("canvas");
     canvas.className = "build-preview";
@@ -111,6 +120,18 @@ PW.Icons = {
       ctx.fillRect(15 * s, 12 * s, 2 * s, 4 * s);
       ctx.fillRect(12 * s, 12 * s, 2 * s, 3 * s);
     }
+  },
+  drawPerkCoin(ctx, size = 20) {
+    const s = size / 20;
+    ctx.clearRect(0, 0, size, size);
+    ctx.fillStyle = "#6f5423";
+    ctx.fillRect(4 * s, 4 * s, 12 * s, 12 * s);
+    ctx.fillStyle = "#f0c45a";
+    ctx.fillRect(5 * s, 3 * s, 10 * s, 14 * s);
+    ctx.fillStyle = "#fff0a0";
+    ctx.fillRect(8 * s, 5 * s, 4 * s, 3 * s);
+    ctx.fillStyle = "#8d6b29";
+    ctx.fillRect(9 * s, 9 * s, 3 * s, 5 * s);
   },
   drawChest(ctx, x, y, size = 32, variant = 0) {
     const s = size / 32;

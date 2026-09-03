@@ -3,9 +3,7 @@
 Object.assign(PW.UI, {
   initPanels() {
     const dom = PW.state.dom;
-    dom.inventoryButton.addEventListener("click", () => this.togglePanel("inventory"));
     dom.shipButton.addEventListener("click", () => this.togglePanel("ship"));
-    dom.designButton.addEventListener("click", () => this.togglePanel("design"));
     dom.developmentButton.addEventListener("click", () => this.togglePanel("development"));
     dom.helpButton.addEventListener("click", () => this.showHelp());
     dom.panelCloseButton.addEventListener("click", () => this.showStatusPanel());
@@ -25,7 +23,7 @@ Object.assign(PW.UI, {
   },
   refreshInventoryDependentPanel() {
     const panel = PW.state.panel;
-    if (panel === "build" || panel === "ship" || panel === "inventory" || panel === "context" || panel === "status") {
+    if (panel === "build" || panel === "ship" || panel === "inventory" || panel === "context" || panel === "status" || panel === "perks") {
       this.renderPanel();
     }
   },
@@ -58,6 +56,9 @@ Object.assign(PW.UI, {
     } else if (state.panel === "development") {
       title.textContent = "Entwicklung";
       this.renderDevelopment(body);
+    } else if (state.panel === "perks") {
+      title.textContent = "Perks";
+      this.renderPerks(body);
     } else if (state.panel === "context") {
       this.renderContext(body);
     }
@@ -147,6 +148,56 @@ Object.assign(PW.UI, {
     grantResources.addEventListener("click", () => PW.Development.grantAllResources(200));
     resources.appendChild(grantResources);
     body.appendChild(resources);
+  },
+  renderPerks(body) {
+    const state = PW.state;
+    const perks = PW.Perks.state();
+    body.innerHTML = "";
+    const intro = document.createElement("section");
+    intro.className = "perk-overview";
+    intro.innerHTML = `<div><span>Verfügbar</span><strong>${perks.coins} Coin${perks.coins === 1 ? "" : "s"}</strong></div><p>Nach jeder überstandenen Nacht erhältst du einen Coin. Gekaufte Perks bleiben für diese Partie aktiv.</p>`;
+    body.appendChild(intro);
+    PW.PERK_BRANCHES.forEach((branch) => {
+      const section = document.createElement("section");
+      section.className = `perk-branch${branch.planned ? " planned" : ""}`;
+      const heading = document.createElement("div");
+      heading.className = "perk-branch-heading";
+      heading.innerHTML = `<h3>${branch.name}</h3><p>${branch.description}</p>`;
+      section.appendChild(heading);
+      const tree = document.createElement("div");
+      tree.className = "perk-tree";
+      if (branch.planned) {
+        PW.PLANNED_PERKS.forEach((perk) => {
+          const node = document.createElement("div");
+          node.className = "perk-node perk-node-planned";
+          node.innerHTML = `<strong>${perk.name}</strong><span>${perk.description}</span>`;
+          tree.appendChild(node);
+        });
+      } else {
+        Object.values(PW.PERKS).filter((perk) => perk.branch === branch.id).forEach((perk) => {
+          const purchased = PW.Perks.has(perk.id);
+          const requirementsMet = (perk.requires || []).every((id) => PW.Perks.has(id));
+          const affordable = perks.coins >= perk.cost;
+          const node = document.createElement("button");
+          node.type = "button";
+          node.className = `perk-node${purchased ? " purchased" : ""}${requirementsMet ? "" : " locked"}`;
+          node.disabled = purchased || !requirementsMet || !affordable;
+          node.title = purchased ? "Bereits aktiviert." : !requirementsMet ? "Benötigt vorherige Perks." : !affordable ? "Nicht genug Coins." : `${perk.cost} Coin${perk.cost === 1 ? "" : "s"} ausgeben.`;
+          const name = document.createElement("strong");
+          name.textContent = perk.name;
+          const description = document.createElement("span");
+          description.textContent = perk.description;
+          const meta = document.createElement("small");
+          const requires = (perk.requires || []).map((id) => PW.PERKS[id].name).join(", ");
+          meta.textContent = purchased ? "Aktiv" : `${perk.cost} Coin${perk.cost === 1 ? "" : "s"}${requires ? ` | Braucht: ${requires}` : ""}`;
+          node.append(name, description, meta);
+          node.addEventListener("click", () => PW.Perks.purchase(perk.id));
+          tree.appendChild(node);
+        });
+      }
+      section.appendChild(tree);
+      body.appendChild(section);
+    });
   },
   renderStatus(body) {
     const state = PW.state;
@@ -247,7 +298,10 @@ Object.assign(PW.UI, {
       const stateText = document.createElement("div");
       stateText.className = "meta";
       stateText.textContent = unlocked ? (affordable ? "Bereit." : "Material fehlt.") : this.buildingUnlockText(def);
-      card.append(titleRow, description, costs, stateText);
+      const buildTime = document.createElement("div");
+      buildTime.className = "meta";
+      buildTime.textContent = `Bauzeit: ${PW.Perks.constructionTime(def).toLocaleString("de-DE", { maximumFractionDigits: 1 })} s`;
+      card.append(titleRow, description, costs, stateText, buildTime);
       if (def.category === "tower") card.appendChild(this.towerStatsLine(def, 1));
       const button = document.createElement("button");
       button.textContent = PW.state.selectedBuild === def.id ? "Ausgewählt" : "Auswählen";
@@ -283,14 +337,15 @@ Object.assign(PW.UI, {
       this.renderCostChips(totalCosts, totalCost);
       const batchTitle = document.createElement("div");
       batchTitle.className = "meta";
-      batchTitle.textContent = "Sammelbau: 20 % höhere Baukosten (aufgerundet)";
+      const surcharge = Math.round((PW.Perks.batchCostMultiplier() - 1) * 100);
+      batchTitle.textContent = `Sammelbau: ${surcharge} % höhere Baukosten (aufgerundet)`;
       const batchCosts = document.createElement("div");
       batchCosts.className = "costs";
       this.renderCostChips(batchCosts, PW.BuildingSystem.blueprintBatchCost(blueprints));
       const buildAll = document.createElement("button");
       buildAll.type = "button";
-      buildAll.textContent = "Alle errichten (+20 %)";
-      buildAll.title = "Errichtet alle Blaupausen gemeinsam für 20 % mehr Material.";
+      buildAll.textContent = `Alle errichten (+${surcharge} %)`;
+      buildAll.title = `Errichtet alle Blaupausen gemeinsam für ${surcharge} % mehr Material.`;
       buildAll.disabled = !PW.Utils.canAfford(PW.BuildingSystem.blueprintBatchCost(blueprints)) || !PW.BuildingSystem.canBuildAllBlueprints(blueprints);
       buildAll.addEventListener("click", () => PW.BuildingSystem.buildAllBlueprints());
       const removeAll = document.createElement("button");
@@ -477,6 +532,7 @@ Object.assign(PW.UI, {
     return "Wiese";
   },
   renderBuildingContext(body, building) {
+    const state = PW.state;
     const def = PW.BUILDINGS[building.type];
     const card = document.createElement("div");
     card.className = "build-card";
@@ -490,6 +546,19 @@ Object.assign(PW.UI, {
     card.appendChild(titleRow);
     card.appendChild(this.infoLine("Position", `${building.x}/${building.y}`));
     card.appendChild(this.infoLine("Stufe", String(building.level)));
+    if (PW.BuildingSystem.isConstructing(building)) {
+      card.appendChild(this.infoLine("Baufortschritt", `${Math.round(PW.BuildingSystem.constructionProgress(building) * 100)} %`));
+      card.appendChild(this.infoLine("Status", "Wird errichtet und ist noch nicht einsatzbereit."));
+      body.appendChild(card);
+      return;
+    }
+    if (PW.BuildingSystem.isUpgrading(building)) {
+      card.appendChild(this.infoLine("Upgrade", `Stufe ${building.level} zu ${building.upgradeToLevel}`));
+      card.appendChild(this.infoLine("Fortschritt", `${Math.round(PW.BuildingSystem.upgradeProgress(building) * 100)} %`));
+      card.appendChild(this.infoLine("Status", "Arbeitet bis zum Abschluss mit den bisherigen Werten weiter."));
+      body.appendChild(card);
+      return;
+    }
     if (def.category === "tower") {
       const stats = PW.Combat.towerStats(def, building.level);
       card.appendChild(this.infoLine("Einsatz", def.description));
@@ -693,6 +762,7 @@ Object.assign(PW.UI, {
     body.innerHTML = "";
     [
       `Nacht ${report.night} überstanden.`,
+      `+1 Perk-Coin. Vorrat: ${PW.Perks.state().coins}.`,
       `Wrack: ${Math.ceil(report.hp)}/${report.maxHp} HP.`,
       `Kills: ${report.kills}. Zerstörte Mauern: ${report.wallsDestroyed}.`,
       `Schwierigkeit: ${report.difficulty || PW.Autobalance.difficultyProfile().shortName}. Spielmodus: ${report.gameMode || PW.GameModes.profile().shortName}.`
@@ -713,6 +783,15 @@ Object.assign(PW.UI, {
       tip.append(label, text);
       body.appendChild(tip);
     }
+    const perks = document.createElement("button");
+    perks.type = "button";
+    perks.className = "report-perks-button";
+    perks.textContent = "Perks ansehen";
+    perks.addEventListener("click", () => {
+      this.hideMorningReport();
+      this.togglePanel("perks", true);
+    });
+    body.appendChild(perks);
     PW.state.dom.morningReport.classList.remove("hidden");
   },
   nextTooltip() {
@@ -851,7 +930,7 @@ Object.assign(PW.UI, {
       <p><span class="kbd">WASD</span> oder Pfeiltasten bewegen. <span class="kbd">Space</span> interagiert mit der Kachel vor dir.</p>
       <p><span class="kbd">1</span> Axt, <span class="kbd">2</span> Spitzhacke, <span class="kbd">3</span> Reparatur und Upgrade, <span class="kbd">4</span> Bauen, <span class="kbd">5</span> Abriss. Taste 4 erneut wechselt den Bauplan; <span class="kbd">Strg</span> schaltet Blaupausen um.</p>
       <p>Ein Klick auf freies Gelände wirkt wie Space. Bauwerke und andere Weltobjekte öffnen weiterhin ihre Statusansicht. Das Mausrad wechselt Werkzeuge.</p>
-      <p><span class="kbd">E</span> Inventar, <span class="kbd">M</span> Karte, <span class="kbd">O</span> Optik, <span class="kbd">R</span> Wrack, <span class="kbd">P</span> Pause. <span class="kbd">F3</span> Leistungsanzeige.</p>
+      <p><span class="kbd">M</span> Karte, <span class="kbd">R</span> Wrack, <span class="kbd">P</span> Pause. <span class="kbd">F3</span> Leistungsanzeige.</p>
       <p>Tagsüber erkundest und baust du. Nachts greifen Gegner das Wrack an. Du kannst nachts weiter rausgehen, riskierst dann aber Reparaturzeit.</p>
       <p class="meta">Die folgenden Werte zeigen, wofür Gegner und Türme gedacht sind. Grund-DPS berücksichtigt keine Flächenziele oder Spezialeffekte.</p>
       ${this.helpUnitCatalog()}

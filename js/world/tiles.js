@@ -74,7 +74,7 @@ PW.Tiles = {
     if (this.getChest(x, y)) return true;
     if (this.getCamp(x, y)) return true;
     if (this.getOutpost(x, y)) return true;
-    return Boolean(building && PW.BUILDINGS[building.type].blocksGround);
+    return Boolean(building && !PW.BuildingSystem.isConstructing(building) && PW.BUILDINGS[building.type].blocksGround);
   },
   canBuildAt(x, y) {
     if (!this.inBounds(x, y)) return false;
