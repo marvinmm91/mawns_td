@@ -38,6 +38,7 @@ PW.CONFIG = Object.freeze({
   treasure: {
     minActiveChests: 1,
     maxActiveChests: 2,
+    chestRewardMultiplier: 3,
     chestRespawnEvery: 24,
     campCount: [5, 7],
     campRespawnEvery: 35,

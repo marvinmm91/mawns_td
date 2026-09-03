@@ -676,7 +676,7 @@ Object.assign(PW.UI, {
     keys.textContent = `${PW.state.inventory.key || 0} Schlüssel`;
     titleRow.append(heading, keys);
     card.appendChild(titleRow);
-    card.appendChild(this.infoLine("Inhalt", PW.Utils.costText(chest.rewards)));
+    card.appendChild(this.infoLine("Inhalt", PW.Utils.costText(PW.TreasureSystem.chestRewards(chest))));
     const button = document.createElement("button");
     button.textContent = "Mit Schlüssel öffnen";
     button.disabled = (PW.state.inventory.key || 0) < 1;
@@ -788,10 +788,12 @@ Object.assign(PW.UI, {
     perks.className = "report-perks-button";
     perks.textContent = "Perks ansehen";
     perks.addEventListener("click", () => {
-      this.hideMorningReport();
-      this.togglePanel("perks", true);
+      this.openPerks();
     });
-    body.appendChild(perks);
+    const actions = document.createElement("div");
+    actions.className = "dialog-actions";
+    actions.append(perks, PW.state.dom.reportCloseButton);
+    body.appendChild(actions);
     PW.state.dom.morningReport.classList.remove("hidden");
   },
   nextTooltip() {
@@ -805,6 +807,12 @@ Object.assign(PW.UI, {
   hideMorningReport() {
     PW.state.reportOpen = false;
     PW.state.dom.morningReport.classList.add("hidden");
+  },
+  openPerks() {
+    this.hideMorningReport();
+    PW.state.paused = false;
+    this.updatePause();
+    this.togglePanel("perks", true);
   },
   helpNumber(value) {
     return Number.isInteger(value) ? String(value) : Number(value).toFixed(2).replace(/0+$/, "").replace(/\.$/, "");

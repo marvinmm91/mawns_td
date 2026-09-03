@@ -50,6 +50,11 @@ PW.TreasureSystem = {
     return (PW.state.world.treasureChests || []).find((chest) => !chest.opened && chest.x === x && chest.y === y) || null;
   },
 
+  chestRewards(chest) {
+    const multiplier = PW.CONFIG.treasure.chestRewardMultiplier;
+    return Object.fromEntries(Object.entries(chest.rewards || {}).map(([id, amount]) => [id, amount * multiplier]));
+  },
+
   openChestAt(x, y) {
     const chest = this.chestAt(x, y);
     if (!chest) return false;
@@ -61,10 +66,11 @@ PW.TreasureSystem = {
     }
     PW.state.inventory.key = keys - 1;
     const source = { x: PW.Utils.tileToWorld(chest.x), y: PW.Utils.tileToWorld(chest.y) };
-    Object.entries(chest.rewards).forEach(([id, amount]) => PW.Utils.addInventory(id, amount, source));
+    const rewards = this.chestRewards(chest);
+    Object.entries(rewards).forEach(([id, amount]) => PW.Utils.addInventory(id, amount, source));
     chest.opened = true;
     PW.Utils.addEffect("treasureOpen", PW.Utils.tileToWorld(chest.x), PW.Utils.tileToWorld(chest.y), "#f3d36b", 0.75, 1.4);
-    PW.Messages.add(`Schatztruhe geöffnet: ${PW.Utils.costText(chest.rewards)}.`, "ok");
+    PW.Messages.add(`Schatztruhe geöffnet: ${PW.Utils.costText(rewards)}.`, "ok");
     PW.UI.refreshInventoryDependentPanel();
     return true;
   },
