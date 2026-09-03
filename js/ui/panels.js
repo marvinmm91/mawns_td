@@ -830,7 +830,7 @@ Object.assign(PW.UI, {
     const [min, max] = profile.amounts;
     const amount = min === max ? String(min) : `${min}–${max}`;
     const chance = profile.chance < 1 ? ` (${Math.round(profile.chance * 100)} % Chance)` : "";
-    return `${amount} zufällige Rohstoffe${chance}; Schrott, Holz und Stein häufig, Gold sehr selten`;
+    return `${amount} zufällige Rohstoffe${chance}`;
   },
   helpTargetNames(targets) {
     return targets.map((target) => target === "air" ? "Luft" : "Boden").join(" + ");
