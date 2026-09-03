@@ -20,6 +20,7 @@ PW.Render = {
     PW.RenderWorld.draw(ctx);
     PW.RenderEntities.drawWorldEntities(ctx);
     PW.RenderEffects.draw(ctx);
+    PW.RenderEntities.drawProjectiles(ctx);
     PW.RenderFog.draw(ctx);
     PW.RenderEntities.drawPlayer(ctx);
     this.drawOverlay(ctx);

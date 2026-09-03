@@ -203,11 +203,13 @@ PW.RenderWorld = {
       ctx.save();
       if (PW.BuildingSystem.isConstructing(building) || PW.BuildingSystem.isUpgrading(building)) ctx.globalAlpha = 0.34;
       ctx.translate(sx, sy);
-      PW.Icons.drawBuilding(ctx, building.type, ts, 1);
+      if (building.type === "palisade") PW.Icons.drawPalisade(ctx, ts, this.palisadeConnections(building), 1);
+      else PW.Icons.drawBuilding(ctx, building.type, ts, 1);
       ctx.restore();
-      if (PW.BuildingSystem.isConstructing(building) || PW.BuildingSystem.isUpgrading(building)) this.drawConstructionProgress(ctx, sx, sy, ts, PW.BuildingSystem.workProgress(building));
+      const isConstructing = PW.BuildingSystem.isConstructing(building);
+      if (isConstructing || PW.BuildingSystem.isUpgrading(building)) this.drawConstructionProgress(ctx, sx, sy, ts, PW.BuildingSystem.workProgress(building));
       const accent = def.category === "tower" ? this.towerColor(building.type) : building.type === "bridge" ? "#83e3da" : "#d8d1ad";
-      this.drawStateCorners(ctx, sx + ts / 2, sy + ts / 2, accent, 13);
+      if (isConstructing) this.drawStateCorners(ctx, sx + ts / 2, sy + ts / 2, accent, 13);
       this.drawStructureDamage(ctx, sx, sy, ts, ts, building.hp / building.maxHp, building.damageFlash, building.type);
       if (building.id === state.hoveredUpgradeBuildingId) {
         ctx.save();
@@ -228,6 +230,15 @@ PW.RenderWorld = {
         ctx.fillRect(sx + 4, sy + 27, 24 * building.hp / building.maxHp, 3);
       }
     });
+  },
+  palisadeConnections(building) {
+    const isPalisadeAt = (x, y) => PW.Tiles.getBuilding(x, y)?.type === "palisade";
+    return {
+      north: isPalisadeAt(building.x, building.y - 1),
+      east: isPalisadeAt(building.x + 1, building.y),
+      south: isPalisadeAt(building.x, building.y + 1),
+      west: isPalisadeAt(building.x - 1, building.y)
+    };
   },
   drawConstructionProgress(ctx, sx, sy, size, progress) {
     const cx = sx + size / 2;

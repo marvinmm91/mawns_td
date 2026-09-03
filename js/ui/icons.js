@@ -270,6 +270,76 @@ PW.Icons = {
     }
     ctx.restore();
   },
+  drawPalisade(ctx, size = 32, connections = {}, alpha = 1) {
+    const north = Boolean(connections.north);
+    const east = Boolean(connections.east);
+    const south = Boolean(connections.south);
+    const west = Boolean(connections.west);
+    const connectionCount = [north, east, south, west].filter(Boolean).length;
+    const isCorner = connectionCount === 2 && (north || south) && (east || west);
+    if (!north && !east && !south && !west) {
+      this.drawBuilding(ctx, "palisade", size, alpha);
+      return;
+    }
+    if (PW.PixelArt && PW.PixelArt.draw(ctx, "building.palisade", 0, 0, size, size, { alpha })) return;
+
+    const scale = size / 32;
+    const fillRect = (x, y, w, h) => ctx.fillRect(x * scale, y * scale, w * scale, h * scale);
+    const arm = (x, y, w, h) => {
+      ctx.fillStyle = "#765033";
+      fillRect(x, y, w, h);
+      ctx.fillStyle = "#ad7a49";
+      if (w > h) fillRect(x, y + 2, w, 2);
+      else fillRect(x + 2, y, 2, h);
+    };
+
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.imageSmoothingEnabled = false;
+    if (north) arm(11, 0, 10, 16);
+    if (east) arm(16, 11, 16, 10);
+    if (south) arm(11, 16, 10, 16);
+    if (west) arm(0, 11, 16, 10);
+
+    ctx.fillStyle = "#8a5a34";
+    fillRect(10, 10, 12, 12);
+    ctx.fillStyle = "#c99b5e";
+    fillRect(12, 12, 8, 3);
+    fillRect(12, 17, 8, 2);
+
+    if (isCorner) {
+      const jointX = east ? 16 : 11;
+      const jointY = south ? 16 : 11;
+      ctx.fillStyle = "#4b321f";
+      fillRect(jointX - 1, jointY - 1, 7, 7);
+      ctx.fillStyle = "#a86f3f";
+      fillRect(jointX, jointY, 5, 5);
+      ctx.fillStyle = "#e0ae70";
+      fillRect(jointX + 1, jointY, 3, 2);
+    } else {
+      const stakes = [];
+      if (east || west) stakes.push(4, 13, 22);
+      if (north || south) stakes.push(4, 13, 22);
+      ctx.fillStyle = "#b9824e";
+      stakes.forEach((x) => {
+        fillRect(x, 5, 3, 22);
+        ctx.fillStyle = "#e0ae70";
+        fillRect(x, 3, 3, 3);
+        ctx.fillStyle = "#b9824e";
+      });
+      if (north || south) {
+        ctx.fillStyle = "#4b321f";
+        fillRect(5, 11, 22, 3);
+        fillRect(5, 20, 22, 3);
+      }
+      if (east || west) {
+        ctx.fillStyle = "#4b321f";
+        fillRect(11, 5, 3, 22);
+        fillRect(20, 5, 3, 22);
+      }
+    }
+    ctx.restore();
+  },
   drawTool(ctx, id, size = 28) {
     const scale = size / 28;
     const rect = (x, y, w, h) => ctx.fillRect(x * scale, y * scale, w * scale, h * scale);

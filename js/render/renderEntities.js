@@ -4,15 +4,14 @@ PW.RenderEntities = {
   draw(ctx) {
     this.drawBirds(ctx);
     this.drawDrops(ctx);
-    this.drawProjectiles(ctx);
     this.drawWildlife(ctx);
     this.drawEnemies(ctx);
     this.drawPlayer(ctx);
+    this.drawProjectiles(ctx);
   },
   drawWorldEntities(ctx) {
     this.drawBirds(ctx);
     this.drawDrops(ctx);
-    this.drawProjectiles(ctx);
     this.drawWildlife(ctx);
     this.drawEnemies(ctx);
   },
