@@ -76,7 +76,9 @@ PW.Perks = {
     return this.has("blueprintLogistics") ? 1.1 : PW.CONFIG.blueprintBatchCostMultiplier;
   },
   constructionTime(def) {
-    return Math.max(0.1, (def.buildTime || 3) * (this.has("fieldMechanic") ? 0.75 : 1));
+    const perkMultiplier = this.has("fieldMechanic") ? 0.75 : 1;
+    const developmentMultiplier = def.category === "tower" ? PW.Development.factor("towerConstructionTimeMultiplier") : 1;
+    return Math.max(0.1, (def.buildTime || 3) * perkMultiplier * developmentMultiplier);
   },
   constructionSpeedMultiplier() {
     return this.has("builderDrones") && PW.state.phase.current === "day" ? 2 : 1;

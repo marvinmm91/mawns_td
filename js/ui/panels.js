@@ -69,12 +69,13 @@ Object.assign(PW.UI, {
       { id: "waveMultiplier", label: "Wellenmenge", hint: "Erhöht oder senkt das gesamte Gegnerbudget jeder kommenden Nacht. Mehr Budget bedeutet mehr Gegner und größere Gruppen." },
       { id: "enemyHpMultiplier", label: "Gegnerleben", hint: "Multipliziert die Lebenspunkte aller neu gespawnten Gegner. Bereits vorhandene Gegner bleiben unverändert." },
       { id: "enemyDamageMultiplier", label: "Gegnerschaden", hint: "Multipliziert den Schaden, den Gegner am Wrack und an Bauwerken verursachen." },
-      { id: "enemySpeedMultiplier", label: "Gegnertempo", hint: "Multipliziert die Bewegungsgeschwindigkeit aller neu gespawnten Gegner." }
+      { id: "enemySpeedMultiplier", label: "Gegnertempo", hint: "Multipliziert die Bewegungsgeschwindigkeit aller neu gespawnten Gegner." },
+      { id: "towerConstructionTimeMultiplier", label: "Turmbauzeit", hint: "Multipliziert Bau- und Upgradezeiten neuer Türme. 1,00x entspricht den heutigen Standardzeiten; Palisaden und andere Bauwerke bleiben unverändert." }
     ];
     body.innerHTML = "";
     const factors = document.createElement("section");
     factors.className = "development-section";
-    factors.innerHTML = "<h3>Schwierigkeit</h3>";
+    factors.innerHTML = "<h3>Schwierigkeit und Bau</h3>";
     controls.forEach((control) => {
       const value = PW.Development.factor(control.id);
       const row = document.createElement("div");

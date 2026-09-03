@@ -152,6 +152,7 @@ PW.createInitialState = function createInitialState() {
       enemyHpMultiplier: 1,
       enemyDamageMultiplier: 1,
       enemySpeedMultiplier: 1,
+      towerConstructionTimeMultiplier: 1,
       timeScale: 1
     },
     nightStats: null,
