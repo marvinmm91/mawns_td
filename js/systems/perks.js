@@ -67,7 +67,7 @@ PW.Perks = {
     return this.has("richDeposits") ? Math.ceil(amount * 1.5) : amount;
   },
   magnetRadius() {
-    return this.has("salvageMagnet") ? PW.CONFIG.dropMagnetRadius * 1.9 : PW.CONFIG.dropMagnetRadius;
+    return this.has("salvageMagnet") ? PW.CONFIG.dropMagnetRadius * 5 : PW.CONFIG.dropMagnetRadius;
   },
   extraEnemyDropChance() {
     return this.has("recoveryProtocol") ? 0.35 : 0;
