@@ -150,7 +150,7 @@ PW.CONFIG = Object.freeze({
         shortName: "Anspruchsvoll",
         description: "Mehr Druck und weniger automatische Entlastung nach Fehlern.",
         threatMultiplier: 1.13,
-        balance: { easyDamageRatio: 0.065, idealDamageMin: 0.10, idealDamageMax: 0.245, hardDamageRatio: 0.375, lowHpRatio: 0.32, maxPositiveDrift: 0.34, maxNegativeDrift: -0.26, maxNightBoost: 0.14, maxNightRelief: -0.15, maxDropBonus: 0.18 }
+        balance: { easyDamageRatio: 0.065, idealDamageMin: 0.10, idealDamageMax: 0.245, hardDamageRatio: 0.375, lowHpRatio: 0.32, maxPositiveDrift: 0.6, maxNegativeDrift: -0.26, maxNightBoost: 0.14, maxNightRelief: -0.15, maxDropBonus: 0.18 }
       },
       {
         id: "onslaught",
@@ -158,7 +158,7 @@ PW.CONFIG = Object.freeze({
         shortName: "Ansturm",
         description: "Hoher Grunddruck für erfahrene Verteidigungsplaner.",
         threatMultiplier: 1.27,
-        balance: { easyDamageRatio: 0.08, idealDamageMin: 0.12, idealDamageMax: 0.27, hardDamageRatio: 0.40, lowHpRatio: 0.29, maxPositiveDrift: 0.38, maxNegativeDrift: -0.22, maxNightBoost: 0.16, maxNightRelief: -0.12, maxDropBonus: 0.14 }
+        balance: { easyDamageRatio: 0.08, idealDamageMin: 0.12, idealDamageMax: 0.27, hardDamageRatio: 0.40, lowHpRatio: 0.29, maxPositiveDrift: 1, maxNegativeDrift: -0.22, maxNightBoost: 0.16, maxNightRelief: -0.12, maxDropBonus: 0.14 }
       }
     ]
   },
