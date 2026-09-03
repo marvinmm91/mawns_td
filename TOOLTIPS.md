@@ -25,6 +25,7 @@ Kurze Hinweise für Ladebildschirme, Morgenberichte oder spätere Hilfesysteme. 
 - Baue Türme in Feuerlinien, nicht in Sackgassen.
 - Blaupausen kosten erst beim Errichten Material.
 - Alle Blaupausen auf einmal zu errichten kostet 20 % mehr Material.
+- Baustellen blockieren und feuern erst nach dem Kreisfortschritt.
 - Brücken öffnen Wege für dich und Bodengegner.
 
 ## Zielprioritäten
@@ -33,6 +34,7 @@ Kurze Hinweise für Ladebildschirme, Morgenberichte oder spätere Hilfesysteme. 
 - Letzter verlängert die Feuerzeit entlang einer Lane.
 - Stärkster fokussiert robuste Gegner.
 - Schwächster räumt angeschlagene Ziele schnell weg.
+- Ein angeklickter Turm zeigt seinen Reichweitenkreis.
 
 ## Überleben
 
@@ -40,6 +42,8 @@ Kurze Hinweise für Ladebildschirme, Morgenberichte oder spätere Hilfesysteme. 
 - Schwärme kommen mindestens zu fünft.
 - Fliegende Gegner ignorieren Palisaden.
 - Vollständige Reparatur schützt dein nächstes Upgrade.
+- Upgrades brauchen nur die halbe Bauzeit und wirken erst nach Abschluss.
+- Jede überstandene Nacht bringt einen Perk-Coin.
 - Schrott ist für fortgeschrittene Türme wertvoll.
 - Schlüssel öffnen jede beliebige Schatztruhe.
 - Horden bewachen oft einen Schlüssel.
