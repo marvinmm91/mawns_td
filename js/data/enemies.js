@@ -40,7 +40,7 @@ PW.ENEMIES = Object.freeze({
     role: "Panzer",
     counter: "Laser umgehen die starke Abwehr gegen einfache Bolzen; Katapulte bleiben nur eine Nebenlösung.",
     budget: 3.4,
-    hp: 400,
+    hp: 800,
     speed: 20,
     damage: 16,
     attackCooldown: 1.6,
