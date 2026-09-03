@@ -54,7 +54,7 @@ PW.ENEMIES = Object.freeze({
     name: "Brecher",
     moveType: "ground",
     role: "Mauerbrecher",
-    counter: "Hohe Resistenz gegen die meisten Wassen (Strom hilft..)",
+    counter: "Hohe Resistenz gegen die meisten Waffen (Strom hilft!)",
     budget: 4,
     hp: 145,
     speed: 38,
