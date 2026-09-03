@@ -81,7 +81,8 @@ PW.Perks = {
     return Math.max(0.1, (def.buildTime || 3) * perkMultiplier * developmentMultiplier);
   },
   constructionSpeedMultiplier() {
-    return this.has("builderDrones") && PW.state.phase.current === "day" ? 2 : 1;
+    const isDay = PW.state.phase.current === "day";
+    return this.has("builderDrones") && isDay ? 2 : 1;
   },
   repairMultiplier() {
     return this.has("maintenanceTraining") ? 1.35 : 1;

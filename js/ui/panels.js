@@ -224,7 +224,8 @@ Object.assign(PW.UI, {
     build.className = "build-card";
     const selected = PW.BUILDINGS[state.selectedBuild];
     const mode = state.player.buildMode === "blueprint" ? "Blaupause" : "Bauen";
-    build.innerHTML = `<h3>Aktiver Bauplan</h3><div class="meta">${selected ? selected.name : "Keiner"}. Modus: ${mode}. Werkzeug 4 und Leertaste oder Klick auf freies Gelände baut vor der Figur; Strg wechselt den Modus.</div>`;
+    const constructionHint = PW.BuildingSystem.canStartConstruction() ? "" : " Neue Bauwerke können erst bei Tageslicht begonnen werden.";
+    build.innerHTML = `<h3>Aktiver Bauplan</h3><div class="meta">${selected ? selected.name : "Keiner"}. Modus: ${mode}. Werkzeug 4 und Leertaste oder Klick auf freies Gelände baut vor der Figur; Strg wechselt den Modus.${constructionHint}</div>`;
     if (selected) {
       const costs = document.createElement("div");
       costs.className = "costs";
@@ -346,8 +347,11 @@ Object.assign(PW.UI, {
       const buildAll = document.createElement("button");
       buildAll.type = "button";
       buildAll.textContent = `Alle errichten (+${surcharge} %)`;
-      buildAll.title = `Errichtet alle Blaupausen gemeinsam für ${surcharge} % mehr Material.`;
-      buildAll.disabled = !PW.Utils.canAfford(PW.BuildingSystem.blueprintBatchCost(blueprints)) || !PW.BuildingSystem.canBuildAllBlueprints(blueprints);
+      const canStartConstruction = PW.BuildingSystem.canStartConstruction();
+      buildAll.title = canStartConstruction
+        ? `Errichtet alle Blaupausen gemeinsam für ${surcharge} % mehr Material.`
+        : "Sammelbau kann nur tagsüber begonnen werden.";
+      buildAll.disabled = !canStartConstruction || !PW.Utils.canAfford(PW.BuildingSystem.blueprintBatchCost(blueprints)) || !PW.BuildingSystem.canBuildAllBlueprints(blueprints);
       buildAll.addEventListener("click", () => PW.BuildingSystem.buildAllBlueprints());
       const removeAll = document.createElement("button");
       removeAll.type = "button";

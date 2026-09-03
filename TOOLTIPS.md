@@ -25,6 +25,7 @@ Kurze Hinweise für Ladebildschirme, Morgenberichte oder spätere Hilfesysteme. 
 - Baue Türme in Feuerlinien, nicht in Sackgassen.
 - Blaupausen kosten erst beim Errichten Material.
 - Alle Blaupausen auf einmal zu errichten kostet 20 % mehr Material.
+- Neue Bauwerke können nur tagsüber begonnen werden.
 - Baustellen blockieren und feuern erst nach dem Kreisfortschritt.
 - Brücken öffnen Wege für dich und Bodengegner.
 

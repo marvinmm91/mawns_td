@@ -10,6 +10,10 @@ PW.BuildingSystem = {
     const payCost = options.payCost !== false;
     const quiet = options.quiet === true;
     if (!def) return false;
+    if (!this.canStartConstruction()) {
+      if (!quiet) PW.Messages.add("Neue Bauwerke können nur tagsüber begonnen werden.");
+      return false;
+    }
     if (!PW.GameModes.allowsBuilding(type)) {
       PW.Messages.add(`${def.name} ist im Classic Mode nicht verfügbar.`);
       return false;
@@ -59,6 +63,9 @@ PW.BuildingSystem = {
   },
   canPlaceBlueprint(type, x, y) {
     return !PW.Tiles.getBlueprint(x, y) && this.canPlaceBuilding(type, x, y);
+  },
+  canStartConstruction() {
+    return PW.state.phase.current === "day";
   },
   placeBlueprintSelected(x, y, quiet = false) {
     return this.placeBlueprint(PW.state.selectedBuild, x, y, quiet);
@@ -127,6 +134,7 @@ PW.BuildingSystem = {
   },
   canBuildAllBlueprints(blueprints = PW.state.world.blueprints) {
     const state = PW.state;
+    if (!this.canStartConstruction()) return false;
     return blueprints.every((blueprint) => {
       const def = PW.BUILDINGS[blueprint.type];
       return def
@@ -140,6 +148,11 @@ PW.BuildingSystem = {
     const blueprints = [...PW.state.world.blueprints];
     if (!blueprints.length) {
       PW.Messages.add("Keine Blaupausen vorgemerkt.");
+      return 0;
+    }
+    if (!this.canStartConstruction()) {
+      PW.Messages.add("Sammelbau kann nur tagsüber begonnen werden.");
+      PW.UI.renderPanel();
       return 0;
     }
     if (!this.canBuildAllBlueprints(blueprints)) {

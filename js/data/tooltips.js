@@ -18,6 +18,7 @@ PW.TOOLTIPS = Object.freeze([
   { id: "lanes", text: "Baue Türme in Feuerlinien, nicht in Sackgassen." },
   { id: "blueprint-cost", text: "Blaupausen kosten erst beim Errichten Material." },
   { id: "blueprint-batch-cost", text: "Sammelbau für Blaupausen kostet 20 % mehr Material." },
+  { id: "daytime-building", text: "Neue Bauwerke können nur tagsüber begonnen werden." },
   { id: "priority-ship", text: "Wracknähe schützt vor Durchbrüchen." },
   { id: "priority-last", text: "Letzter verlängert die Feuerzeit entlang einer Lane." },
   { id: "priority-strong", text: "Stärkster fokussiert robuste Gegner." },
