@@ -126,6 +126,7 @@ PW.CONFIG = Object.freeze({
         shortName: "Entspannt",
         description: "Mehr Raum zum Aufbauen und deutliche Hilfe nach einer harten Nacht.",
         threatMultiplier: 0.76,
+        shipDamageResistanceMax: 0.95,
         balance: { easyDamageRatio: 0.02, idealDamageMin: 0.04, idealDamageMax: 0.17, hardDamageRatio: 0.30, lowHpRatio: 0.42, maxPositiveDrift: 0.20, maxNegativeDrift: -0.38, maxNightBoost: 0.08, maxNightRelief: -0.24, maxDropBonus: 0.30 }
       },
       {
@@ -134,6 +135,7 @@ PW.CONFIG = Object.freeze({
         shortName: "Ruhig",
         description: "Etwas weniger Grunddruck mit verzeihendem Ausgleich.",
         threatMultiplier: 0.88,
+        shipDamageResistanceMax: 0.8,
         balance: { easyDamageRatio: 0.035, idealDamageMin: 0.06, idealDamageMax: 0.195, hardDamageRatio: 0.325, lowHpRatio: 0.38, maxPositiveDrift: 0.25, maxNegativeDrift: -0.34, maxNightBoost: 0.10, maxNightRelief: -0.21, maxDropBonus: 0.26 }
       },
       {

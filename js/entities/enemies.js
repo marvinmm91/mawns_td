@@ -223,11 +223,11 @@ PW.EnemySystem = {
     if (enemy.attackCooldown <= 0) {
       const modeDamage = PW.GameModes.profile().enemyDamageMultiplier ?? 1;
       const damage = Math.ceil(def.damage * (PW.state.ship.launchActive ? 0.35 : 1) * modeDamage * PW.Development.factor("enemyDamageMultiplier"));
-      PW.DamageVisuals.ship(damage);
-        if (PW.state.nightStats) {
-          PW.state.nightStats.shipDamageTaken += damage;
-          if (def.moveType === "air") PW.state.nightStats.airDamage += damage;
-        }
+      const appliedDamage = PW.DamageVisuals.ship(damage);
+      if (PW.state.nightStats) {
+        PW.state.nightStats.shipDamageTaken += appliedDamage;
+        if (def.moveType === "air") PW.state.nightStats.airDamage += appliedDamage;
+      }
       enemy.attackCooldown = def.attackCooldown;
       enemy.reachedShip = true;
       this.addAttackEffect(enemy, def, center.x, center.y, 1.8);
