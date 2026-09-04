@@ -51,8 +51,14 @@ PW.TreasureSystem = {
   },
 
   chestRewards(chest) {
-    const multiplier = PW.CONFIG.treasure.chestRewardMultiplier;
-    return Object.fromEntries(Object.entries(chest.rewards || {}).map(([id, amount]) => [id, amount * multiplier]));
+    if (!Number.isFinite(chest.rewardMultiplier)) chest.rewardMultiplier = this.rollChestRewardMultiplier();
+    const multiplier = PW.CONFIG.treasure.chestRewardMultiplier * chest.rewardMultiplier;
+    return Object.fromEntries(Object.entries(chest.rewards || {}).map(([id, amount]) => [id, Math.round(amount * multiplier)]));
+  },
+
+  rollChestRewardMultiplier() {
+    const maxMultiplier = PW.Autobalance.difficultyProfile().id === "relaxed" ? 3 : 2;
+    return PW.state.rng.float(1, maxMultiplier);
   },
 
   openChestAt(x, y) {
@@ -67,10 +73,13 @@ PW.TreasureSystem = {
     PW.state.inventory.key = keys - 1;
     const source = { x: PW.Utils.tileToWorld(chest.x), y: PW.Utils.tileToWorld(chest.y) };
     const rewards = this.chestRewards(chest);
-    Object.entries(rewards).forEach(([id, amount]) => PW.Utils.addInventory(id, amount, source));
+    Object.entries(rewards).forEach(([id, amount]) => PW.DropSystem.spawn(id, amount, source.x, source.y, {
+      burstRadius: 72,
+      burstDuration: 0.45
+    }));
     chest.opened = true;
     PW.Utils.addEffect("treasureOpen", PW.Utils.tileToWorld(chest.x), PW.Utils.tileToWorld(chest.y), "#f3d36b", 0.75, 1.4);
-    PW.Messages.add(`Schatztruhe geöffnet: ${PW.Utils.costText(rewards)}.`, "ok");
+    PW.Messages.add("Schatztruhe geöffnet: Die Beute wurde verteilt.", "ok");
     PW.UI.refreshInventoryDependentPanel();
     return true;
   },
@@ -176,7 +185,8 @@ PW.TreasureSystem = {
       scrap: rng.int(10, 26)
     };
     if (rng.chance(0.72)) rewards.iron = rng.int(6, 16);
-    if (rng.chance(0.45)) rewards.gold = rng.int(3, 10);
+    const goldChance = PW.Autobalance.difficultyProfile().id === "relaxed" ? 0.75 : 0.45;
+    if (rng.chance(goldChance)) rewards.gold = rng.int(3, 10);
     if (rng.chance(0.38)) rewards.crystal = rng.int(3, 9);
     if (rng.chance(0.42)) rewards.parts = rng.int(1, 4);
     return rewards;

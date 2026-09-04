@@ -39,14 +39,21 @@ PW.DropSystem = {
     }
     Object.entries(rewards).forEach(([resource, amount]) => this.spawn(resource, amount, enemy.x, enemy.y));
   },
-  spawn(resource, amount, x, y) {
+  spawn(resource, amount, x, y, options = {}) {
     const state = PW.state;
+    const burstDuration = Math.max(0, options.burstDuration || 0);
+    const burstRadius = Math.max(0, options.burstRadius || 0);
+    const angle = state.rng.float(0, Math.PI * 2);
+    const distance = burstRadius ? state.rng.float(burstRadius * 0.45, burstRadius) : 0;
     const drop = {
       id: `drop-${Date.now()}-${Math.random()}`,
       resource,
       amount,
       x: x + state.rng.float(-8, 8),
       y: y + state.rng.float(-8, 8),
+      burstTimer: burstDuration,
+      burstVelocityX: burstDuration ? Math.cos(angle) * distance / burstDuration : 0,
+      burstVelocityY: burstDuration ? Math.sin(angle) * distance / burstDuration : 0,
       life: 999
     };
     state.drops.push(drop);
@@ -56,6 +63,13 @@ PW.DropSystem = {
     const state = PW.state;
     for (const drop of state.drops) {
       drop.life -= dt;
+      if (drop.burstTimer > 0) {
+        drop.burstTimer = Math.max(0, drop.burstTimer - dt);
+        drop.x += drop.burstVelocityX * dt;
+        drop.y += drop.burstVelocityY * dt;
+        PW.SpatialIndex.update("drops", drop);
+        continue;
+      }
       const dist = PW.Utils.distance(drop.x, drop.y, state.player.x, state.player.y);
       if (dist < PW.CONFIG.dropPickupRadius) {
         PW.Utils.addInventory(drop.resource, drop.amount, drop);
