@@ -3,6 +3,7 @@
 PW.ProjectileSystem = {
   spawn(tower, enemy, def) {
     const origin = PW.Tiles.tileCenter(tower.x, tower.y);
+    if (PW.Sound) PW.Sound.towerShot(tower.type);
     if (tower.type === "laser") {
       PW.Utils.addEffect("laserBeam", (origin.x + enemy.x) / 2, (origin.y + enemy.y) / 2, this.colorFor(tower.type), 0.16, 1, {
         x1: origin.x,

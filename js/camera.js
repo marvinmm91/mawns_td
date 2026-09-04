@@ -1,17 +1,28 @@
 "use strict";
 
 PW.Camera = {
+  zoomLevels: [1, 1.5, 2],
   resize() {
     const state = PW.state;
     const rect = state.canvas.getBoundingClientRect();
-    const scale = window.devicePixelRatio || 1;
-    state.canvas.width = Math.floor(rect.width * scale);
-    state.canvas.height = Math.floor(rect.height * scale);
-    state.camera.pixelRatio = scale;
-    state.ctx.setTransform(scale, 0, 0, scale, 0, 0);
-    state.camera.w = rect.width;
-    state.camera.h = rect.height;
+    const deviceScale = window.devicePixelRatio || 1;
+    const zoom = this.zoomLevels.includes(state.camera.zoom) ? state.camera.zoom : 1;
+    state.camera.zoom = zoom;
+    state.canvas.width = Math.floor(rect.width * deviceScale);
+    state.canvas.height = Math.floor(rect.height * deviceScale);
+    state.camera.pixelRatio = deviceScale * zoom;
+    state.ctx.setTransform(state.camera.pixelRatio, 0, 0, state.camera.pixelRatio, 0, 0);
+    state.camera.w = rect.width / zoom;
+    state.camera.h = rect.height / zoom;
     this.update();
+  },
+  cycleZoom() {
+    const state = PW.state;
+    const current = this.zoomLevels.indexOf(state.camera.zoom);
+    state.camera.zoom = this.zoomLevels[(Math.max(0, current) + 1) % this.zoomLevels.length];
+    this.resize();
+    PW.Messages.add(`Zoom: ${state.camera.zoom.toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}x.`, "ok");
+    return state.camera.zoom;
   },
   update() {
     const state = PW.state;

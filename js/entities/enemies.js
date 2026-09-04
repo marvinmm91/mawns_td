@@ -242,6 +242,9 @@ PW.EnemySystem = {
     PW.Utils.addEffect("hit", enemy.x, enemy.y, "#f7e6a1", 0.22, 0.8);
     PW.Utils.addDamageFeedback(enemy, dealt);
     if (enemy.hp <= 0) {
+      if (enemy.deathHandled) return dealt;
+      enemy.deathHandled = true;
+      if (PW.Sound) PW.Sound.enemyDeath(enemy);
       if (PW.state.nightStats) {
         PW.state.nightStats.kills += 1;
         PW.state.nightStats.killDistanceSum += PW.Utils.distance(enemy.x, enemy.y, this.shipCenter().x, this.shipCenter().y);

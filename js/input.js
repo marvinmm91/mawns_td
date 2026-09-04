@@ -12,7 +12,7 @@ PW.Input = {
         event.preventDefault();
         return;
       }
-      if (["arrowup", "arrowdown", "arrowleft", "arrowright", " ", "w", "a", "s", "d"].includes(key)) {
+      if (["arrowup", "arrowdown", "arrowleft", "arrowright", " ", "w", "a", "s", "d", "z"].includes(key)) {
         event.preventDefault();
       }
       if (key === "enter" && state.dom.gameDialog && state.dom.gameDialog.classList.contains("hidden")) {
@@ -86,7 +86,8 @@ PW.Input = {
   updateMouse(event) {
     const state = PW.state;
     const rect = state.canvas.getBoundingClientRect();
-    if (Math.abs(state.camera.w - rect.width) > 0.5 || Math.abs(state.camera.h - rect.height) > 0.5) {
+    const zoom = state.camera.zoom || 1;
+    if (Math.abs(state.camera.w - rect.width / zoom) > 0.5 || Math.abs(state.camera.h - rect.height / zoom) > 0.5) {
       PW.Camera.resize();
     }
     // The canvas can be resized by the surrounding panel without a window resize event.
@@ -202,6 +203,10 @@ PW.Input = {
     }
     if (key === "m") {
       PW.TacticalMap.toggle();
+      return;
+    }
+    if (key === "z" && !repeating) {
+      PW.Camera.cycleZoom();
       return;
     }
     if (key === "escape" && state.tacticalMapOpen) {

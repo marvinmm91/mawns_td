@@ -24,7 +24,10 @@ PW.DayNight = {
     const state = PW.state;
     const night = state.phase.night;
     let duration = PW.CONFIG.phases[phase];
-    if (phase === "day") duration = Math.max(PW.CONFIG.phaseGrowth.dayMin, duration - night * PW.CONFIG.phaseGrowth.dayShrinkPerNight);
+    if (phase === "day") {
+      const baseDuration = Math.max(PW.CONFIG.phaseGrowth.dayMin, duration - night * PW.CONFIG.phaseGrowth.dayShrinkPerNight);
+      duration = baseDuration * (PW.Autobalance.difficultyProfile().dayDurationMultiplier || 1);
+    }
     if (phase === "night") duration = Math.min(PW.CONFIG.phaseGrowth.nightMax, duration + Math.max(0, night - 1) * PW.CONFIG.phaseGrowth.nightGrowPerNight);
     state.phase.current = phase;
     state.phase.duration = duration;

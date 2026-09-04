@@ -74,7 +74,8 @@ PW.createInitialState = function createInitialState() {
       y: 0,
       w: cfg.canvasWidth,
       h: cfg.canvasHeight,
-      pixelRatio: 1
+      pixelRatio: 1,
+      zoom: 1
     },
     player: {
       x: Math.floor(cfg.mapWidth / 2) * cfg.tileSize,
